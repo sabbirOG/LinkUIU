@@ -1,5 +1,15 @@
-LinkUIU
+# LinkUIU - UIU Alumni Network
 
+A comprehensive alumni networking platform for United International University (UIU) students and graduates.
+
+## Quick Start
+
+### GitHub Setup
+1. Create a new repository on GitHub (don't initialize with README)
+2. Run: `push-to-github.bat` and enter your GitHub repository URL
+3. Done! Your code is now on GitHub
+
+### Local Development
 Backend: PHP (PDO MySQL)
 
 Setup
