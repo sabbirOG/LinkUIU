@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LinkUIU - Redirecting...</title>
+  <script src="frontend/assets/js/main.js"></script>
+</head>
+<body>
+  <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+    <h2>Welcome to LinkUIU</h2>
+    <p>Redirecting you to the appropriate page...</p>
+    <div style="margin: 20px 0;">
+      <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #ff6b35; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+    </div>
+  </div>
+  
+  <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+
+  <script>
+    // Check if user is logged in and redirect accordingly
+    async function checkAuthAndRedirect() {
+      try {
+        // Check if user has a valid token
+        const token = getToken();
+        
+        if (!token) {
+          // No token - redirect to landing page
+          window.location.replace('landing.html');
+          return;
+        }
+
+        // For now, just redirect to dashboard if token exists
+        // TODO: Add proper token validation when needed
+        window.location.replace('frontend/pages/dashboard.html');
+      } catch (error) {
+        // Any error - redirect to landing page
+        console.log('Auth check failed, redirecting to landing page');
+        window.location.replace('landing.html');
+      }
+    }
+
+    // Run the check when page loads
+    document.addEventListener('DOMContentLoaded', checkAuthAndRedirect);
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,1 @@
+'✗ Database connection failed: ' . \$e- . '\n';

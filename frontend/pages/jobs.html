@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jobs - LinkUIU</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <script defer src="../assets/js/main.js"></script>
+  <script>
+    let userApplications = new Set();
+    let userType = 'student'; // Will be determined from user data
+
+    async function loadJobs() {
+      const list = document.getElementById('list');
+      list.innerHTML = '';
+      try {
+        const jobs = await LinkUIU.api('/jobs?limit=20&offset=0');
+        const me = JSON.parse(localStorage.getItem('auth_user')||'{}');
+        
+        // Load user's applications if they're a student
+        if (me && me.id) {
+          try {
+            const applications = await LinkUIU.api(`/applications/student/${me.id}`);
+            userApplications = new Set(applications.map(app => app.job_id));
+          } catch (e) {
+            console.log('Could not load applications:', e.message);
+          }
+        }
+
+        if (!jobs.length) {
+          const empty = document.createElement('div');
+          empty.className = 'subtitle';
+          empty.textContent = 'No jobs yet';
+          list.replaceChildren(empty);
+          return;
+        }
+        
+        for (const j of jobs) {
+          const card = document.createElement('div');
+          card.className = 'card';
+          const t = document.createElement('div'); t.className='title'; t.textContent = j.title || '';
+          const s = document.createElement('div'); s.className='subtitle'; s.textContent = `${j.company || ''} • ${j.location || ''}`;
+          
+          // Add description if available
+          if (j.description) {
+            const desc = document.createElement('div');
+            desc.className = 'description';
+            desc.textContent = j.description.length > 100 ? j.description.substring(0, 100) + '...' : j.description;
+            card.appendChild(desc);
+          }
+          
+          card.appendChild(t); card.appendChild(s);
+
+          // Add action buttons
+          const actions = document.createElement('div');
+          actions.className = 'card-actions';
+
+          if (me && me.id && j.posted_by === me.id) {
+            // Job poster actions
+            const btn = document.createElement('button');
+            btn.className = 'kebab-btn';
+            btn.title = 'Actions';
+            btn.textContent = '⋮';
+            const menu = document.createElement('div');
+            menu.className = 'kebab-menu';
+            
+            const viewApps = document.createElement('button');
+            viewApps.textContent = 'View Applications';
+            viewApps.addEventListener('click', () => viewApplications(j.id));
+            
+            const edit = document.createElement('button');
+            edit.textContent = 'Edit job';
+            edit.addEventListener('click', () => openEdit(j));
+            
+            const del = document.createElement('button');
+            del.textContent = 'Delete job';
+            del.addEventListener('click', () => deleteJob(j.id));
+            
+            menu.appendChild(viewApps);
+            menu.appendChild(edit);
+            menu.appendChild(del);
+            
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              menu.classList.toggle('open');
+            });
+            document.addEventListener('click', () => menu.classList.remove('open'));
+            actions.appendChild(btn);
+            actions.appendChild(menu);
+          } else if (me && me.id && j.posted_by !== me.id) {
+            // Student actions
+            const applyBtn = document.createElement('button');
+            applyBtn.className = 'btn btn-primary';
+            
+            if (userApplications.has(j.id)) {
+              applyBtn.textContent = 'Applied ✓';
+              applyBtn.disabled = true;
+              applyBtn.style.opacity = '0.7';
+            } else {
+              applyBtn.textContent = 'Apply';
+              applyBtn.addEventListener('click', () => openApplicationModal(j));
+            }
+            
+            actions.appendChild(applyBtn);
+          }
+
+          card.appendChild(actions);
+          list.appendChild(card);
+        }
+      } catch (e) {
+        const err = document.createElement('div');
+        err.className = 'error';
+        err.textContent = e.message;
+        list.replaceChildren(err);
+      }
+    }
+    async function submitJob(e) {
+      e.preventDefault();
+      const err = document.getElementById('error');
+      err.textContent = '';
+      try {
+        const title = document.getElementById('title').value.trim();
+        const company = document.getElementById('company').value.trim();
+        const location = document.getElementById('location').value.trim();
+        const description = document.getElementById('description').value.trim();
+        await LinkUIU.api('/jobs', { method:'POST', auth:true, body:{ title, company, location, description } });
+        document.getElementById('job-form').reset();
+        loadJobs();
+      } catch (e) { err.textContent = e.message; }
+    }
+    async function deleteJob(id) {
+      if (!confirm('Delete this job?')) return;
+      try { await LinkUIU.api(`/jobs/${id}`, { method:'DELETE', auth:true }); loadJobs(); }
+      catch(e) { alert(e.message); }
+    }
+
+    function openEdit(job) {
+      const title = prompt('Title', job.title);
+      if (title === null) return;
+      const company = prompt('Company', job.company||'');
+      if (company === null) return;
+      const location = prompt('Location', job.location||'');
+      LinkUIU.api(`/jobs/${job.id}`, { method:'PUT', auth:true, body:{ title, company, location } })
+        .then(() => loadJobs())
+        .catch(e => alert(e.message));
+    }
+
+    function openApplicationModal(job) {
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal">
+          <div class="modal-header">
+            <h3>Apply for ${job.title}</h3>
+            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="application-form">
+              <div class="field">
+                <label class="label">Cover Letter</label>
+                <textarea id="cover-letter" class="input" rows="4" placeholder="Tell us why you're interested in this position..."></textarea>
+              </div>
+              <div class="field">
+                <label class="label">Resume URL (optional)</label>
+                <input id="resume-url" class="input" type="url" placeholder="https://example.com/resume.pdf" />
+              </div>
+              <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit Application</button>
+              </div>
+              <div id="application-error" class="error"></div>
+            </form>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      // Handle form submission
+      modal.querySelector('#application-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errorDiv = modal.querySelector('#application-error');
+        errorDiv.textContent = '';
+        
+        try {
+          const coverLetter = modal.querySelector('#cover-letter').value.trim();
+          const resumeUrl = modal.querySelector('#resume-url').value.trim();
+          
+          await LinkUIU.api('/applications', {
+            method: 'POST',
+            auth: true,
+            body: {
+              job_id: job.id,
+              cover_letter: coverLetter || null,
+              resume: resumeUrl || null
+            }
+          });
+          
+          modal.remove();
+          loadJobs(); // Refresh to show "Applied" status
+          alert('Application submitted successfully!');
+        } catch (e) {
+          errorDiv.textContent = e.message;
+        }
+      });
+    }
+
+    async function viewApplications(jobId) {
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal">
+          <div class="modal-header">
+            <h3>Job Applications</h3>
+            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="applications-list">Loading applications...</div>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      try {
+        const applications = await LinkUIU.api(`/applications/job/${jobId}`);
+        const list = modal.querySelector('#applications-list');
+        
+        if (!applications.length) {
+          list.innerHTML = '<div class="subtitle">No applications yet</div>';
+          return;
+        }
+        
+        list.innerHTML = '';
+        for (const app of applications) {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <div class="title">${app.student_name || 'Unknown Student'}</div>
+            <div class="subtitle">Student ID: ${app.student_id || 'N/A'}</div>
+            <div class="subtitle">Applied: ${new Date(app.applied_at).toLocaleDateString()}</div>
+            <div class="subtitle">Status: <span class="status-${app.status}">${app.status}</span></div>
+            ${app.cover_letter ? `<div class="description"><strong>Cover Letter:</strong><br>${app.cover_letter}</div>` : ''}
+            ${app.resume ? `<div class="subtitle"><strong>Resume:</strong> <a href="${app.resume}" target="_blank">View Resume</a></div>` : ''}
+          `;
+          list.appendChild(card);
+        }
+      } catch (e) {
+        modal.querySelector('#applications-list').innerHTML = `<div class="error">Error loading applications: ${e.message}</div>`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!LinkUIU.getToken()) {
+        location.href = './login.html';
+        return;
+      }
+      loadJobs();
+      document.getElementById('job-form').addEventListener('submit', submitJob);
+    });
+  </script>
+</head>
+<body>
+  <div class="header"><div class="header-inner">
+    <div class="brand-left">
+      <img class="uiu-logo" src="../assets/images/uiu_logo.png?v=2" alt="UIU logo" />
+    </div>
+    <div class="brand-center">
+    </div>
+    <div class="brand-right">
+      <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" onclick="location.href='./dashboard.html'" style="cursor: pointer;" />
+    </div>
+    <button class="hamburger" aria-label="Menu"><span></span></button>
+    <div class="nav">
+      <a href="./dashboard.html">Home</a>
+      <a href="./profile.html">Profile</a>
+      <a href="./jobs.html">Jobs</a>
+      <a href="./applications.html">My Applications</a>
+      <a href="./connections.html">Connections</a>
+      <a href="./messages.html">Messages</a>
+      <a href="./search.html">Search</a>
+      <button class="btn btn-primary" onclick="localStorage.clear(); location.href='./login.html'">Logout</button>
+    </div>
+  </div></div>
+  <div class="container">
+    <div class="card mt-24">
+      <form id="job-form">
+        <div class="field"><label class="label">Title</label><input id="title" class="input" required /></div>
+        <div class="field"><label class="label">Company</label><input id="company" class="input" required /></div>
+        <div class="field"><label class="label">Location</label><input id="location" class="input" /></div>
+        <div class="field"><label class="label">Description</label><textarea id="description" class="input" rows="4" placeholder="Describe the job requirements, responsibilities, and benefits..."></textarea></div>
+        <button class="btn btn-primary" type="submit">Post Job</button>
+        <div id="error" class="error"></div>
+      </form>
+    </div>
+    <div id="list" class="mt-24" style="display:grid; gap:16px;"></div>
+  </div>
+</body>
+</html>
+

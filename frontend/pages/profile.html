@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile - LinkUIU</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <script defer src="../assets/js/main.js"></script>
+  <script>
+    let profileData = {};
+
+    async function loadProfile() {
+      if (!LinkUIU.getToken()) { location.href = './login.html'; return; }
+      const user = JSON.parse(localStorage.getItem('auth_user')||'{}');
+      
+      try {
+        const data = await LinkUIU.api(`/profile/${user.id}`);
+        profileData = data;
+        
+        // Populate all form fields
+        document.getElementById('name').value = data.name || '';
+        document.getElementById('current_job').value = data.current_job || '';
+        document.getElementById('designation').value = data.designation || '';
+        document.getElementById('company').value = data.company || '';
+        document.getElementById('location_city').value = data.location_city || '';
+        document.getElementById('location_country').value = data.location_country || '';
+        document.getElementById('skills').value = data.skills || '';
+        document.getElementById('interests').value = data.interests || '';
+        document.getElementById('linkedin').value = data.linkedin || '';
+        document.getElementById('github').value = data.github || '';
+        document.getElementById('website').value = data.website || '';
+        document.getElementById('profile_visibility').value = data.profile_visibility || 'public';
+        
+        // Show current resume if exists
+        if (data.resume) {
+          const resumeInfo = document.getElementById('current-resume');
+          resumeInfo.innerHTML = `
+            <div class="subtitle">
+              <strong>Current Resume:</strong> 
+              <a href="/storage/resumes/${data.resume}" target="_blank">View Resume</a>
+              <button type="button" class="btn btn-secondary" onclick="removeResume()" style="margin-left: 8px;">Remove</button>
+            </div>
+          `;
+        }
+      } catch (e) {
+        console.error('Error loading profile:', e);
+      }
+    }
+
+    async function removeResume() {
+      if (!confirm('Remove current resume?')) return;
+      try {
+        const user = JSON.parse(localStorage.getItem('auth_user')||'{}');
+        await LinkUIU.api(`/profile/${user.id}`, { 
+          method: 'PUT', 
+          body: { resume: null }, 
+          auth: true 
+        });
+        document.getElementById('current-resume').innerHTML = '';
+        alert('Resume removed successfully');
+      } catch (e) {
+        alert('Error removing resume: ' + e.message);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProfile();
+      
+      const form = document.getElementById('profile-form');
+      const err = document.getElementById('error');
+      const ok = document.getElementById('ok');
+      
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+        err.textContent=''; 
+        ok.textContent='';
+        
+        const user = JSON.parse(localStorage.getItem('auth_user')||'{}');
+        const body = {
+          name: document.getElementById('name').value.trim(),
+          current_job: document.getElementById('current_job').value.trim(),
+          designation: document.getElementById('designation').value.trim(),
+          company: document.getElementById('company').value.trim(),
+          location_city: document.getElementById('location_city').value.trim(),
+          location_country: document.getElementById('location_country').value.trim(),
+          skills: document.getElementById('skills').value.trim(),
+          interests: document.getElementById('interests').value.trim(),
+          linkedin: document.getElementById('linkedin').value.trim(),
+          github: document.getElementById('github').value.trim(),
+          website: document.getElementById('website').value.trim(),
+          profile_visibility: document.getElementById('profile_visibility').value
+        };
+        
+        try {
+          await LinkUIU.api(`/profile/${user.id}`, { method:'PUT', body, auth:true });
+          ok.textContent = 'Profile updated successfully';
+          // Update localStorage with new name
+          const updatedUser = { ...user, name: body.name };
+          localStorage.setItem('auth_user', JSON.stringify(updatedUser));
+        } catch (e) { 
+          err.textContent = e.message; 
+        }
+      });
+      
+      const upload = document.getElementById('resume');
+      document.getElementById('upload-form').addEventListener('submit', async (e) => {
+        e.preventDefault(); 
+        err.textContent=''; 
+        ok.textContent='';
+        
+        const user = JSON.parse(localStorage.getItem('auth_user')||'{}');
+        const fd = new FormData();
+        
+        if (!upload.files[0]) { 
+          err.textContent='Select a PDF file'; 
+          return; 
+        }
+        
+        fd.append('resume', upload.files[0]);
+        
+        try {
+          const result = await LinkUIU.apiMultipart(`/profile/${user.id}/resume`, fd, { auth:true });
+          ok.textContent = 'Resume uploaded successfully';
+          loadProfile(); // Reload to show new resume
+        } catch (e) { 
+          err.textContent = e.message; 
+        }
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="header"><div class="header-inner">
+    <div class="brand-left">
+      <img class="uiu-logo" src="../assets/images/uiu_logo.png?v=2" alt="UIU logo" />
+    </div>
+    <div class="brand-center">
+    </div>
+    <div class="brand-right">
+      <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" onclick="location.href='./dashboard.html'" style="cursor: pointer;" />
+    </div>
+    <button class="hamburger" aria-label="Menu"><span></span></button>
+    <div class="nav">
+      <a href="./dashboard.html">Home</a>
+      <a href="./profile.html">Profile</a>
+      <a href="./jobs.html">Jobs</a>
+      <a href="./applications.html">My Applications</a>
+      <a href="./connections.html">Connections</a>
+      <a href="./messages.html">Messages</a>
+      <a href="./search.html">Search</a>
+      <button class="btn btn-primary" onclick="localStorage.clear(); location.href='./login.html'">Logout</button>
+    </div>
+  </div></div>
+  <div class="container">
+    <div class="card mt-24">
+      <form id="profile-form">
+        <div class="row" style="justify-content: space-between;">
+          <div class="title">Edit Profile</div>
+        </div>
+        
+        <!-- Basic Information -->
+        <h3 style="margin-top: 24px; margin-bottom: 16px; color: var(--color-primary);">Basic Information</h3>
+        <div class="field"><label class="label">Full Name *</label><input id="name" class="input" required /></div>
+        <div class="field"><label class="label">Current Job/Position</label><input id="current_job" class="input" placeholder="e.g., Software Engineer" /></div>
+        <div class="field"><label class="label">Designation</label><input id="designation" class="input" placeholder="e.g., Senior Developer" /></div>
+        <div class="field"><label class="label">Company</label><input id="company" class="input" placeholder="e.g., Tech Corp" /></div>
+        
+        <!-- Location -->
+        <h3 style="margin-top: 24px; margin-bottom: 16px; color: var(--color-primary);">Location</h3>
+        <div class="field"><label class="label">City</label><input id="location_city" class="input" placeholder="e.g., Dhaka" /></div>
+        <div class="field"><label class="label">Country</label><input id="location_country" class="input" placeholder="e.g., Bangladesh" /></div>
+        
+        <!-- Skills & Interests -->
+        <h3 style="margin-top: 24px; margin-bottom: 16px; color: var(--color-primary);">Skills & Interests</h3>
+        <div class="field"><label class="label">Skills</label><textarea id="skills" class="input" rows="3" placeholder="PHP, MySQL, JavaScript, React, Node.js (comma-separated)"></textarea></div>
+        <div class="field"><label class="label">Interests</label><textarea id="interests" class="input" rows="3" placeholder="Web Development, Machine Learning, Open Source (comma-separated)"></textarea></div>
+        
+        <!-- Social Links -->
+        <h3 style="margin-top: 24px; margin-bottom: 16px; color: var(--color-primary);">Social Links</h3>
+        <div class="field"><label class="label">LinkedIn</label><input id="linkedin" class="input" type="url" placeholder="https://linkedin.com/in/yourprofile" /></div>
+        <div class="field"><label class="label">GitHub</label><input id="github" class="input" type="url" placeholder="https://github.com/yourusername" /></div>
+        <div class="field"><label class="label">Website/Portfolio</label><input id="website" class="input" type="url" placeholder="https://yourwebsite.com" /></div>
+        
+        <!-- Privacy -->
+        <h3 style="margin-top: 24px; margin-bottom: 16px; color: var(--color-primary);">Privacy</h3>
+        <div class="field">
+          <label class="label">Profile Visibility</label>
+          <select id="profile_visibility" class="input">
+            <option value="public">Public - Visible to all users</option>
+            <option value="private">Private - Only visible to connections</option>
+          </select>
+        </div>
+        
+        <button class="btn btn-primary" type="submit">Save Profile</button>
+        <div id="error" class="error"></div>
+        <div id="ok" class="success"></div>
+      </form>
+      
+      <hr class="mt-24" />
+      
+      <!-- Resume Upload Section -->
+      <div class="mt-16">
+        <h3 style="margin-bottom: 16px; color: var(--color-primary);">Resume</h3>
+        <div id="current-resume"></div>
+        <form id="upload-form" class="mt-16">
+          <div class="field"><label class="label">Upload Resume (PDF only, max 5MB)</label><input id="resume" type="file" accept="application/pdf" /></div>
+          <button class="btn btn-primary" type="submit">Upload Resume</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign up - LinkUIU</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <script defer src="../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('signup-form');
+      const err = document.getElementById('error');
+      const msg = document.getElementById('msg');
+      const userTypeSelect = document.getElementById('user_type');
+      const batchField = document.getElementById('batch_field');
+      
+      // Show/hide batch field based on user type
+      userTypeSelect.addEventListener('change', (e) => {
+        if (e.target.value === 'student') {
+          batchField.style.display = 'block';
+          batchField.querySelector('select').required = true;
+        } else {
+          batchField.style.display = 'none';
+          batchField.querySelector('select').required = false;
+        }
+      });
+      
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        err.textContent = '';
+        msg.textContent = '';
+        const name = form.elements['name'].value.trim();
+        const email = form.elements['email'].value.trim();
+        const student_id = form.elements['student_id'].value.trim();
+        const password = form.elements['password'].value;
+        const user_type = form.elements['user_type'].value;
+        const department_id = form.elements['department_id'].value;
+        const batch_id = form.elements['batch_id'].value;
+        
+        try {
+          LinkUIU.setLoading(true);
+          const payload = { 
+            name, 
+            email, 
+            student_id, 
+            password, 
+            user_type, 
+            department_id 
+          };
+          
+          // Only include batch_id if it's provided (for students)
+          if (batch_id) {
+            payload.batch_id = batch_id;
+          }
+          
+          const data = await LinkUIU.api('/auth/signup', { method: 'POST', body: payload });
+          msg.textContent = 'Account created. Redirecting to login...';
+          LinkUIU.showToast('Account created', 'success');
+          setTimeout(() => location.href = './login.html', 1200);
+        } catch (e) {
+          err.textContent = e.message;
+          LinkUIU.showToast(e.message, 'error');
+        } finally { LinkUIU.setLoading(false); }
+      });
+    });
+  </script>
+  <style> body { background: linear-gradient(180deg,#fff,#fff8f1); } </style>
+</head>
+<body>
+  <div class="centered">
+    <div class="card">
+      <div class="brand"><div class="brand-badge"></div><div>
+        <div class="title">Create your account</div>
+        <div class="subtitle">Join the UIU community</div>
+      </div></div>
+      <form id="signup-form">
+        <div class="field">
+          <label class="label">I am a</label>
+          <select class="input" name="user_type" id="user_type" required>
+            <option value="">Select your status</option>
+            <option value="student">Current Student</option>
+            <option value="alumni">Alumni</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label">Full name</label>
+          <input class="input" name="name" placeholder="John Doe" required />
+        </div>
+        <div class="field">
+          <label class="label">UIU Email</label>
+          <input class="input" name="email" placeholder="name@bscse.uiu.ac.bd" required />
+        </div>
+        <div class="field">
+          <label class="label">Student ID</label>
+          <input class="input" name="student_id" placeholder="0112230000" pattern="01\d{8}" required />
+        </div>
+        <div class="field">
+          <label class="label">Department</label>
+          <select class="input" name="department_id" required>
+            <option value="">Select Department</option>
+            <option value="1">CSE (Computer Science & Engineering)</option>
+            <option value="2">EEE (Electrical & Electronic Engineering)</option>
+            <option value="3">BBA (Business Administration)</option>
+            <option value="4">CE (Civil Engineering)</option>
+            <option value="5">ECO (Economics)</option>
+            <option value="6">EDS (English & Development Studies)</option>
+            <option value="7">English (English Language & Literature)</option>
+            <option value="8">BGE (Biotechnology & Genetic Engineering)</option>
+            <option value="9">Pharmacy</option>
+          </select>
+        </div>
+        <div class="field" id="batch_field" style="display: none;">
+          <label class="label">Batch/Trimester</label>
+          <select class="input" name="batch_id">
+            <option value="">Select Batch (Optional for Alumni)</option>
+            <option value="1">171</option>
+            <option value="2">172</option>
+            <option value="3">173</option>
+            <option value="4">181</option>
+            <option value="5">182</option>
+            <option value="6">183</option>
+            <option value="7">191</option>
+            <option value="8">192</option>
+            <option value="9">193</option>
+            <option value="10">201</option>
+            <option value="11">202</option>
+            <option value="12">203</option>
+            <option value="13">211</option>
+            <option value="14">212</option>
+            <option value="15">213</option>
+            <option value="16">221</option>
+            <option value="17">222</option>
+            <option value="18">223</option>
+            <option value="19">241</option>
+            <option value="20">242</option>
+            <option value="21">243</option>
+            <option value="22">251</option>
+            <option value="23">252</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label">Password</label>
+          <input class="input" type="password" name="password" placeholder="At least 8 chars, letters and numbers" required />
+        </div>
+        <button class="btn btn-primary" type="submit">Create account</button>
+        <div id="error" class="error"></div>
+        <div id="msg" class="success"></div>
+        <div class="mt-16">Already have an account? <a href="./login.html">Login</a></div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
+

@@ -1,0 +1,256 @@
+{
+  "featured_alumni": [
+    {
+      "id": 1,
+      "name": "Md. Tarek Hasan",
+      "profession": "Software Engineer",
+      "company": "Samsung R&D",
+      "image": "alumni-tarek.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Md Mahbub Hossain",
+      "profession": "Lead Engineer",
+      "company": "Apple Inc. (USA)",
+      "image": "alumni-mahbub.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Zakir Hossen",
+      "profession": "Software Development Engineer",
+      "company": "Amazon",
+      "image": "alumni-zakir.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Hasan Sonet",
+      "profession": "Senior Programmer",
+      "company": "CITS UIU",
+      "image": "alumni-sonet.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Nizamuddin Rashid",
+      "profession": "Additional Managing Director",
+      "company": "United Group",
+      "image": "alumni-nizamuddin.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Md Faisal Kabir",
+      "profession": "Assistant Professor",
+      "company": "Pennsylvania State University-Harrisburg",
+      "image": "alumni-kabir.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Ashikur Rahman",
+      "profession": "Senior Physical Design Engineer",
+      "company": "Intel",
+      "image": "alumni-ashikur.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Achia Nila",
+      "profession": "Founder",
+      "company": "Women in Digital",
+      "image": "alumni-nila.jpg"
+    },
+    {
+      "id": 9,
+      "name": "Saifur Rahman Sazib",
+      "profession": "Lead Engineer",
+      "company": "Objectstream Inc, USA",
+      "image": "alumni-saifur.jpg"
+    },
+    {
+      "id": 10,
+      "name": "Hosain Al Musanna",
+      "profession": "Technical Lead",
+      "company": "UST",
+      "image": "alumni-musanna.jpg"
+    },
+    {
+      "id": 11,
+      "name": "Md. Tazbir Ur Rahman B.",
+      "profession": "Solution Architect",
+      "company": "Brain Station 23 PLC",
+      "image": "alumni-tazbir.jpg"
+    },
+    {
+      "id": 12,
+      "name": "Hussain KMR Behestee",
+      "profession": "Lead Software Engineer",
+      "company": "Innovative Solution Inc",
+      "image": "alumni-behestee.jpg"
+    },
+    {
+      "id": 13,
+      "name": "Sayed Abid Hussain Sami",
+      "profession": "Cricket Analyst",
+      "company": "Bangladesh Cricket Board",
+      "image": "alumni-sami.jpg"
+    },
+    {
+      "id": 14,
+      "name": "Esfaquel Hoque",
+      "profession": "AGM & Marketing Lead",
+      "company": "RFL Group",
+      "image": "alumni-esfaquel.jpg"
+    },
+    {
+      "id": 15,
+      "name": "Foysal Ahamed",
+      "profession": "Principal Software Engineer",
+      "company": "TigerIT Bangladesh Limited",
+      "image": "alumni-foysal.jpg"
+    },
+    {
+      "id": 16,
+      "name": "Mohammad Hasan Shaharear",
+      "profession": "Senior Database Engineer",
+      "company": "Therap (BD) Ltd.",
+      "image": "alumni-shaharear.jpg"
+    },
+    {
+      "id": 17,
+      "name": "Syed Abdullah Morshed",
+      "profession": "Cheif People officer",
+      "company": "Daraz Bangladesh",
+      "image": "alumni-morshed.jpg"
+    },
+    {
+      "id": 18,
+      "name": "Mehedi Hasan Mithun Marshal",
+      "profession": "BCS Police",
+      "company": "Bangladesh Police",
+      "image": "alumni-mithun.jpg"
+    },
+    {
+      "id": 19,
+      "name": "Latin Chakma",
+      "profession": "Software Engineer",
+      "company": "Samsung R&D",
+      "image": "alumni-latin.jpg"
+    },
+    {
+      "id": 20,
+      "name": "Mahfuz -E- RABBANI",
+      "profession": "Head of HR",
+      "company": "Brac EPL Stock Brokerage Ltd.",
+      "image": "alumni-rabbani.jpg"
+    },
+    {
+      "id": 21,
+      "name": "Mohammed Jawwadul Islam",
+      "profession": "IT Project Manager & Solution Architect",
+      "company": "Robi Axiata PLC",
+      "image": "alumni-jawwadul.jpg"
+    },
+    {
+      "id": 22,
+      "name": "Sadia Ahmmed",
+      "profession": "Gold Medalist",
+      "company": "International Blockchain Olympiad",
+      "image": "alumni-sadia.jpg"
+    },
+    {
+      "id": 23,
+      "name": "Md. Sabbir Hassan Sony",
+      "profession": "Application Engineer",
+      "company": "Sincos Group",
+      "image": "alumni-sony.jpg"
+    },
+    {
+      "id": 24,
+      "name": "Sahid Hossain Mustakim",
+      "profession": "Gold Medalist",
+      "company": "International Blockchain Olympiad",
+      "image": "alumni-ratul.jpg"
+    },
+    {
+      "id": 25,
+      "name": "Khaled Md. Masum",
+      "profession": "Manager, Finance & Accounts",
+      "company": "Unitex LP Gas Limited",
+      "image": "alumni-khaled.jpg"
+    },
+    {
+      "id": 26,
+      "name": "Nahid Islam",
+      "profession": "lead, HR l C&B",
+      "company": "DHL Express",
+      "image": "alumni-nahid.jpg"
+    },
+    {
+      "id": 27,
+      "name": "Mohammad Ismail H.",
+      "profession": "Sales Lead",
+      "company": "Meghna Group of Industries",
+      "image": "alumni-ismail.jpg"
+    },
+    {
+      "id": 28,
+      "name": "Shampad Saha",
+      "profession": "Senior Principle Officer",
+      "company": "Meghna Bank Limited",
+      "image": "alumni-shampad.jpg"
+    },
+    {
+      "id": 29,
+      "name": "Mohammad Masudur Rahman",
+      "profession": "PHD",
+      "company": "University of Louisiana at Lafayette",
+      "image": "alumni-masudur.jpg"
+    },
+    {
+      "id": 30,
+      "name": "Ayman Chowdhury",
+      "profession": "Direct of Board Development",
+      "company": "Board Intelligence",
+      "image": "alumni-ayman.jpg"
+    },
+    {
+      "id": 31,
+      "name": "Arif Nezamim",
+      "profession": "Director, AI innovation",
+      "company": "Salt XC",
+      "image": "alumni-arif.jpg"
+    },
+    {
+      "id": 32,
+      "name": "A Rahman Ovi",
+      "profession": "Assistant Manager, HR & Culture",
+      "company": "Pathao Inc",
+      "image": "alumni-ovi.jpg"
+    },
+    {
+      "id": 33,
+      "name": "Md Rasel",
+      "profession": "DevOps Lead",
+      "company": "Synesis IT PLC",
+      "image": "alumni-rasel.jpg"
+    },
+    {
+      "id": 34,
+      "name": "M J A Shawon",
+      "profession": "Design Engineer",
+      "company": "UGL Australia",
+      "image": "alumni-shawon.jpg"
+    },
+    {
+      "id": 35,
+      "name": "Mohammad Monirul Hossain",
+      "profession": "Lead Engineer",
+      "company": "Samsung R & D",
+      "image": "alumni-monirul.jpg"
+    },
+    {
+      "id": 36,
+      "name": "Azizul Arif",
+      "profession": "Software Engineer",
+      "company": "Synesis IT PLC",
+      "image": "alumni-azizul.jpg"
+    }
+  ]
+}

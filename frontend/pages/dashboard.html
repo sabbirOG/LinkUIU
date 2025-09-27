@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard - LinkUIU</title>
+  <link rel="stylesheet" href="../assets/css/style.css?v=2" />
+  <script defer src="../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (!LinkUIU.getToken()) {
+        location.href = './login.html';
+        return;
+      }
+      
+      try {
+        // Fetch user data to get user_type
+        const userData = await LinkUIU.api('/auth/me', { auth: true });
+        const user = userData || JSON.parse(localStorage.getItem('auth_user')||'{}');
+        
+        // Update welcome message with user type
+        const welcomeElement = document.getElementById('welcome');
+        const userTypeBadge = document.getElementById('user-type-badge');
+        
+        if (user.user_type === 'alumni') {
+          welcomeElement.innerHTML = `Welcome back, <strong>${user.name || 'Alumni'}</strong>`;
+          userTypeBadge.innerHTML = '🌟 Alumni';
+          userTypeBadge.className = 'user-type-badge alumni';
+        } else {
+          welcomeElement.innerHTML = `Welcome, <strong>${user.name || 'Student'}</strong>`;
+          userTypeBadge.innerHTML = '🎓 Student';
+          userTypeBadge.className = 'user-type-badge student';
+        }
+        
+        // Store updated user data
+        localStorage.setItem('auth_user', JSON.stringify(user));
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        const user = JSON.parse(localStorage.getItem('auth_user')||'{}');
+        document.getElementById('welcome').textContent = `Welcome, ${user.name || 'UIU Member'}`;
+      }
+    });
+  </script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand-left">
+        <img class="uiu-logo" src="../assets/images/uiu_logo.png?v=2" alt="UIU logo" />
+      </div>
+      <div class="brand-center"></div>
+      <div class="brand-right">
+        <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" onclick="location.href='./dashboard.html'" style="cursor: pointer;" />
+      </div>
+      <nav class="nav">
+        <a href="./dashboard.html">Home</a>
+        <a href="./profile.html">Profile</a>
+        <a href="./jobs.html">Jobs</a>
+        <a href="./applications.html">My Applications</a>
+        <a href="./connections.html">Connections</a>
+        <a href="./messages.html">Messages</a>
+        <a href="./search.html">Search</a>
+        <button class="btn btn-primary" onclick="localStorage.clear(); location.href='./login.html'">Logout</button>
+      </nav>
+      <button class="hamburger" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
+    <nav class="mobile-nav" id="mobileNav">
+      <a href="./dashboard.html">Home</a>
+      <a href="./profile.html">Profile</a>
+      <a href="./jobs.html">Jobs</a>
+      <a href="./applications.html">My Applications</a>
+      <a href="./connections.html">Connections</a>
+      <a href="./messages.html">Messages</a>
+      <a href="./search.html">Search</a>
+      <button class="btn btn-primary" onclick="localStorage.clear(); location.href='./login.html'">Logout</button>
+    </nav>
+  </header>
+  <div class="container">
+    <div class="welcome-section">
+      <h2 id="welcome" class="mt-24"></h2>
+      <div id="user-type-badge" class="user-type-badge"></div>
+    </div>
+    <div class="mt-24 row">
+      <a class="btn btn-primary" href="./profile.html">Edit Profile</a>
+      <a class="btn btn-primary" href="./jobs.html">Browse Jobs</a>
+      <a class="btn btn-primary" href="./applications.html">My Applications</a>
+    </div>
+  </div>
+</body>
+</html>
+

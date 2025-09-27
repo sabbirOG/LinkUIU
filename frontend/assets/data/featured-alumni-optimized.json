@@ -1,0 +1,109 @@
+{
+  "featured_alumni": [
+    {
+      "id": 1,
+      "name": "Md. Tarek Hasan",
+      "profession": "Software Engineer",
+      "company": "Samsung R&D",
+      "image": "alumni-tarek.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Md Mahbub Hossain",
+      "profession": "Lead Engineer",
+      "company": "Apple Inc. (USA)",
+      "image": "alumni-mahbub.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Zakir Hossen",
+      "profession": "Software Development Engineer",
+      "company": "Amazon",
+      "image": "alumni-zakir.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Hasan Sonet",
+      "profession": "Senior Programmer",
+      "company": "CITS UIU",
+      "image": "alumni-sonet.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Nizamuddin Rashid",
+      "profession": "Additional Managing Director",
+      "company": "United Group",
+      "image": "alumni-nizamuddin.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Md Faisal Kabir",
+      "profession": "Assistant Professor",
+      "company": "Pennsylvania State University-Harrisburg",
+      "image": "alumni-kabir.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Ashikur Rahman",
+      "profession": "Senior Physical Design Engineer",
+      "company": "Intel Corporation",
+      "image": "alumni-ashikur.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Achia Nila",
+      "profession": "Founder",
+      "company": "Women in Digital",
+      "image": "alumni-nila.jpg"
+    },
+    {
+      "id": 9,
+      "name": "Saifur Rahman Sazib",
+      "profession": "Lead Engineer",
+      "company": "Objectstream Inc, USA",
+      "image": "alumni-saifur.jpg"
+    },
+    {
+      "id": 10,
+      "name": "Hosain Al Musanna",
+      "profession": "Technical Lead",
+      "company": "UST",
+      "image": "alumni-musanna.jpg"
+    },
+    {
+      "id": 11,
+      "name": "Md. Tazbir Ur Rahman B.",
+      "profession": "Solution Architect",
+      "company": "Brain Station 23 PLC",
+      "image": "alumni-tazbir.jpg"
+    },
+    {
+      "id": 12,
+      "name": "Hussain KMR Behestee",
+      "profession": "Lead Software Engineer",
+      "company": "Innovative Solution Inc",
+      "image": "alumni-behestee.jpg"
+    },
+    {
+      "id": 13,
+      "name": "Sayed Abid Hussain Sami",
+      "profession": "Cricket Analyst",
+      "company": "Bangladesh Cricket Board",
+      "image": "alumni-sami.jpg"
+    },
+    {
+      "id": 14,
+      "name": "Esfaquel Hoque",
+      "profession": "AGM & Marketing Lead",
+      "company": "RFL Group",
+      "image": "alumni-esfaquel.jpg"
+    },
+    {
+      "id": 15,
+      "name": "Foysal Ahamed",
+      "profession": "Principal Software Engineer",
+      "company": "TigerIT Bangladesh Limited",
+      "image": "alumni-foysal.jpg"
+    }
+  ]
+}

@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkUIU - UIU Alumni Network</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <script src="../assets/js/main.js"></script>
+    <link rel="preload" href="../assets/data/featured-alumni-optimized.json" as="fetch" type="application/json">
+    <link rel="preload" href="../assets/images/alumni/featured/alumni-tarek.jpg" as="image">
+    <link rel="preload" href="../assets/images/alumni/featured/alumni-zakir.jpg" as="image">
+    <link rel="preload" href="../assets/images/alumni/featured/alumni-sonet.jpg" as="image">
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <div class="brand-left">
+                <img class="uiu-logo" src="../assets/images/uiu_logo.png?v=2" alt="UIU logo" />
+            </div>
+            <div class="brand-center"></div>
+            <div class="brand-right">
+                <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" onclick="location.href='./landing.html'" style="cursor: pointer;" />
+            </div>
+            <nav class="nav">
+                <span class="nav-link" id="home-link" style="cursor: pointer;">Home</span>
+                <a href="jobs.html">Jobs</a>
+                <a href="connections.html">Connect</a>
+                <a href="messages.html">Messages</a>
+                <a href="search.html">Directory</a>
+                <a href="profile.html">Profile</a>
+                <a href="login.html" class="btn btn-primary">Login</a>
+            </nav>
+            <button class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
+        <nav class="mobile-nav" id="mobileNav">
+            <span class="nav-link" id="mobile-home-link" style="cursor: pointer;">Home</span>
+            <a href="jobs.html">Jobs</a>
+            <a href="connections.html">Connect</a>
+            <a href="messages.html">Messages</a>
+            <a href="search.html">Directory</a>
+            <a href="profile.html">Profile</a>
+            <a href="login.html" class="btn btn-primary">Login</a>
+        </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Welcome back to Your <em>Academic Home</em></h1>
+                <p class="hero-subtitle">
+                    We're thrilled to have you back on LinkUIU. Celebrate the achievements of our alumni community, discover new networking opportunities, and stay informed about upcoming events. Together, let's honor our shared legacy and build a stronger, more connected future.
+                </p>
+                <div class="hero-actions">
+                    <a href="signup.html" class="btn btn-primary btn-large">Join Our Network</a>
+                    <div class="login-buttons">
+                        <a href="login-student.html" class="btn btn-outline btn-large">Student Login</a>
+                        <a href="login-alumni.html" class="btn btn-outline btn-large">Alumni Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="alumni-spotlight">
+        <div class="container">
+            <div class="alumni-header">
+                <h2 class="section-title">Featured Alumni</h2>
+            </div>
+            <div class="alumni-container scroll-mode">
+                <button class="scroll-btn scroll-left" id="scrollLeftBtn" onclick="scrollAlumni('left')">
+                    <span>‹</span>
+                </button>
+                <div class="alumni-grid scroll-view" id="alumniGrid"></div>
+                <button class="scroll-btn scroll-right" id="scrollRightBtn" onclick="scrollAlumni('right')">
+                    <span>›</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <section class="events-section">
+        <div class="container">
+            <h2 class="section-title">Upcoming Events</h2>
+            <div class="events-grid" id="eventsGrid"></div>
+            <div class="text-center">
+                <a href="connections.html" class="btn join-network">Join Our Network</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="stories-section">
+        <div class="container">
+            <h2 class="section-title">Success Stories</h2>
+            <div class="stories-grid" id="storiesGrid"></div>
+            <div class="text-center">
+                <a href="search.html" class="btn explore-alumni">Explore Alumni</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits-section">
+        <div class="container">
+            <h2 class="section-title">Why Join LinkUIU?</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">💼</div>
+                    <h3>Career Opportunities</h3>
+                    <p>Access exclusive job postings, internships, and career guidance from successful alumni across various industries.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🤝</div>
+                    <h3>Professional Networking</h3>
+                    <p>Connect with fellow alumni, mentors, and industry professionals to expand your professional network.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">📚</div>
+                    <h3>Knowledge Sharing</h3>
+                    <p>Share experiences, insights, and learn from the diverse career journeys of UIU graduates worldwide.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Mentorship</h3>
+                    <p>Get guidance from experienced alumni or mentor current students and recent graduates.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works-section">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Sign Up</h3>
+                    <p>Create your account with your UIU email and basic information to get started.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Complete Profile</h3>
+                    <p>Add your professional details, skills, and career interests to help others find you.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Connect & Engage</h3>
+                    <p>Start networking, apply for jobs, join discussions, and attend alumni events.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="container">
+            <h2 class="section-title">Our Alumni Network</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">3300+</div>
+                    <div class="stat-label">Active Alumni</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">25+</div>
+                    <div class="stat-label">Countries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Industries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="container">
+            <h2 class="section-title">Let's Get In Touch</h2>
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <h4>Phone Number</h4>
+                        <p>09604 848848</p>
+                    </div>
+                    <div class="contact-item">
+                        <h4>Email Address</h4>
+                        <p>Info@uiu.ac.bd</p>
+                    </div>
+                    <div class="contact-item">
+                        <h4>Address</h4>
+                        <p>United City, Madani Avenue, Badda, Dhaka 1212, Bangladesh</p>
+                    </div>
+                    <div class="contact-item">
+                        <h4>UIU Website</h4>
+                        <a href="https://uiu.ac.bd" target="_blank">www.uiu.ac.bd</a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" class="input" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="input" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="input" rows="5" placeholder="Your Message" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="brand">
+                        <img class="uiu-logo" src="../assets/images/United_International_University_Monogram.svg" alt="United International University monogram" />
+                        <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" onclick="location.href='./landing.html'" style="cursor: pointer;" />
+                    </div>
+                    <p>Connecting UIU alumni worldwide</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Quick Links</h4>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="jobs.html">Jobs</a>
+                        <a href="connections.html">Connect</a>
+                        <a href="search.html">Directory</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <a href="jobs.html">Job Opportunities</a>
+                        <a href="connections.html">Networking</a>
+                        <a href="search.html">Alumni Directory</a>
+                        <a href="messages.html">Messages</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Connect</h4>
+                        <a href="https://uiu.ac.bd" target="_blank">UIU Website</a>
+                        <a href="mailto:alumni@uiu.ac.bd">Contact Us</a>
+                        <a href="profile.html">My Profile</a>
+                        <a href="login.html">Login</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 LinkUIU. Developed & Maintained by UIU Alumni Association</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Load featured alumni - optimized version
+        async function loadFeaturedAlumni() {
+            console.log('Loading featured alumni...');
+            const grid = document.getElementById('alumniGrid');
+            if (!grid) {
+                console.error('Alumni grid not found!');
+                return;
+            }
+            grid.innerHTML = '<div class="loading">Loading featured alumni...</div>';
+            try {
+                console.log('Fetching data from: ../assets/data/featured-alumni.json');
+                const response = await fetch('../assets/data/featured-alumni.json');
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Data loaded:', data);
+                const alumni = data.featured_alumni || [];
+                console.log('Alumni count:', alumni.length);
+                grid.innerHTML = alumni.map(user => `
+                    <div class="alumni-card">
+                        <div class="alumni-avatar">
+                            <img src="../assets/images/featured/${user.image}" 
+                                 alt="${user.name}"
+                                 loading="lazy"
+                                 onerror="this.style.display='none'; this.previousElementSibling.style.display='flex';">
+                            <div class="default-avatar" style="display: none;">${user.name.charAt(0)}</div>
+                        </div>
+                        <h4>${user.name}</h4>
+                        <p>${user.profession}</p>
+                        <p class="alumni-company">${user.company}</p>
+                        ${user.batch ? `<p class="alumni-batch">Batch ${user.batch}</p>` : ''}
+                    </div>
+                `).join('');
+                console.log('Alumni HTML generated and inserted');
+            } catch (error) {
+                console.error('Failed to load alumni:', error);
+                grid.innerHTML = '<div class="error">Failed to load alumni data: ' + error.message + '</div>';
+            }
+        }
+
+        // Fallback function to try different image paths
+        function tryFallbackImage(imgElement, imageName) {
+            console.log('Trying fallback paths for:', imageName);
+            
+            // Try different possible paths
+            const fallbackPaths = [
+                `../assets/images/alumni/featured/${imageName}`,
+                `./assets/images/featured/${imageName}`,
+                `./assets/images/alumni/featured/${imageName}`,
+                `/LinkUIU/frontend/assets/images/featured/${imageName}`,
+                `/LinkUIU/frontend/assets/images/alumni/featured/${imageName}`
+            ];
+            
+            let currentIndex = 0;
+            
+            function tryNextPath() {
+                if (currentIndex >= fallbackPaths.length) {
+                    console.error('All fallback paths failed for:', imageName);
+                    imgElement.style.display = 'none';
+                    imgElement.previousElementSibling.style.display = 'flex';
+                    return;
+                }
+                
+                const newSrc = fallbackPaths[currentIndex];
+                console.log(`Trying fallback path ${currentIndex + 1}:`, newSrc);
+                
+                imgElement.onload = function() {
+                    console.log('Fallback image loaded successfully:', this.src);
+                    this.style.display = 'block';
+                    this.previousElementSibling.style.display = 'none';
+                };
+                
+                imgElement.onerror = function() {
+                    console.log('Fallback path failed:', newSrc);
+                    currentIndex++;
+                    tryNextPath();
+                };
+                
+                imgElement.src = newSrc;
+            }
+            
+            tryNextPath();
+        }
+
+        async function loadEvents() {
+            try {
+                const response = await LinkUIU.api('/events?upcoming=true&limit=3');
+                const events = response.data || [];
+                const grid = document.getElementById('eventsGrid');
+                grid.innerHTML = events.map(event => `
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="day">${new Date(event.date).getDate()}</span>
+                            <span class="month">${new Date(event.date).toLocaleDateString('en', {month: 'short'})}</span>
+                        </div>
+                        <div class="event-content">
+                            <h4>${event.title}</h4>
+                            <p>${event.description}</p>
+                            <p class="event-time">${event.time}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                const mockEvents = [
+                    { title: 'Alumni Reunion 2024', description: 'Join us for our annual alumni reunion event', date: '2024-12-15', time: '6:00 PM' },
+                    { title: 'Career Workshop', description: 'Professional development workshop for recent graduates', date: '2024-11-20', time: '2:00 PM' },
+                    { title: 'Networking Mixer', description: 'Connect with fellow alumni and industry professionals', date: '2024-10-30', time: '7:00 PM' }
+                ];
+                const grid = document.getElementById('eventsGrid');
+                grid.innerHTML = mockEvents.map(event => `
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="day">${new Date(event.date).getDate()}</span>
+                            <span class="month">${new Date(event.date).toLocaleDateString('en', {month: 'short'})}</span>
+                        </div>
+                        <div class="event-content">
+                            <h4>${event.title}</h4>
+                            <p>${event.description}</p>
+                            <p class="event-time">${event.time}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function loadStories() {
+            try {
+                const response = await LinkUIU.api('/stories?featured=true&limit=3');
+                const stories = response.data || [];
+                const grid = document.getElementById('storiesGrid');
+                grid.innerHTML = stories.map(story => `
+                    <div class="story-card">
+                        <div class="story-image">
+                            <img src="${story.image || '../assets/images/default-story.jpg'}" alt="${story.title}">
+                        </div>
+                        <div class="story-content">
+                            <h4>${story.title}</h4>
+                            <p>${story.excerpt}</p>
+                            <a href="stories.html?id=${story.id}" class="btn btn-outline btn-sm">Read More</a>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                const mockStories = [
+                    { title: 'From UIU to Silicon Valley', excerpt: 'How our alumni made it big in tech industry', id: 1 },
+                    { title: 'Building a Startup Empire', excerpt: 'Entrepreneurial journey of our successful graduates', id: 2 },
+                    { title: 'Leading Global Innovation', excerpt: 'Making impact in international organizations', id: 3 }
+                ];
+                const grid = document.getElementById('storiesGrid');
+                grid.innerHTML = mockStories.map(story => `
+                    <div class="story-card">
+                        <div class="story-image">
+                            <div class="default-story-image">📖</div>
+                        </div>
+                        <div class="story-content">
+                            <h4>${story.title}</h4>
+                            <p>${story.excerpt}</p>
+                            <a href="stories.html?id=${story.id}" class="btn btn-outline btn-sm">Read More</a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            LinkUIU.setLoading(true);
+            try {
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+                await LinkUIU.api('/contact', { method: 'POST', body: data });
+                LinkUIU.showToast('Message sent successfully!', 'success');
+                e.target.reset();
+            } catch (error) {
+                LinkUIU.showToast('Failed to send message. Please try again.', 'error');
+            } finally {
+                LinkUIU.setLoading(false);
+            }
+        });
+
+        function scrollAlumni(direction) {
+            const grid = document.getElementById('alumniGrid');
+            const scrollAmount = 320;
+            pauseAutoScroll();
+            if (direction === 'left') {
+                smoothScrollTo(grid.scrollLeft - scrollAmount);
+            } else {
+                smoothScrollTo(grid.scrollLeft + scrollAmount);
+            }
+            setTimeout(() => { resumeAutoScroll(); }, 3000);
+        }
+
+        let autoScrollInterval;
+        let isUserInteracting = false;
+        let autoScrollPaused = false;
+
+        function initMouseScrolling() {
+            const grid = document.getElementById('alumniGrid');
+            if (!grid) return;
+            startAutoScroll();
+            grid.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                pauseAutoScroll();
+                const scrollAmount = e.deltaY > 0 ? 320 : -320;
+                smoothScrollTo(grid.scrollLeft + scrollAmount);
+            });
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            grid.addEventListener('mousedown', (e) => {
+                isDown = true;
+                isUserInteracting = true;
+                grid.classList.add('active');
+                startX = e.pageX - grid.offsetLeft;
+                scrollLeft = grid.scrollLeft;
+                pauseAutoScroll();
+            });
+            grid.addEventListener('mouseleave', () => {
+                isDown = false;
+                isUserInteracting = false;
+                grid.classList.remove('active');
+                resumeAutoScroll();
+            });
+            grid.addEventListener('mouseup', () => {
+                isDown = false;
+                isUserInteracting = false;
+                grid.classList.remove('active');
+                resumeAutoScroll();
+            });
+            grid.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - grid.offsetLeft;
+                const walk = (x - startX) * 2;
+                grid.scrollLeft = scrollLeft - walk;
+            });
+            grid.addEventListener('mouseenter', () => { pauseAutoScroll(); });
+            grid.addEventListener('mouseleave', () => { if (!isUserInteracting) { resumeAutoScroll(); } });
+        }
+
+        function smoothScrollTo(targetScrollLeft) {
+            const grid = document.getElementById('alumniGrid');
+            const startScrollLeft = grid.scrollLeft;
+            const distance = targetScrollLeft - startScrollLeft;
+            const duration = 500;
+            let startTime = null;
+            function animation(currentTime) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                const progress = Math.min(timeElapsed / duration, 1);
+                const ease = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+                grid.scrollLeft = startScrollLeft + (distance * ease);
+                if (progress < 1) { requestAnimationFrame(animation); }
+            }
+            requestAnimationFrame(animation);
+        }
+
+        function startAutoScroll() {
+            autoScrollInterval = setInterval(() => {
+                if (!autoScrollPaused && !isUserInteracting) {
+                    const grid = document.getElementById('alumniGrid');
+                    if (grid) {
+                        const maxScroll = grid.scrollWidth - grid.clientWidth;
+                        if (grid.scrollLeft >= maxScroll) {
+                            smoothScrollTo(0);
+                        } else {
+                            smoothScrollTo(grid.scrollLeft + 320);
+                        }
+                    }
+                }
+            }, 2000);
+        }
+        function pauseAutoScroll() { autoScrollPaused = true; }
+        function resumeAutoScroll() { autoScrollPaused = false; }
+        function stopAutoScroll() { if (autoScrollInterval) { clearInterval(autoScrollInterval); } }
+
+        function toggleMobileMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileNav = document.getElementById('mobileNav');
+            const mobileOverlay = document.getElementById('mobileMenuOverlay');
+            
+            hamburger.classList.toggle('active');
+            mobileNav.classList.toggle('active');
+            mobileOverlay.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        
+        function closeMobileMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileNav = document.getElementById('mobileNav');
+            const mobileOverlay = document.getElementById('mobileMenuOverlay');
+            
+            hamburger.classList.remove('active');
+            mobileNav.classList.remove('active');
+            mobileOverlay.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.nav a, .nav .btn')) {
+                const body = document.body;
+                const hamburger = document.querySelector('.hamburger');
+                if (body.classList.contains('menu-open')) {
+                    body.classList.remove('menu-open');
+                    hamburger.classList.remove('active');
+                }
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('.nav');
+            const body = document.body;
+            if (!hamburger.contains(e.target) && !nav.contains(e.target) && body.classList.contains('menu-open')) {
+                body.classList.remove('menu-open');
+                hamburger.classList.remove('active');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleFAQ(element) {
+            const faqItem = element.parentElement;
+            const answer = faqItem.querySelector('.faq-answer');
+            const icon = element.querySelector('.faq-icon');
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if (item !== faqItem) {
+                    item.classList.remove('active');
+                    item.querySelector('.faq-answer').style.maxHeight = '0';
+                    item.querySelector('.faq-icon').textContent = '+';
+                }
+            });
+            faqItem.classList.toggle('active');
+            if (faqItem.classList.contains('active')) {
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                icon.textContent = '−';
+            } else {
+                answer.style.maxHeight = '0';
+                icon.textContent = '+';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFeaturedAlumni();
+            loadEvents();
+            loadStories();
+            initMouseScrolling();
+            
+            // Home link functionality
+            const homeLink = document.getElementById('home-link');
+            const mobileHomeLink = document.getElementById('mobile-home-link');
+            
+            if (homeLink) {
+                homeLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    scrollToTop();
+                    return false;
+                });
+            }
+            
+            if (mobileHomeLink) {
+                mobileHomeLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    scrollToTop();
+                    closeMobileMenu();
+                    return false;
+                });
+            }
+            
+            // Close mobile menu when clicking on nav links
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav a');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    closeMobileMenu();
+                });
+            });
+            
+            // Close mobile menu on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeMobileMenu();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Login - LinkUIU</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <script defer src="../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('login-form');
+      const err = document.getElementById('error');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        err.textContent = '';
+        const identifier = form.elements['identifier'].value.trim();
+        const password = form.elements['password'].value;
+        try {
+          LinkUIU.setLoading(true);
+          let payload;
+          if (/^01\d{8}$/.test(identifier)) {
+            payload = { student_id: identifier, password };
+          } else {
+            payload = { email: identifier, password };
+          }
+          const data = await LinkUIU.api('/auth/login', { method: 'POST', body: payload });
+          LinkUIU.saveAuth(data);
+          LinkUIU.showToast('Welcome back, Student!', 'success');
+          location.href = './dashboard.html';
+        } catch (e) {
+          err.textContent = e.message;
+          LinkUIU.showToast(e.message, 'error');
+        } finally { LinkUIU.setLoading(false); }
+      });
+    });
+  </script>
+  <style> 
+    body { background: linear-gradient(180deg,#fff,#fff8f1); } 
+    .student-badge {
+      background: linear-gradient(135deg, #FF6F00, #F57C00);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="centered">
+    <div class="card">
+      <div class="brand">
+        <div class="brand-badge"></div>
+        <div>
+        <div class="title">Welcome back, Student</div>
+        <div class="subtitle">Sign in to connect with your alumni network</div>
+        </div>
+      </div>
+      <div class="student-badge">🎓 Current Student Portal</div>
+      <form id="login-form">
+        <div class="field">
+          <label class="label">UIU Email or Student ID</label>
+          <input class="input" name="identifier" placeholder="name@bscse.uiu.ac.bd or 0112230000" required />
+        </div>
+        <div class="field">
+          <label class="label">Password</label>
+          <input class="input" type="password" name="password" placeholder="••••••••" required />
+        </div>
+        <button class="btn btn-primary" type="submit">Login as Student</button>
+        <div id="error" class="error"></div>
+        <div class="mt-16">
+          <p>New student? <a href="./signup.html">Create an account</a></p>
+          <p>Are you an alumni? <a href="./login-alumni.html">Alumni Login</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

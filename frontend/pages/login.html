@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - LinkUIU</title>
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <script defer src="../assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('login-form');
+      const err = document.getElementById('error');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        err.textContent = '';
+        const identifier = form.elements['identifier'].value.trim();
+        const password = form.elements['password'].value;
+        try {
+          LinkUIU.setLoading(true);
+          let payload;
+          if (/^01\d{8}$/.test(identifier)) {
+            payload = { student_id: identifier, password };
+          } else {
+            payload = { email: identifier, password };
+          }
+          const data = await LinkUIU.api('/auth/login', { method: 'POST', body: payload });
+          LinkUIU.saveAuth(data);
+          LinkUIU.showToast('Logged in', 'success');
+          location.href = './dashboard.html';
+        } catch (e) {
+          err.textContent = e.message;
+          LinkUIU.showToast(e.message, 'error');
+        } finally { LinkUIU.setLoading(false); }
+      });
+    });
+  </script>
+  <style> 
+    body { 
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 248, 241, 0.9)), url('../assets/images/uiu-godhuli.jpg');
+      background-size: cover;
+      background-position: 10% center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    } 
+  </style>
+  </head>
+<body class="login-page">
+  <div class="centered">
+    <div class="card">
+        <div class="brand">
+          <div class="brand-badge">🎓</div>
+          <div>
+            <div class="title">Welcome back</div>
+            <div class="subtitle">Choose your login portal</div>
+          </div>
+        </div>
+      
+      <div class="login-horizontal">
+        <div class="login-options-horizontal">
+          <div class="login-option-horizontal">
+            <div class="option-icon">🎓</div>
+            <h3>Current Student</h3>
+            <p>Access your academic dashboard, assignments, and student resources</p>
+            <a href="./login-student.html" class="btn btn-primary">Student Login</a>
+          </div>
+          
+          <div class="login-option-horizontal">
+            <div class="option-icon">🌟</div>
+            <h3>Alumni</h3>
+            <p>Reconnect with your network, share opportunities, and stay updated</p>
+            <a href="./login-alumni.html" class="btn btn-primary">Alumni Login</a>
+          </div>
+        </div>
+        
+        <div class="divider-vertical">
+          <span>or</span>
+        </div>
+        
+        <div class="quick-login-form">
+          <form id="login-form">
+            <div class="field">
+              <label class="label">UIU Email or Student ID</label>
+              <input class="input" name="identifier" placeholder="name@bscse.uiu.ac.bd or 0112230000" required />
+            </div>
+            <div class="field">
+              <label class="label">Password</label>
+              <input class="input" type="password" name="password" placeholder="••••••••" required />
+            </div>
+            <button class="btn btn-outline" type="submit">Quick Login</button>
+            <div id="error" class="error"></div>
+            <div class="mt-16">New here? <a href="./signup.html">Create an account</a></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
