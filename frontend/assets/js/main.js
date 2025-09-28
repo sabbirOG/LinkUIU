@@ -57,11 +57,126 @@ function initPasswordToggles() {
   });
 }
 
+// Mobile menu functionality
+let mobileMenuInitialized = false;
+
+function initMobileMenu() {
+  // Prevent multiple initializations
+  if (mobileMenuInitialized) {
+    console.log('Mobile menu already initialized, skipping');
+    return;
+  }
+  
+  console.log('Initializing mobile menu...');
+  
+  const hamburger = document.querySelector('.hamburger');
+  const mobileNav = document.querySelector('.mobile-nav');
+  const mobileNavClose = document.querySelector('.mobile-nav-close');
+  
+  if (!hamburger || !mobileNav) {
+    console.warn('Mobile menu elements not found:', { hamburger: !!hamburger, mobileNav: !!mobileNav });
+    return;
+  }
+
+  console.log('Mobile menu elements found, setting up event listeners');
+
+  // Add event listener to hamburger
+  hamburger.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Hamburger clicked');
+    toggleMobileMenu();
+  });
+
+  // Add event listener to close button
+  if (mobileNavClose) {
+    mobileNavClose.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('Close button clicked');
+      closeMobileMenu();
+    });
+  }
+
+  // Close menu when clicking outside
+  document.addEventListener('click', function(e) {
+    if (mobileNav.classList.contains('active') && 
+        !e.target.closest('.mobile-nav') && 
+        !e.target.closest('.hamburger')) {
+      console.log('Clicked outside, closing menu');
+      closeMobileMenu();
+    }
+  });
+
+  // Close menu on escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && mobileNav.classList.contains('active')) {
+      console.log('Escape pressed, closing menu');
+      closeMobileMenu();
+    }
+  });
+  
+  mobileMenuInitialized = true;
+  console.log('Mobile menu initialization complete');
+}
+
+function toggleMobileMenu() {
+  const hamburger = document.querySelector('.hamburger');
+  const mobileNav = document.querySelector('.mobile-nav');
+  const body = document.body;
+  
+  if (!hamburger || !mobileNav) {
+    return;
+  }
+  
+  // Prevent multiple rapid clicks
+  if (hamburger.classList.contains('processing')) {
+    return;
+  }
+  
+  hamburger.classList.add('processing');
+  
+  const isActive = hamburger.classList.contains('active');
+  
+  if (isActive) {
+    // Close menu
+    hamburger.classList.remove('active');
+    mobileNav.classList.remove('active');
+    body.classList.remove('menu-open');
+  } else {
+    // Open menu
+    hamburger.classList.add('active');
+    mobileNav.classList.add('active');
+    body.classList.add('menu-open');
+  }
+  
+  // Remove processing class after animation
+  setTimeout(() => {
+    hamburger.classList.remove('processing');
+  }, 300);
+}
+
+
+function closeMobileMenu() {
+  const hamburger = document.querySelector('.hamburger');
+  const mobileNav = document.querySelector('.mobile-nav');
+  const body = document.body;
+
+  if (hamburger) hamburger.classList.remove('active');
+  if (mobileNav) mobileNav.classList.remove('active');
+  if (body) body.classList.remove('menu-open');
+}
+
 // Initialize animations and navbar when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   initPageAnimations();
   highlightActivePage();
   initPasswordToggles();
+  
+  // Initialize mobile menu with a small delay to ensure DOM is fully ready
+  setTimeout(() => {
+    initMobileMenu();
+  }, 100);
   
   // Add home link functionality
   const homeLink = document.getElementById('home-link');
@@ -315,6 +430,9 @@ window.LinkUIU = {
   highlightActivePage,
   createStandardNavbar
 };
+
+// Make closeMobileMenu globally available
+window.closeMobileMenu = closeMobileMenu;
 
 
 

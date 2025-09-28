@@ -45,6 +45,50 @@
   </style>
   </head>
 <body class="login-page">
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand-left">
+        <img class="uiu-logo" src="../assets/images/uiu_logo.png?v=2" alt="UIU logo" />
+      </div>
+      <div class="brand-center"></div>
+      <div class="brand-right">
+        <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" onclick="location.href='./landing.html'" style="cursor: pointer;" />
+      </div>
+      <button class="hamburger" aria-label="Toggle mobile menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav class="nav">
+        <span class="nav-link" onclick="location.href='./landing.html'" style="cursor: pointer;">Home</span>
+        <span class="nav-link" onclick="location.href='jobs.html'" style="cursor: pointer;">Jobs</span>
+        <span class="nav-link" onclick="location.href='connections.html'" style="cursor: pointer;">Connect</span>
+        <span class="nav-link" onclick="location.href='messages.html'" style="cursor: pointer;">Messages</span>
+        <span class="nav-link" onclick="location.href='search.html'" style="cursor: pointer;">Directory</span>
+        <span class="nav-link" onclick="location.href='profile.html'" style="cursor: pointer;">Profile</span>
+        <a href="signup.html" class="btn btn-primary">Sign Up</a>
+      </nav>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+      <div class="mobile-nav-content">
+        <div class="mobile-nav-header">
+          <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" style="height: 30px;" />
+          <button class="mobile-nav-close" aria-label="Close mobile menu">&times;</button>
+        </div>
+        <div class="mobile-nav-links">
+          <span onclick="location.href='./landing.html'; closeMobileMenu();" style="cursor: pointer;">Home</span>
+          <span onclick="location.href='jobs.html'; closeMobileMenu();" style="cursor: pointer;">Jobs</span>
+          <span onclick="location.href='connections.html'; closeMobileMenu();" style="cursor: pointer;">Connect</span>
+          <span onclick="location.href='messages.html'; closeMobileMenu();" style="cursor: pointer;">Messages</span>
+          <span onclick="location.href='search.html'; closeMobileMenu();" style="cursor: pointer;">Directory</span>
+          <span onclick="location.href='profile.html'; closeMobileMenu();" style="cursor: pointer;">Profile</span>
+          <a href="signup.html" class="btn btn-primary">Sign Up</a>
+        </div>
+      </div>
+    </div>
+  </header>
   <div class="centered">
     <div class="card">
         <div class="brand">

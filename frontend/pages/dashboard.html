@@ -52,6 +52,11 @@
       <div class="brand-right">
         <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" onclick="location.href='./dashboard.html'" style="cursor: pointer;" />
       </div>
+      <button class="hamburger" aria-label="Toggle mobile menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <nav class="nav">
         <span class="nav-link" onclick="location.href='./dashboard.html'" style="cursor: pointer;">Home</span>
         <span class="nav-link" onclick="location.href='./profile.html'" style="cursor: pointer;">Profile</span>
@@ -64,6 +69,25 @@
       </nav>
     </div>
     
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+      <div class="mobile-nav-content">
+        <div class="mobile-nav-header">
+          <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" style="height: 30px;" />
+          <button class="mobile-nav-close" aria-label="Close mobile menu">&times;</button>
+        </div>
+        <div class="mobile-nav-links">
+          <span onclick="location.href='./dashboard.html'; closeMobileMenu();" style="cursor: pointer;">Home</span>
+          <span onclick="location.href='./profile.html'; closeMobileMenu();" style="cursor: pointer;">Profile</span>
+          <span onclick="location.href='./jobs.html'; closeMobileMenu();" style="cursor: pointer;">Jobs</span>
+          <span onclick="location.href='./applications.html'; closeMobileMenu();" style="cursor: pointer;">My Applications</span>
+          <span onclick="location.href='./connections.html'; closeMobileMenu();" style="cursor: pointer;">Connections</span>
+          <span onclick="location.href='./messages.html'; closeMobileMenu();" style="cursor: pointer;">Messages</span>
+          <span onclick="location.href='./search.html'; closeMobileMenu();" style="cursor: pointer;">Search</span>
+          <button class="btn btn-primary" onclick="localStorage.clear(); location.href='./login.html'; closeMobileMenu();">Logout</button>
+        </div>
+      </div>
+    </div>
   </header>
   <div class="container">
     <div class="welcome-section">
