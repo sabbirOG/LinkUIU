@@ -23,31 +23,15 @@
             </div>
             <nav class="nav">
                 <span class="nav-link" id="home-link" style="cursor: pointer;">Home</span>
-                <a href="jobs.html">Jobs</a>
-                <a href="connections.html">Connect</a>
-                <a href="messages.html">Messages</a>
-                <a href="search.html">Directory</a>
-                <a href="profile.html">Profile</a>
+                <span class="nav-link" onclick="location.href='jobs.html'" style="cursor: pointer;">Jobs</span>
+                <span class="nav-link" onclick="location.href='connections.html'" style="cursor: pointer;">Connect</span>
+                <span class="nav-link" onclick="location.href='messages.html'" style="cursor: pointer;">Messages</span>
+                <span class="nav-link" onclick="location.href='search.html'" style="cursor: pointer;">Directory</span>
+                <span class="nav-link" onclick="location.href='profile.html'" style="cursor: pointer;">Profile</span>
                 <a href="login.html" class="btn btn-primary">Login</a>
             </nav>
-            <button class="hamburger" onclick="toggleMobileMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
         </div>
         
-        <!-- Mobile Navigation -->
-        <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
-        <nav class="mobile-nav" id="mobileNav">
-            <span class="nav-link" id="mobile-home-link" style="cursor: pointer;">Home</span>
-            <a href="jobs.html">Jobs</a>
-            <a href="connections.html">Connect</a>
-            <a href="messages.html">Messages</a>
-            <a href="search.html">Directory</a>
-            <a href="profile.html">Profile</a>
-            <a href="login.html" class="btn btn-primary">Login</a>
-        </nav>
         </div>
     </header>
 
@@ -540,48 +524,7 @@
         function resumeAutoScroll() { autoScrollPaused = false; }
         function stopAutoScroll() { if (autoScrollInterval) { clearInterval(autoScrollInterval); } }
 
-        function toggleMobileMenu() {
-            const hamburger = document.querySelector('.hamburger');
-            const mobileNav = document.getElementById('mobileNav');
-            const mobileOverlay = document.getElementById('mobileMenuOverlay');
-            
-            hamburger.classList.toggle('active');
-            mobileNav.classList.toggle('active');
-            mobileOverlay.classList.toggle('active');
-            document.body.classList.toggle('menu-open');
-        }
-        
-        function closeMobileMenu() {
-            const hamburger = document.querySelector('.hamburger');
-            const mobileNav = document.getElementById('mobileNav');
-            const mobileOverlay = document.getElementById('mobileMenuOverlay');
-            
-            hamburger.classList.remove('active');
-            mobileNav.classList.remove('active');
-            mobileOverlay.classList.remove('active');
-            document.body.classList.remove('menu-open');
-        }
 
-        document.addEventListener('click', (e) => {
-            if (e.target.matches('.nav a, .nav .btn')) {
-                const body = document.body;
-                const hamburger = document.querySelector('.hamburger');
-                if (body.classList.contains('menu-open')) {
-                    body.classList.remove('menu-open');
-                    hamburger.classList.remove('active');
-                }
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            const hamburger = document.querySelector('.hamburger');
-            const nav = document.querySelector('.nav');
-            const body = document.body;
-            if (!hamburger.contains(e.target) && !nav.contains(e.target) && body.classList.contains('menu-open')) {
-                body.classList.remove('menu-open');
-                hamburger.classList.remove('active');
-            }
-        });
 
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });

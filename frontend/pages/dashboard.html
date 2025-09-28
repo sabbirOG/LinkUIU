@@ -53,34 +53,17 @@
         <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" onclick="location.href='./dashboard.html'" style="cursor: pointer;" />
       </div>
       <nav class="nav">
-        <a href="./dashboard.html">Home</a>
-        <a href="./profile.html">Profile</a>
-        <a href="./jobs.html">Jobs</a>
-        <a href="./applications.html">My Applications</a>
-        <a href="./connections.html">Connections</a>
-        <a href="./messages.html">Messages</a>
-        <a href="./search.html">Search</a>
+        <span class="nav-link" onclick="location.href='./dashboard.html'" style="cursor: pointer;">Home</span>
+        <span class="nav-link" onclick="location.href='./profile.html'" style="cursor: pointer;">Profile</span>
+        <span class="nav-link" onclick="location.href='./jobs.html'" style="cursor: pointer;">Jobs</span>
+        <span class="nav-link" onclick="location.href='./applications.html'" style="cursor: pointer;">My Applications</span>
+        <span class="nav-link" onclick="location.href='./connections.html'" style="cursor: pointer;">Connections</span>
+        <span class="nav-link" onclick="location.href='./messages.html'" style="cursor: pointer;">Messages</span>
+        <span class="nav-link" onclick="location.href='./search.html'" style="cursor: pointer;">Search</span>
         <button class="btn btn-primary" onclick="localStorage.clear(); location.href='./login.html'">Logout</button>
       </nav>
-      <button class="hamburger" onclick="toggleMobileMenu()">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
     </div>
     
-    <!-- Mobile Navigation -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
-    <nav class="mobile-nav" id="mobileNav">
-      <a href="./dashboard.html">Home</a>
-      <a href="./profile.html">Profile</a>
-      <a href="./jobs.html">Jobs</a>
-      <a href="./applications.html">My Applications</a>
-      <a href="./connections.html">Connections</a>
-      <a href="./messages.html">Messages</a>
-      <a href="./search.html">Search</a>
-      <button class="btn btn-primary" onclick="localStorage.clear(); location.href='./login.html'">Logout</button>
-    </nav>
   </header>
   <div class="container">
     <div class="welcome-section">

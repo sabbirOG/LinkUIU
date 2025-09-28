@@ -614,6 +614,45 @@ input, button { font: inherit; }
   position: relative;
 }
 
+/* Password field with toggle */
+.password-field {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--color-muted);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  z-index: 2;
+}
+
+.password-toggle:hover {
+  color: var(--color-primary);
+  background: rgba(255, 111, 0, 0.1);
+}
+
+.password-toggle:focus {
+  outline: none;
+  background: rgba(255, 111, 0, 0.15);
+  color: var(--color-primary);
+}
+
+.password-field .input {
+  padding-right: 50px;
+}
+
 .label { 
   display: block; 
   margin-bottom: 12px; 
@@ -853,7 +892,6 @@ a:hover { text-decoration: underline; }
 .toast.success { background:#14532d; }
 .toast.error { background:#7f1d1d; }
 
-/* Loading overlay */
 .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.65); display:none; align-items:center; justify-content:center; z-index: 40; }
 .loading-overlay.active { display:flex; }
 .spinner { width: 36px; height: 36px; border: 4px solid #e5e7eb; border-top-color: var(--color-primary); border-radius: 50%; animation: spin 1s linear infinite; }
@@ -916,6 +954,7 @@ a:hover { text-decoration: underline; }
   color: var(--color-text);
 }
 
+
 .nav a::after, .nav-link::after {
   content: '';
   position: absolute;
@@ -946,207 +985,15 @@ a:hover { text-decoration: underline; }
 .nav a.active::after, .nav-link.active::after {
   display: none;
 }
+
 .nav .btn-primary { 
   padding:10px 16px; 
   font-weight: 600;
 }
 
-/* Hamburger Menu */
-.hamburger {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  z-index: 1001;
-  position: relative;
-}
 
-.hamburger span {
-  display: block;
-  width: 25px;
-  height: 3px;
-  background: var(--color-text);
-  margin: 3px 0;
-  transition: all 0.3s ease;
-  border-radius: 2px;
-}
 
-.hamburger.active span:nth-child(1) {
-  transform: rotate(-45deg) translate(-6px, 6px);
-}
 
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
-  transform: translateX(20px);
-}
-
-.hamburger.active span:nth-child(3) {
-  transform: rotate(45deg) translate(-6px, -6px);
-}
-
-/* Mobile Navigation Overlay */
-.mobile-menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 998;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-}
-
-.mobile-menu-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.mobile-nav {
-  position: fixed;
-  top: 0;
-  right: -100%;
-  width: 300px;
-  height: 100vh;
-  background: white;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-  z-index: 999;
-  transition: right 0.3s ease;
-  padding: 80px 0 20px;
-  overflow-y: auto;
-}
-
-.mobile-nav.active {
-  right: 0;
-}
-
-.mobile-nav a {
-  display: block;
-  padding: 16px 24px;
-  color: var(--color-text);
-  text-decoration: none;
-  border-bottom: 1px solid #f0f0f0;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  position: relative;
-}
-
-.mobile-nav a:hover {
-  background: #f8f9fa;
-  color: var(--color-primary);
-  padding-left: 32px;
-}
-
-.mobile-nav a:hover::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--color-primary);
-  transform: scaleX(1);
-}
-
-.mobile-nav a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--color-primary);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-/* Special styling for mobile home link */
-.mobile-nav .nav-link {
-  display: block;
-  padding: 16px 24px;
-  color: var(--color-text);
-  text-decoration: none;
-  border-bottom: 1px solid #f0f0f0;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  position: relative;
-  cursor: pointer;
-}
-
-.mobile-nav .nav-link:hover {
-  background: #f8f9fa;
-  color: var(--color-primary);
-  padding-left: 32px;
-}
-
-.mobile-nav .nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--color-primary);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.mobile-nav .nav-link:hover::after {
-  transform: scaleX(1);
-}
-
-/* Ensure all mobile nav items have underline styling */
-.mobile-nav span.nav-link,
-.mobile-nav a {
-  display: block;
-  padding: 16px 24px;
-  color: var(--color-text);
-  text-decoration: none;
-  border-bottom: 1px solid #f0f0f0;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  position: relative;
-  cursor: pointer;
-}
-
-.mobile-nav span.nav-link:hover,
-.mobile-nav a:hover {
-  background: #f8f9fa;
-  color: var(--color-primary);
-  padding-left: 32px;
-}
-
-.mobile-nav span.nav-link::after,
-.mobile-nav a::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--color-primary);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.mobile-nav span.nav-link:hover::after,
-.mobile-nav a:hover::after {
-  transform: scaleX(1);
-}
-
-.mobile-nav .btn {
-  margin: 16px 24px;
-  text-align: center;
-  border-radius: 8px;
-  display: block;
-}
 
 /* Mobile First Responsive Design */
 
@@ -1190,11 +1037,6 @@ a:hover { text-decoration: underline; }
     min-height: 60px;
   }
   
-  .hamburger { 
-    display: flex; 
-    width: 35px;
-    height: 35px;
-  }
   
   .nav { 
     display: none; 
@@ -1244,9 +1086,6 @@ a:hover { text-decoration: underline; }
     min-height: 70px;
   }
   
-  .hamburger { 
-    display: flex; 
-  }
   
   .nav { 
     display: none; 
@@ -1271,9 +1110,6 @@ a:hover { text-decoration: underline; }
     padding: 24px; 
   }
   
-  .hamburger { 
-    display: none; 
-  }
   
   .nav { 
     display: flex; 
@@ -1524,7 +1360,7 @@ a:hover { text-decoration: underline; }
 .benefits-section .btn-outline:hover,
 .how-it-works-section .btn-outline:hover,
 .contact-section .btn-outline:hover {
-  color: white;
+  color: white !important;
   border-color: var(--color-primary);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(255, 111, 0, 0.3);
@@ -1939,7 +1775,6 @@ a.btn.explore-alumni:hover,
   border-radius: 20px;
   padding: 32px 24px;
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   border: 2px solid rgba(255, 111, 0, 0.1);
   position: relative;
@@ -1977,7 +1812,6 @@ a.btn.explore-alumni:hover,
 
 .alumni-card:hover {
   transform: translateY(-12px) scale(1.03);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.15);
   border-color: var(--color-primary);
 }
 
@@ -2004,7 +1838,6 @@ a.btn.explore-alumni:hover,
   position: relative;
   border: 4px solid rgba(255, 111, 0, 0.2);
   transition: all 0.4s ease;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .alumni-avatar::before {
@@ -2027,7 +1860,6 @@ a.btn.explore-alumni:hover,
 
 .alumni-card:hover .alumni-avatar {
   transform: scale(1.1);
-  box-shadow: 0 12px 35px rgba(255, 111, 0, 0.3);
 }
 
 .alumni-avatar img {
@@ -2070,7 +1902,6 @@ a.btn.explore-alumni:hover,
 
 .alumni-card:hover .default-avatar {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(255, 111, 0, 0.3);
 }
 
 /* Alumni Logo Styling - Improved Design */
@@ -2085,7 +1916,6 @@ a.btn.explore-alumni:hover,
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   opacity: 0.6;
   transition: all 0.3s ease;
   z-index: 2;
@@ -2094,7 +1924,6 @@ a.btn.explore-alumni:hover,
 .alumni-card:hover .alumni-logo {
   opacity: 1;
   background: rgba(255, 255, 255, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: scale(1.1);
 }
 
@@ -2423,6 +2252,13 @@ a.btn.explore-alumni:hover,
 .btn-sm {
   padding: 8px 16px;
   font-size: 0.9rem;
+}
+
+/* Specific styling for story card buttons */
+.story-card .btn-outline:hover {
+  color: white !important;
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
 }
 
 /* Statistics Section */
@@ -3331,37 +3167,6 @@ a.btn.explore-alumni:hover,
    COMPREHENSIVE RESPONSIVE DESIGN
    ======================================== */
 
-/* Mobile Navigation */
-.hamburger {
-  display: none;
-  flex-direction: column;
-  cursor: pointer;
-  padding: 8px;
-  background: none;
-  border: none;
-  z-index: 1001;
-}
-
-.hamburger span {
-  width: 25px;
-  height: 3px;
-  background: var(--color-text);
-  margin: 3px 0;
-  transition: 0.3s;
-  border-radius: 2px;
-}
-
-.hamburger.active span:nth-child(1) {
-  transform: rotate(-45deg) translate(-5px, 6px);
-}
-
-.hamburger.active span:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger.active span:nth-child(3) {
-  transform: rotate(45deg) translate(-5px, -6px);
-}
 
 /* Mobile First - Extra Small Devices (320px and up) */
 @media (max-width: 479px) {
@@ -3374,9 +3179,6 @@ a.btn.explore-alumni:hover,
     height: 40px;
   }
   
-  .hamburger {
-    display: flex;
-  }
   
   .nav {
     display: none;
@@ -3467,7 +3269,7 @@ a.btn.explore-alumni:hover,
   }
   
   .hamburger {
-    display: flex;
+    display: none;
   }
   
   .nav {
@@ -3689,7 +3491,7 @@ a.btn.explore-alumni:hover,
 
 /* Print Styles */
 @media print {
-  .header, .nav, .hamburger {
+  .header, .nav {
     display: none;
   }
   

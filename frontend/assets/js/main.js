@@ -19,30 +19,58 @@ function initPageAnimations() {
   });
 }
 
+// Password toggle functionality
+function initPasswordToggles() {
+  const passwordFields = document.querySelectorAll('input[type="password"]');
+  
+  passwordFields.forEach(passwordInput => {
+    // Check if toggle already exists
+    if (passwordInput.parentNode.querySelector('.password-toggle')) {
+      return;
+    }
+    
+    // Create password field wrapper
+    const wrapper = document.createElement('div');
+    wrapper.className = 'password-field';
+    
+    // Insert wrapper before password input
+    passwordInput.parentNode.insertBefore(wrapper, passwordInput);
+    wrapper.appendChild(passwordInput);
+    
+    // Create toggle button
+    const toggleButton = document.createElement('button');
+    toggleButton.type = 'button';
+    toggleButton.className = 'password-toggle';
+    toggleButton.innerHTML = '👁️';
+    toggleButton.setAttribute('aria-label', 'Toggle password visibility');
+    
+    // Add toggle button to wrapper
+    wrapper.appendChild(toggleButton);
+    
+    // Add click event listener
+    toggleButton.addEventListener('click', function() {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      toggleButton.innerHTML = isPassword ? '🙈' : '👁️';
+      toggleButton.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+    });
+  });
+}
+
 // Initialize animations and navbar when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   initPageAnimations();
   highlightActivePage();
+  initPasswordToggles();
   
   // Add home link functionality
   const homeLink = document.getElementById('home-link');
-  const mobileHomeLink = document.getElementById('mobile-home-link');
   
   if (homeLink) {
     homeLink.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      return false;
-    });
-  }
-  
-  if (mobileHomeLink) {
-    mobileHomeLink.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      closeMobileMenu();
       return false;
     });
   }
@@ -184,6 +212,7 @@ function showToast(message, type = '') {
   c.appendChild(t);
   setTimeout(() => t.remove(), 3000);
 }
+
 let loadingRefCount = 0;
 function setLoading(active) {
   let o = document.querySelector('.loading-overlay');
@@ -201,7 +230,7 @@ function setLoading(active) {
 // Active page highlighting
 function highlightActivePage() {
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  const navLinks = document.querySelectorAll('.nav a, .mobile-nav a');
+  const navLinks = document.querySelectorAll('.nav a');
   
   navLinks.forEach(link => {
     const href = link.getAttribute('href');
@@ -235,34 +264,17 @@ function createStandardNavbar(isAuthenticated = false) {
             <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" onclick="location.href='./dashboard.html'" style="cursor: pointer;" />
           </div>
           <nav class="nav">
-            <a href="./dashboard.html">Home</a>
-            <a href="./profile.html">Profile</a>
-            <a href="./jobs.html">Jobs</a>
-            <a href="./applications.html">My Applications</a>
-            <a href="./connections.html">Connections</a>
-            <a href="./messages.html">Messages</a>
-            <a href="./search.html">Search</a>
+            <span class="nav-link" onclick="location.href='./dashboard.html'" style="cursor: pointer;">Home</span>
+            <span class="nav-link" onclick="location.href='./profile.html'" style="cursor: pointer;">Profile</span>
+            <span class="nav-link" onclick="location.href='./jobs.html'" style="cursor: pointer;">Jobs</span>
+            <span class="nav-link" onclick="location.href='./applications.html'" style="cursor: pointer;">My Applications</span>
+            <span class="nav-link" onclick="location.href='./connections.html'" style="cursor: pointer;">Connections</span>
+            <span class="nav-link" onclick="location.href='./messages.html'" style="cursor: pointer;">Messages</span>
+            <span class="nav-link" onclick="location.href='./search.html'" style="cursor: pointer;">Search</span>
             <button class="btn btn-primary" onclick="localStorage.clear(); location.href='./login.html'">Logout</button>
           </nav>
-          <button class="hamburger" onclick="toggleMobileMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
         </div>
         
-        <!-- Mobile Navigation -->
-        <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
-        <nav class="mobile-nav" id="mobileNav">
-          <a href="./dashboard.html">Home</a>
-          <a href="./profile.html">Profile</a>
-          <a href="./jobs.html">Jobs</a>
-          <a href="./applications.html">My Applications</a>
-          <a href="./connections.html">Connections</a>
-          <a href="./messages.html">Messages</a>
-          <a href="./search.html">Search</a>
-          <button class="btn btn-primary" onclick="localStorage.clear(); location.href='./login.html'">Logout</button>
-        </nav>
       </header>
     `;
   } else {
@@ -278,31 +290,15 @@ function createStandardNavbar(isAuthenticated = false) {
           </div>
           <nav class="nav">
             <span class="nav-link" id="home-link" style="cursor: pointer;">Home</span>
-            <a href="jobs.html">Jobs</a>
-            <a href="connections.html">Connect</a>
-            <a href="messages.html">Messages</a>
-            <a href="search.html">Directory</a>
-            <a href="profile.html">Profile</a>
+            <span class="nav-link" onclick="location.href='jobs.html'" style="cursor: pointer;">Jobs</span>
+            <span class="nav-link" onclick="location.href='connections.html'" style="cursor: pointer;">Connect</span>
+            <span class="nav-link" onclick="location.href='messages.html'" style="cursor: pointer;">Messages</span>
+            <span class="nav-link" onclick="location.href='search.html'" style="cursor: pointer;">Directory</span>
+            <span class="nav-link" onclick="location.href='profile.html'" style="cursor: pointer;">Profile</span>
             <a href="login.html" class="btn btn-primary">Login</a>
           </nav>
-          <button class="hamburger" onclick="toggleMobileMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
         </div>
         
-        <!-- Mobile Navigation -->
-        <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
-        <nav class="mobile-nav" id="mobileNav">
-          <span class="nav-link" id="mobile-home-link" style="cursor: pointer;">Home</span>
-          <a href="jobs.html">Jobs</a>
-          <a href="connections.html">Connect</a>
-          <a href="messages.html">Messages</a>
-          <a href="search.html">Directory</a>
-          <a href="profile.html">Profile</a>
-          <a href="login.html" class="btn btn-primary">Login</a>
-        </nav>
       </header>
     `;
   }
@@ -316,64 +312,11 @@ window.LinkUIU = {
   requireAuth, 
   showToast, 
   setLoading,
-  toggleMobileMenu,
-  closeMobileMenu,
   highlightActivePage,
   createStandardNavbar
 };
 
-// Mobile menu toggle functionality
-function toggleMobileMenu() {
-  const hamburger = document.querySelector('.hamburger');
-  const mobileNav = document.getElementById('mobileNav');
-  const mobileOverlay = document.getElementById('mobileMenuOverlay');
-  
-  if (hamburger && mobileNav && mobileOverlay) {
-    hamburger.classList.toggle('active');
-    mobileNav.classList.toggle('active');
-    mobileOverlay.classList.toggle('active');
-    document.body.classList.toggle('menu-open');
-  }
-}
 
-function closeMobileMenu() {
-  const hamburger = document.querySelector('.hamburger');
-  const mobileNav = document.getElementById('mobileNav');
-  const mobileOverlay = document.getElementById('mobileMenuOverlay');
-  
-  if (hamburger && mobileNav && mobileOverlay) {
-    hamburger.classList.remove('active');
-    mobileNav.classList.remove('active');
-    mobileOverlay.classList.remove('active');
-    document.body.classList.remove('menu-open');
-  }
-}
-
-// Mobile menu event listeners
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('.hamburger');
-  if (btn) {
-    toggleMobileMenu();
-    return;
-  }
-  
-  const navLink = e.target.closest('.nav a, .nav .btn, .mobile-nav a, .mobile-nav .btn');
-  if (navLink && document.body.classList.contains('menu-open')) {
-    closeMobileMenu();
-  }
-  
-  // Close menu when clicking overlay
-  if (e.target.classList.contains('mobile-menu-overlay')) {
-    closeMobileMenu();
-  }
-});
-
-// Close mobile menu on escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && document.body.classList.contains('menu-open')) {
-    closeMobileMenu();
-  }
-});
 
 // Sticky header functionality
 document.addEventListener('DOMContentLoaded', () => {
