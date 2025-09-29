@@ -223,8 +223,8 @@ async function api(path, { method = 'GET', body, auth = false } = {}) {
       if (res.status === 401) {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('auth_user');
-        if (!location.pathname.endsWith('/login.html')) {
-          location.href = './login.html';
+        if (!location.pathname.endsWith('/login.php') && !location.pathname.endsWith('/login.html')) {
+          location.href = './login.php';
         }
       }
       const msg = (data && (data.error || data.message)) || 'Request failed';
@@ -267,7 +267,7 @@ async function apiMultipart(path, formData, { auth = false } = {}) {
 
 function requireAuth() {
   if (!getToken()) {
-    location.href = './login.html';
+    location.href = './login.php';
     return false;
   }
   return true;
