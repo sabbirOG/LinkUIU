@@ -52,20 +52,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     let connections = <?php echo json_encode($connections); ?>;
 
     function loadConnections() {
-      const list = document.getElementById('list');
+      const list = document.getElementById('connections-list');
       list.innerHTML = '';
       
       if (!connections.length) {
         const empty = document.createElement('div');
         empty.className = 'subtitle';
         empty.textContent = 'No connections yet';
-        list.replaceChildren(empty);
+        list.appendChild(empty);
         return;
       }
       
       for (const r of connections) {
         const card = document.createElement('div');
-        card.className = 'card';
+        card.className = 'connection-card';
         const t = document.createElement('div');
         t.className = 'title';
         t.textContent = r.target_name || '';
@@ -78,18 +78,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
 
-    async function addConnection(e) {
+    async function searchUsers(e) {
       e.preventDefault();
       const err = document.getElementById('error');
       err.textContent = '';
       
-      const targetUserId = document.getElementById('targetUserId').value.trim();
+      const searchQuery = document.getElementById('searchQuery').value.trim();
       
-      if (!targetUserId || isNaN(targetUserId) || targetUserId <= 0) {
-        err.textContent = 'Please enter a valid user ID';
+      if (!searchQuery) {
+        err.textContent = 'Please enter a search term';
         return;
       }
       
+      try {
+        const response = await fetch('<?php echo $api_base; ?>/search/users?q=' + encodeURIComponent(searchQuery), {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer <?php echo $_SESSION['auth_token'] ?? ''; ?>',
+            'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] ?? ''; ?>'
+          }
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to search users');
+        }
+        
+        const searchResults = await response.json();
+        displaySearchResults(searchResults);
+      } catch (e) {
+        err.textContent = e.message;
+      }
+    }
+
+    function displaySearchResults(results) {
+      const list = document.getElementById('search-results');
+      list.innerHTML = '';
+      
+      if (!results || !results.length) {
+        const empty = document.createElement('div');
+        empty.className = 'subtitle';
+        empty.textContent = 'No users found';
+        list.appendChild(empty);
+        return;
+      }
+      
+      for (const user of results) {
+        const card = document.createElement('div');
+        card.className = 'search-result-card';
+        
+        const userInfo = document.createElement('div');
+        userInfo.innerHTML = `
+          <div class="title">${user.name || 'Unknown User'}</div>
+          <div class="subtitle">${user.email || ''}</div>
+          <div class="subtitle">ID: ${user.id || ''}</div>
+          <div class="subtitle">${user.current_job || 'No job title'}</div>
+        `;
+        
+        const actionButton = document.createElement('button');
+        actionButton.className = 'btn btn-primary';
+        actionButton.textContent = 'Send Request';
+        actionButton.onclick = () => sendConnectionRequest(user.id);
+        
+        card.appendChild(userInfo);
+        card.appendChild(actionButton);
+        list.appendChild(card);
+      }
+    }
+
+    async function sendConnectionRequest(targetUserId) {
       try {
         const response = await fetch('<?php echo $api_base; ?>/connections/<?php echo $user['id']; ?>', {
           method: 'POST',
@@ -106,11 +163,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           throw new Error(error.error || 'Failed to send connection request');
         }
         
-        document.getElementById('conn-form').reset();
-        loadConnections();
-        location.reload(); // Reload to show updated connections
+        alert('Connection request sent successfully!');
+        loadConnections(); // Reload connections list
       } catch (e) {
-        err.textContent = e.message;
+        alert('Error: ' + e.message);
       }
     }
 
@@ -136,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     document.addEventListener('DOMContentLoaded', () => {
       loadConnections();
-      document.getElementById('conn-form').addEventListener('submit', addConnection);
+      document.getElementById('conn-form').addEventListener('submit', searchUsers);
     });
   </script>
 </head>
@@ -188,25 +244,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </header>
   <div class="container">
-    <div class="card mt-24">
-      <form id="conn-form" method="POST" action="">
-        <input type="hidden" name="action" value="add_connection">
-        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>">
+    <div class="connections-layout">
+      <!-- Left Side - Search and Current Connections -->
+      <div class="connections-left">
+        <div class="card mt-24">
+          <form id="conn-form" method="GET" action="">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>">
+            
+            <?php if ($error_message): ?>
+              <div class="error"><?php echo htmlspecialchars($error_message); ?></div>
+            <?php endif; ?>
+            
+            <?php if ($success_message): ?>
+              <div class="success"><?php echo htmlspecialchars($success_message); ?></div>
+            <?php endif; ?>
+            
+            <div class="field"><label class="label">Search for users</label><input id="searchQuery" name="searchQuery" class="input" type="text" placeholder="Enter name, email, or user ID..." required /></div>
+            <button class="btn btn-primary">Search</button>
+            <div id="error" class="error"></div>
+          </form>
+        </div>
         
-        <?php if ($error_message): ?>
-          <div class="error"><?php echo htmlspecialchars($error_message); ?></div>
-        <?php endif; ?>
-        
-        <?php if ($success_message): ?>
-          <div class="success"><?php echo htmlspecialchars($success_message); ?></div>
-        <?php endif; ?>
-        
-        <div class="field"><label class="label">Connect to user ID</label><input id="targetUserId" name="targetUserId" class="input" type="number" min="1" required /></div>
-        <button class="btn btn-primary">Send Request</button>
-        <div id="error" class="error"></div>
-      </form>
+        <div class="card mt-24">
+          <h3 class="title">My Connections</h3>
+          <div id="connections-list" style="display:grid; gap:16px;"></div>
+        </div>
+      </div>
+      
+      <!-- Right Side - Search Results -->
+      <div class="connections-right">
+        <div class="card mt-24">
+          <h3 class="title">Search Results</h3>
+          <div id="search-results" style="display:grid; gap:16px;"></div>
+        </div>
+      </div>
     </div>
-    <div id="list" class="mt-24" style="display:grid; gap:16px;"></div>
   </div>
 </body>
 </html>

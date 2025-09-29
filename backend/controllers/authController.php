@@ -167,6 +167,78 @@ class authController {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return (string)($row['password'] ?? '');
     }
+
+    public function forgotPassword(array $data): array {
+        $email = trim((string)($data['email'] ?? ''));
+        if ($email === '') {
+            http_response_code(400);
+            return ['error' => 'Email is required'];
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            http_response_code(400);
+            return ['error' => 'Invalid email format'];
+        }
+        $pdo = get_pdo_connection();
+        $userModel = new User($pdo);
+        $user = $userModel->findByEmail($email);
+        if (!$user) {
+            // Don't reveal if email exists or not for security
+            http_response_code(200);
+            return ['message' => 'If the email exists, a password reset link has been sent'];
+        }
+        // Generate reset token
+        $resetToken = bin2hex(random_bytes(32));
+        $expiresAt = (new DateTime('+1 hour'))->format('Y-m-d H:i:s');
+        // Store reset token in database (you might want to create a password_resets table)
+        // For now, we'll store it in the users table
+        $stmt = $pdo->prepare('UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?');
+        $stmt->execute([$resetToken, $expiresAt, $user['id']]);
+        // In a real application, you would send an email here
+        // For now, we'll just return the token (remove this in production)
+        http_response_code(200);
+        return ['message' => 'Password reset link sent', 'token' => $resetToken]; // Remove token in production
+    }
+
+    public function resetPassword(array $data): array {
+        $token = trim((string)($data['token'] ?? ''));
+        $password = (string)($data['password'] ?? '');
+        $confirmPassword = (string)($data['confirm_password'] ?? '');
+        
+        if ($token === '') {
+            http_response_code(400);
+            return ['error' => 'Reset token is required'];
+        }
+        if ($password === '') {
+            http_response_code(400);
+            return ['error' => 'Password is required'];
+        }
+        if ($password !== $confirmPassword) {
+            http_response_code(400);
+            return ['error' => 'Passwords do not match'];
+        }
+        if (strlen($password) < 8) {
+            http_response_code(400);
+            return ['error' => 'Password must be at least 8 characters long'];
+        }
+        
+        $pdo = get_pdo_connection();
+        $stmt = $pdo->prepare('SELECT id FROM users WHERE reset_token = ? AND reset_token_expires > NOW()');
+        $stmt->execute([$token]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$user) {
+            http_response_code(400);
+            return ['error' => 'Invalid or expired reset token'];
+        }
+        
+        // Update password and clear reset token
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare('UPDATE users SET password = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?');
+        $stmt->execute([$hashedPassword, $user['id']]);
+        
+        http_response_code(200);
+        return ['message' => 'Password reset successfully'];
+    }
 }
 
 ?>

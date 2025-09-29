@@ -35,36 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $payload = ['email' => $identifier, 'password' => $password];
                 }
                 
-                $context = stream_context_create([
-                    'http' => [
-                        'header' => [
-                            'Content-Type: application/json',
-                            'X-CSRF-Token: ' . ($_SESSION['csrf_token'] ?? '')
-                        ],
-                        'method' => 'POST',
-                        'content' => json_encode($payload),
-                        'timeout' => 10
-                    ]
-                ]);
+                $result = makeApiCall('/auth/login', 'POST', $payload, false);
                 
-                $response = @file_get_contents($api_base . '/auth/login', false, $context);
-                
-                if ($response === false) {
-                    throw new Exception('Cannot connect to server. Please check if the backend server is running.');
-                }
-                
-                $result = json_decode($response, true);
-                
-                if (isset($result['error'])) {
-                    $error_message = $result['error'];
-                } else {
-                    // Store auth data in session
-                    $_SESSION['auth_token'] = $result['token'];
-                    $_SESSION['auth_user'] = $result['user'];
-                    $success_message = 'Login successful! Redirecting to dashboard...';
-                    // Redirect to dashboard after 2 seconds
-                    header("refresh:2;url=./dashboard.php");
-                }
+                // Store auth data in session
+                $_SESSION['auth_token'] = $result['token'];
+                $_SESSION['auth_user'] = $result['user'];
+                $success_message = 'Login successful! Redirecting to dashboard...';
+                // Redirect to dashboard after 2 seconds
+                header("refresh:2;url=./dashboard.php");
             } catch (Exception $e) {
                 $error_message = $e->getMessage();
             }
@@ -83,33 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <script>
     // Set the API base URL for this page
     window.APP_API_BASE = '<?php echo $api_base; ?>';
-    
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('login-form');
-      const err = document.getElementById('error');
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        err.textContent = '';
-        const identifier = form.elements['identifier'].value.trim();
-        const password = form.elements['password'].value;
-        try {
-          LinkUIU.setLoading(true);
-          let payload;
-          if (/^01\d{8}$/.test(identifier)) {
-            payload = { student_id: identifier, password };
-          } else {
-            payload = { email: identifier, password };
-          }
-          const data = await LinkUIU.api('/auth/login', { method: 'POST', body: payload });
-          LinkUIU.saveAuth(data);
-          LinkUIU.showToast('Logged in', 'success');
-          location.href = './dashboard.php';
-        } catch (e) {
-          err.textContent = e.message;
-          LinkUIU.showToast(e.message, 'error');
-        } finally { LinkUIU.setLoading(false); }
-      });
-    });
   </script>
   <style> 
     body { 

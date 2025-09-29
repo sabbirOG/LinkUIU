@@ -41,6 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error_message = 'Passwords do not match.';
         } elseif ($form_data['department_id'] <= 0) {
             $error_message = 'Please select a department.';
+        } elseif ($form_data['user_type'] === 'student' && empty($form_data['batch_id'])) {
+            $error_message = 'Batch is required for students.';
         } else {
             // Make API call to backend
             try {
@@ -54,31 +56,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'batch_id' => $form_data['batch_id']
                 ];
                 
-                $context = stream_context_create([
-                    'http' => [
-                        'header' => [
-                            'Content-Type: application/json',
-                            'X-CSRF-Token: ' . ($_SESSION['csrf_token'] ?? '')
-                        ],
-                        'method' => 'POST',
-                        'content' => json_encode($payload),
-                        'timeout' => 10
-                    ]
-                ]);
+                $result = makeApiCall('/auth/signup', 'POST', $payload, false);
                 
-                $response = @file_get_contents($api_base . '/auth/signup', false, $context);
-                
-                if ($response === false) {
-                    throw new Exception('Cannot connect to server. Please check if the backend server is running.');
-                }
-                
-                $result = json_decode($response, true);
-                
-                if (isset($result['error'])) {
-                    $error_message = $result['error'];
-                } else {
-                    $success_message = 'Account created successfully! Redirecting to login...';
-                    // Redirect to login after 2 seconds
+                // Automatically log in the user after successful signup
+                try {
+                    $loginPayload = [
+                        'email' => $form_data['email'],
+                        'password' => $form_data['password']
+                    ];
+                    
+                    $loginResult = makeApiCall('/auth/login', 'POST', $loginPayload, false);
+                    
+                    // Store authentication data in session
+                    $_SESSION['auth_token'] = $loginResult['token'];
+                    $_SESSION['auth_user'] = $loginResult['user'];
+                    
+                    $success_message = 'Account created successfully! You are now logged in. Redirecting to dashboard...';
+                    // Redirect to dashboard after 2 seconds
+                    header("refresh:2;url=./dashboard.php");
+                } catch (Exception $loginError) {
+                    // If auto-login fails, redirect to login page
+                    $success_message = 'Account created successfully! Please log in to continue.';
                     header("refresh:2;url=./login.php");
                 }
             } catch (Exception $e) {
@@ -152,6 +150,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
 
+    // Update batch field visibility based on user type
+    function updateBatchFieldVisibility() {
+      const userType = document.getElementById('user_type').value;
+      const batchField = document.getElementById('batch_field');
+      const batchSelect = document.getElementById('batch_id');
+      
+      if (userType === 'student') {
+        batchField.style.display = 'block';
+        batchSelect.required = true;
+        batchSelect.innerHTML = '<option value="">Select Batch (Required for Students)</option>';
+      } else if (userType === 'alumni') {
+        batchField.style.display = 'block';
+        batchSelect.required = false;
+        batchSelect.innerHTML = '<option value="">Select Batch (Optional for Alumni)</option>';
+      } else {
+        batchField.style.display = 'none';
+        batchSelect.required = false;
+        batchSelect.innerHTML = '<option value="">Select Batch</option>';
+      }
+      
+      // Update batches when field becomes visible
+      if (batchField.style.display !== 'none') {
+        updateBatches();
+      }
+    }
+
     // Update batches based on program level
     function updateBatches() {
       const programLevel = document.getElementById('program_level').value;
@@ -161,29 +185,612 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       batchSelect.innerHTML = '<option value="">Select Batch (Optional)</option>';
       
       if (programLevel === 'undergraduate') {
-        // Generate undergraduate batches (171-251)
-        for (let year = 17; year <= 25; year++) {
-          for (let trimester = 1; trimester <= 3; trimester++) {
-            const batch = year + '' + trimester;
-            const option = document.createElement('option');
-            option.value = batch;
-            option.textContent = `Batch ${batch}`;
-            batchSelect.appendChild(option);
-          }
-        }
+        // All available batches from database
+        const option28 = document.createElement('option');
+        option28.value = 28;
+        option28.textContent = 'Batch 11';
+        batchSelect.appendChild(option28);
+        const option29 = document.createElement('option');
+        option29.value = 29;
+        option29.textContent = 'Batch 12';
+        batchSelect.appendChild(option29);
+        const option30 = document.createElement('option');
+        option30.value = 30;
+        option30.textContent = 'Batch 13';
+        batchSelect.appendChild(option30);
+        const option31 = document.createElement('option');
+        option31.value = 31;
+        option31.textContent = 'Batch 21';
+        batchSelect.appendChild(option31);
+        const option32 = document.createElement('option');
+        option32.value = 32;
+        option32.textContent = 'Batch 22';
+        batchSelect.appendChild(option32);
+        const option33 = document.createElement('option');
+        option33.value = 33;
+        option33.textContent = 'Batch 23';
+        batchSelect.appendChild(option33);
+        const option34 = document.createElement('option');
+        option34.value = 34;
+        option34.textContent = 'Batch 31';
+        batchSelect.appendChild(option34);
+        const option35 = document.createElement('option');
+        option35.value = 35;
+        option35.textContent = 'Batch 32';
+        batchSelect.appendChild(option35);
+        const option36 = document.createElement('option');
+        option36.value = 36;
+        option36.textContent = 'Batch 33';
+        batchSelect.appendChild(option36);
+        const option37 = document.createElement('option');
+        option37.value = 37;
+        option37.textContent = 'Batch 41';
+        batchSelect.appendChild(option37);
+        const option38 = document.createElement('option');
+        option38.value = 38;
+        option38.textContent = 'Batch 42';
+        batchSelect.appendChild(option38);
+        const option39 = document.createElement('option');
+        option39.value = 39;
+        option39.textContent = 'Batch 43';
+        batchSelect.appendChild(option39);
+        const option40 = document.createElement('option');
+        option40.value = 40;
+        option40.textContent = 'Batch 51';
+        batchSelect.appendChild(option40);
+        const option41 = document.createElement('option');
+        option41.value = 41;
+        option41.textContent = 'Batch 52';
+        batchSelect.appendChild(option41);
+        const option42 = document.createElement('option');
+        option42.value = 42;
+        option42.textContent = 'Batch 53';
+        batchSelect.appendChild(option42);
+        const option43 = document.createElement('option');
+        option43.value = 43;
+        option43.textContent = 'Batch 61';
+        batchSelect.appendChild(option43);
+        const option44 = document.createElement('option');
+        option44.value = 44;
+        option44.textContent = 'Batch 62';
+        batchSelect.appendChild(option44);
+        const option45 = document.createElement('option');
+        option45.value = 45;
+        option45.textContent = 'Batch 63';
+        batchSelect.appendChild(option45);
+        const option46 = document.createElement('option');
+        option46.value = 46;
+        option46.textContent = 'Batch 71';
+        batchSelect.appendChild(option46);
+        const option47 = document.createElement('option');
+        option47.value = 47;
+        option47.textContent = 'Batch 72';
+        batchSelect.appendChild(option47);
+        const option48 = document.createElement('option');
+        option48.value = 48;
+        option48.textContent = 'Batch 73';
+        batchSelect.appendChild(option48);
+        const option49 = document.createElement('option');
+        option49.value = 49;
+        option49.textContent = 'Batch 81';
+        batchSelect.appendChild(option49);
+        const option50 = document.createElement('option');
+        option50.value = 50;
+        option50.textContent = 'Batch 82';
+        batchSelect.appendChild(option50);
+        const option51 = document.createElement('option');
+        option51.value = 51;
+        option51.textContent = 'Batch 83';
+        batchSelect.appendChild(option51);
+        const option52 = document.createElement('option');
+        option52.value = 52;
+        option52.textContent = 'Batch 91';
+        batchSelect.appendChild(option52);
+        const option53 = document.createElement('option');
+        option53.value = 53;
+        option53.textContent = 'Batch 92';
+        batchSelect.appendChild(option53);
+        const option54 = document.createElement('option');
+        option54.value = 54;
+        option54.textContent = 'Batch 93';
+        batchSelect.appendChild(option54);
+        const option55 = document.createElement('option');
+        option55.value = 55;
+        option55.textContent = 'Batch 101';
+        batchSelect.appendChild(option55);
+        const option56 = document.createElement('option');
+        option56.value = 56;
+        option56.textContent = 'Batch 102';
+        batchSelect.appendChild(option56);
+        const option57 = document.createElement('option');
+        option57.value = 57;
+        option57.textContent = 'Batch 103';
+        batchSelect.appendChild(option57);
+        const option58 = document.createElement('option');
+        option58.value = 58;
+        option58.textContent = 'Batch 111';
+        batchSelect.appendChild(option58);
+        const option59 = document.createElement('option');
+        option59.value = 59;
+        option59.textContent = 'Batch 112';
+        batchSelect.appendChild(option59);
+        const option60 = document.createElement('option');
+        option60.value = 60;
+        option60.textContent = 'Batch 113';
+        batchSelect.appendChild(option60);
+        const option61 = document.createElement('option');
+        option61.value = 61;
+        option61.textContent = 'Batch 121';
+        batchSelect.appendChild(option61);
+        const option62 = document.createElement('option');
+        option62.value = 62;
+        option62.textContent = 'Batch 122';
+        batchSelect.appendChild(option62);
+        const option63 = document.createElement('option');
+        option63.value = 63;
+        option63.textContent = 'Batch 123';
+        batchSelect.appendChild(option63);
+        const option64 = document.createElement('option');
+        option64.value = 64;
+        option64.textContent = 'Batch 131';
+        batchSelect.appendChild(option64);
+        const option65 = document.createElement('option');
+        option65.value = 65;
+        option65.textContent = 'Batch 132';
+        batchSelect.appendChild(option65);
+        const option66 = document.createElement('option');
+        option66.value = 66;
+        option66.textContent = 'Batch 133';
+        batchSelect.appendChild(option66);
+        const option67 = document.createElement('option');
+        option67.value = 67;
+        option67.textContent = 'Batch 141';
+        batchSelect.appendChild(option67);
+        const option68 = document.createElement('option');
+        option68.value = 68;
+        option68.textContent = 'Batch 142';
+        batchSelect.appendChild(option68);
+        const option69 = document.createElement('option');
+        option69.value = 69;
+        option69.textContent = 'Batch 143';
+        batchSelect.appendChild(option69);
+        const option70 = document.createElement('option');
+        option70.value = 70;
+        option70.textContent = 'Batch 151';
+        batchSelect.appendChild(option70);
+        const option71 = document.createElement('option');
+        option71.value = 71;
+        option71.textContent = 'Batch 152';
+        batchSelect.appendChild(option71);
+        const option72 = document.createElement('option');
+        option72.value = 72;
+        option72.textContent = 'Batch 153';
+        batchSelect.appendChild(option72);
+        const option73 = document.createElement('option');
+        option73.value = 73;
+        option73.textContent = 'Batch 161';
+        batchSelect.appendChild(option73);
+        const option74 = document.createElement('option');
+        option74.value = 74;
+        option74.textContent = 'Batch 162';
+        batchSelect.appendChild(option74);
+        const option75 = document.createElement('option');
+        option75.value = 75;
+        option75.textContent = 'Batch 163';
+        batchSelect.appendChild(option75);
+        const option1 = document.createElement('option');
+        option1.value = 1;
+        option1.textContent = 'Batch 171';
+        batchSelect.appendChild(option1);
+        const option2 = document.createElement('option');
+        option2.value = 2;
+        option2.textContent = 'Batch 172';
+        batchSelect.appendChild(option2);
+        const option3 = document.createElement('option');
+        option3.value = 3;
+        option3.textContent = 'Batch 173';
+        batchSelect.appendChild(option3);
+        const option4 = document.createElement('option');
+        option4.value = 4;
+        option4.textContent = 'Batch 181';
+        batchSelect.appendChild(option4);
+        const option5 = document.createElement('option');
+        option5.value = 5;
+        option5.textContent = 'Batch 182';
+        batchSelect.appendChild(option5);
+        const option6 = document.createElement('option');
+        option6.value = 6;
+        option6.textContent = 'Batch 183';
+        batchSelect.appendChild(option6);
+        const option7 = document.createElement('option');
+        option7.value = 7;
+        option7.textContent = 'Batch 191';
+        batchSelect.appendChild(option7);
+        const option8 = document.createElement('option');
+        option8.value = 8;
+        option8.textContent = 'Batch 192';
+        batchSelect.appendChild(option8);
+        const option9 = document.createElement('option');
+        option9.value = 9;
+        option9.textContent = 'Batch 193';
+        batchSelect.appendChild(option9);
+        const option10 = document.createElement('option');
+        option10.value = 10;
+        option10.textContent = 'Batch 201';
+        batchSelect.appendChild(option10);
+        const option11 = document.createElement('option');
+        option11.value = 11;
+        option11.textContent = 'Batch 202';
+        batchSelect.appendChild(option11);
+        const option12 = document.createElement('option');
+        option12.value = 12;
+        option12.textContent = 'Batch 203';
+        batchSelect.appendChild(option12);
+        const option13 = document.createElement('option');
+        option13.value = 13;
+        option13.textContent = 'Batch 211';
+        batchSelect.appendChild(option13);
+        const option14 = document.createElement('option');
+        option14.value = 14;
+        option14.textContent = 'Batch 212';
+        batchSelect.appendChild(option14);
+        const option15 = document.createElement('option');
+        option15.value = 15;
+        option15.textContent = 'Batch 213';
+        batchSelect.appendChild(option15);
+        const option16 = document.createElement('option');
+        option16.value = 16;
+        option16.textContent = 'Batch 221';
+        batchSelect.appendChild(option16);
+        const option17 = document.createElement('option');
+        option17.value = 17;
+        option17.textContent = 'Batch 222';
+        batchSelect.appendChild(option17);
+        const option18 = document.createElement('option');
+        option18.value = 18;
+        option18.textContent = 'Batch 223';
+        batchSelect.appendChild(option18);
+        const option24 = document.createElement('option');
+        option24.value = 24;
+        option24.textContent = 'Batch 231';
+        batchSelect.appendChild(option24);
+        const option25 = document.createElement('option');
+        option25.value = 25;
+        option25.textContent = 'Batch 232';
+        batchSelect.appendChild(option25);
+        const option26 = document.createElement('option');
+        option26.value = 26;
+        option26.textContent = 'Batch 233';
+        batchSelect.appendChild(option26);
+        const option19 = document.createElement('option');
+        option19.value = 19;
+        option19.textContent = 'Batch 241';
+        batchSelect.appendChild(option19);
+        const option20 = document.createElement('option');
+        option20.value = 20;
+        option20.textContent = 'Batch 242';
+        batchSelect.appendChild(option20);
+        const option21 = document.createElement('option');
+        option21.value = 21;
+        option21.textContent = 'Batch 243';
+        batchSelect.appendChild(option21);
+        const option22 = document.createElement('option');
+        option22.value = 22;
+        option22.textContent = 'Batch 251';
+        batchSelect.appendChild(option22);
+        const option23 = document.createElement('option');
+        option23.value = 23;
+        option23.textContent = 'Batch 252';
+        batchSelect.appendChild(option23);
+        const option27 = document.createElement('option');
+        option27.value = 27;
+        option27.textContent = 'Batch 253';
+        batchSelect.appendChild(option27);
       } else if (programLevel === 'graduate') {
-        // Generate graduate batches (171-251)
-        for (let year = 17; year <= 25; year++) {
-          for (let trimester = 1; trimester <= 3; trimester++) {
-            const batch = year + '' + trimester;
-            const option = document.createElement('option');
-            option.value = batch;
-            option.textContent = `Batch ${batch}`;
-            batchSelect.appendChild(option);
-          }
-        }
+        // All available batches from database
+        const option28 = document.createElement('option');
+        option28.value = 28;
+        option28.textContent = 'Batch 11';
+        batchSelect.appendChild(option28);
+        const option29 = document.createElement('option');
+        option29.value = 29;
+        option29.textContent = 'Batch 12';
+        batchSelect.appendChild(option29);
+        const option30 = document.createElement('option');
+        option30.value = 30;
+        option30.textContent = 'Batch 13';
+        batchSelect.appendChild(option30);
+        const option31 = document.createElement('option');
+        option31.value = 31;
+        option31.textContent = 'Batch 21';
+        batchSelect.appendChild(option31);
+        const option32 = document.createElement('option');
+        option32.value = 32;
+        option32.textContent = 'Batch 22';
+        batchSelect.appendChild(option32);
+        const option33 = document.createElement('option');
+        option33.value = 33;
+        option33.textContent = 'Batch 23';
+        batchSelect.appendChild(option33);
+        const option34 = document.createElement('option');
+        option34.value = 34;
+        option34.textContent = 'Batch 31';
+        batchSelect.appendChild(option34);
+        const option35 = document.createElement('option');
+        option35.value = 35;
+        option35.textContent = 'Batch 32';
+        batchSelect.appendChild(option35);
+        const option36 = document.createElement('option');
+        option36.value = 36;
+        option36.textContent = 'Batch 33';
+        batchSelect.appendChild(option36);
+        const option37 = document.createElement('option');
+        option37.value = 37;
+        option37.textContent = 'Batch 41';
+        batchSelect.appendChild(option37);
+        const option38 = document.createElement('option');
+        option38.value = 38;
+        option38.textContent = 'Batch 42';
+        batchSelect.appendChild(option38);
+        const option39 = document.createElement('option');
+        option39.value = 39;
+        option39.textContent = 'Batch 43';
+        batchSelect.appendChild(option39);
+        const option40 = document.createElement('option');
+        option40.value = 40;
+        option40.textContent = 'Batch 51';
+        batchSelect.appendChild(option40);
+        const option41 = document.createElement('option');
+        option41.value = 41;
+        option41.textContent = 'Batch 52';
+        batchSelect.appendChild(option41);
+        const option42 = document.createElement('option');
+        option42.value = 42;
+        option42.textContent = 'Batch 53';
+        batchSelect.appendChild(option42);
+        const option43 = document.createElement('option');
+        option43.value = 43;
+        option43.textContent = 'Batch 61';
+        batchSelect.appendChild(option43);
+        const option44 = document.createElement('option');
+        option44.value = 44;
+        option44.textContent = 'Batch 62';
+        batchSelect.appendChild(option44);
+        const option45 = document.createElement('option');
+        option45.value = 45;
+        option45.textContent = 'Batch 63';
+        batchSelect.appendChild(option45);
+        const option46 = document.createElement('option');
+        option46.value = 46;
+        option46.textContent = 'Batch 71';
+        batchSelect.appendChild(option46);
+        const option47 = document.createElement('option');
+        option47.value = 47;
+        option47.textContent = 'Batch 72';
+        batchSelect.appendChild(option47);
+        const option48 = document.createElement('option');
+        option48.value = 48;
+        option48.textContent = 'Batch 73';
+        batchSelect.appendChild(option48);
+        const option49 = document.createElement('option');
+        option49.value = 49;
+        option49.textContent = 'Batch 81';
+        batchSelect.appendChild(option49);
+        const option50 = document.createElement('option');
+        option50.value = 50;
+        option50.textContent = 'Batch 82';
+        batchSelect.appendChild(option50);
+        const option51 = document.createElement('option');
+        option51.value = 51;
+        option51.textContent = 'Batch 83';
+        batchSelect.appendChild(option51);
+        const option52 = document.createElement('option');
+        option52.value = 52;
+        option52.textContent = 'Batch 91';
+        batchSelect.appendChild(option52);
+        const option53 = document.createElement('option');
+        option53.value = 53;
+        option53.textContent = 'Batch 92';
+        batchSelect.appendChild(option53);
+        const option54 = document.createElement('option');
+        option54.value = 54;
+        option54.textContent = 'Batch 93';
+        batchSelect.appendChild(option54);
+        const option55 = document.createElement('option');
+        option55.value = 55;
+        option55.textContent = 'Batch 101';
+        batchSelect.appendChild(option55);
+        const option56 = document.createElement('option');
+        option56.value = 56;
+        option56.textContent = 'Batch 102';
+        batchSelect.appendChild(option56);
+        const option57 = document.createElement('option');
+        option57.value = 57;
+        option57.textContent = 'Batch 103';
+        batchSelect.appendChild(option57);
+        const option58 = document.createElement('option');
+        option58.value = 58;
+        option58.textContent = 'Batch 111';
+        batchSelect.appendChild(option58);
+        const option59 = document.createElement('option');
+        option59.value = 59;
+        option59.textContent = 'Batch 112';
+        batchSelect.appendChild(option59);
+        const option60 = document.createElement('option');
+        option60.value = 60;
+        option60.textContent = 'Batch 113';
+        batchSelect.appendChild(option60);
+        const option61 = document.createElement('option');
+        option61.value = 61;
+        option61.textContent = 'Batch 121';
+        batchSelect.appendChild(option61);
+        const option62 = document.createElement('option');
+        option62.value = 62;
+        option62.textContent = 'Batch 122';
+        batchSelect.appendChild(option62);
+        const option63 = document.createElement('option');
+        option63.value = 63;
+        option63.textContent = 'Batch 123';
+        batchSelect.appendChild(option63);
+        const option64 = document.createElement('option');
+        option64.value = 64;
+        option64.textContent = 'Batch 131';
+        batchSelect.appendChild(option64);
+        const option65 = document.createElement('option');
+        option65.value = 65;
+        option65.textContent = 'Batch 132';
+        batchSelect.appendChild(option65);
+        const option66 = document.createElement('option');
+        option66.value = 66;
+        option66.textContent = 'Batch 133';
+        batchSelect.appendChild(option66);
+        const option67 = document.createElement('option');
+        option67.value = 67;
+        option67.textContent = 'Batch 141';
+        batchSelect.appendChild(option67);
+        const option68 = document.createElement('option');
+        option68.value = 68;
+        option68.textContent = 'Batch 142';
+        batchSelect.appendChild(option68);
+        const option69 = document.createElement('option');
+        option69.value = 69;
+        option69.textContent = 'Batch 143';
+        batchSelect.appendChild(option69);
+        const option70 = document.createElement('option');
+        option70.value = 70;
+        option70.textContent = 'Batch 151';
+        batchSelect.appendChild(option70);
+        const option71 = document.createElement('option');
+        option71.value = 71;
+        option71.textContent = 'Batch 152';
+        batchSelect.appendChild(option71);
+        const option72 = document.createElement('option');
+        option72.value = 72;
+        option72.textContent = 'Batch 153';
+        batchSelect.appendChild(option72);
+        const option73 = document.createElement('option');
+        option73.value = 73;
+        option73.textContent = 'Batch 161';
+        batchSelect.appendChild(option73);
+        const option74 = document.createElement('option');
+        option74.value = 74;
+        option74.textContent = 'Batch 162';
+        batchSelect.appendChild(option74);
+        const option75 = document.createElement('option');
+        option75.value = 75;
+        option75.textContent = 'Batch 163';
+        batchSelect.appendChild(option75);
+        const option1 = document.createElement('option');
+        option1.value = 1;
+        option1.textContent = 'Batch 171';
+        batchSelect.appendChild(option1);
+        const option2 = document.createElement('option');
+        option2.value = 2;
+        option2.textContent = 'Batch 172';
+        batchSelect.appendChild(option2);
+        const option3 = document.createElement('option');
+        option3.value = 3;
+        option3.textContent = 'Batch 173';
+        batchSelect.appendChild(option3);
+        const option4 = document.createElement('option');
+        option4.value = 4;
+        option4.textContent = 'Batch 181';
+        batchSelect.appendChild(option4);
+        const option5 = document.createElement('option');
+        option5.value = 5;
+        option5.textContent = 'Batch 182';
+        batchSelect.appendChild(option5);
+        const option6 = document.createElement('option');
+        option6.value = 6;
+        option6.textContent = 'Batch 183';
+        batchSelect.appendChild(option6);
+        const option7 = document.createElement('option');
+        option7.value = 7;
+        option7.textContent = 'Batch 191';
+        batchSelect.appendChild(option7);
+        const option8 = document.createElement('option');
+        option8.value = 8;
+        option8.textContent = 'Batch 192';
+        batchSelect.appendChild(option8);
+        const option9 = document.createElement('option');
+        option9.value = 9;
+        option9.textContent = 'Batch 193';
+        batchSelect.appendChild(option9);
+        const option10 = document.createElement('option');
+        option10.value = 10;
+        option10.textContent = 'Batch 201';
+        batchSelect.appendChild(option10);
+        const option11 = document.createElement('option');
+        option11.value = 11;
+        option11.textContent = 'Batch 202';
+        batchSelect.appendChild(option11);
+        const option12 = document.createElement('option');
+        option12.value = 12;
+        option12.textContent = 'Batch 203';
+        batchSelect.appendChild(option12);
+        const option13 = document.createElement('option');
+        option13.value = 13;
+        option13.textContent = 'Batch 211';
+        batchSelect.appendChild(option13);
+        const option14 = document.createElement('option');
+        option14.value = 14;
+        option14.textContent = 'Batch 212';
+        batchSelect.appendChild(option14);
+        const option15 = document.createElement('option');
+        option15.value = 15;
+        option15.textContent = 'Batch 213';
+        batchSelect.appendChild(option15);
+        const option16 = document.createElement('option');
+        option16.value = 16;
+        option16.textContent = 'Batch 221';
+        batchSelect.appendChild(option16);
+        const option17 = document.createElement('option');
+        option17.value = 17;
+        option17.textContent = 'Batch 222';
+        batchSelect.appendChild(option17);
+        const option18 = document.createElement('option');
+        option18.value = 18;
+        option18.textContent = 'Batch 223';
+        batchSelect.appendChild(option18);
+        const option24 = document.createElement('option');
+        option24.value = 24;
+        option24.textContent = 'Batch 231';
+        batchSelect.appendChild(option24);
+        const option25 = document.createElement('option');
+        option25.value = 25;
+        option25.textContent = 'Batch 232';
+        batchSelect.appendChild(option25);
+        const option26 = document.createElement('option');
+        option26.value = 26;
+        option26.textContent = 'Batch 233';
+        batchSelect.appendChild(option26);
+        const option19 = document.createElement('option');
+        option19.value = 19;
+        option19.textContent = 'Batch 241';
+        batchSelect.appendChild(option19);
+        const option20 = document.createElement('option');
+        option20.value = 20;
+        option20.textContent = 'Batch 242';
+        batchSelect.appendChild(option20);
+        const option21 = document.createElement('option');
+        option21.value = 21;
+        option21.textContent = 'Batch 243';
+        batchSelect.appendChild(option21);
+        const option22 = document.createElement('option');
+        option22.value = 22;
+        option22.textContent = 'Batch 251';
+        batchSelect.appendChild(option22);
+        const option23 = document.createElement('option');
+        option23.value = 23;
+        option23.textContent = 'Batch 252';
+        batchSelect.appendChild(option23);
+        const option27 = document.createElement('option');
+        option27.value = 27;
+        option27.textContent = 'Batch 253';
+        batchSelect.appendChild(option27);
       }
     }
+
 
     // Password strength indicator
     function checkPasswordStrength() {
@@ -192,8 +799,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       
       if (password.length === 0) {
         strengthIndicator.style.display = 'none';
-          return;
-        }
+        return;
+      }
         
       strengthIndicator.style.display = 'block';
       
@@ -211,6 +818,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       strengthIndicator.style.color = strengthColors[strength];
     }
 
+    // Password match indicator
+    function checkPasswordMatch() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm_password').value;
+      const matchIndicator = document.getElementById('password-match');
+      
+      if (confirmPassword.length === 0) {
+        matchIndicator.style.display = 'none';
+        return;
+      }
+      
+      matchIndicator.style.display = 'block';
+      
+      if (password === confirmPassword) {
+        matchIndicator.textContent = '✓ Passwords match';
+        matchIndicator.style.color = '#00aa00';
+      } else {
+        matchIndicator.textContent = '✗ Passwords do not match';
+        matchIndicator.style.color = '#ff4444';
+      }
+    }
+
     // Form validation
     function validateForm() {
       const name = document.getElementById('name').value.trim();
@@ -219,6 +848,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirm_password').value;
       const departmentId = document.getElementById('department_id').value;
+      const userType = document.getElementById('user_type').value;
+      const batchId = document.getElementById('batch_id').value;
       
       let isValid = true;
       let errorMessage = '';
@@ -253,6 +884,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         isValid = false;
       }
       
+      // Batch validation for students
+      if (userType === 'student' && !batchId) {
+        errorMessage += 'Batch is required for students.\n';
+        isValid = false;
+      }
+      
       if (!isValid) {
         alert(errorMessage);
       }
@@ -264,14 +901,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     document.addEventListener('DOMContentLoaded', () => {
       updateDepartments();
       updateBatches();
+      updateBatchFieldVisibility();
       
       // Add event listeners
+      document.getElementById('user_type').addEventListener('change', updateBatchFieldVisibility);
       document.getElementById('program_level').addEventListener('change', () => {
         updateDepartments();
         updateBatches();
       });
       
       document.getElementById('password').addEventListener('input', checkPasswordStrength);
+      document.getElementById('confirm_password').addEventListener('input', checkPasswordMatch);
+      document.getElementById('password').addEventListener('input', checkPasswordMatch);
       
       // Form submission
       document.getElementById('signup-form').addEventListener('submit', (e) => {
@@ -577,38 +1218,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="">Select Program Level First</option>
           </select>
         </div>
-        <div class="field" id="batch_field" style="display: none;">
+        <div class="field" id="batch_field">
           <label class="label">Batch/Trimester</label>
-          <select class="input" name="batch_id">
-            <option value="">Select Batch (Optional for Alumni)</option>
-            <option value="1">171</option>
-            <option value="2">172</option>
-            <option value="3">173</option>
-            <option value="4">181</option>
-            <option value="5">182</option>
-            <option value="6">183</option>
-            <option value="7">191</option>
-            <option value="8">192</option>
-            <option value="9">193</option>
-            <option value="10">201</option>
-            <option value="11">202</option>
-            <option value="12">203</option>
-            <option value="13">211</option>
-            <option value="14">212</option>
-            <option value="15">213</option>
-            <option value="16">221</option>
-            <option value="17">222</option>
-            <option value="18">223</option>
-            <option value="19">241</option>
-            <option value="20">242</option>
-            <option value="21">243</option>
-            <option value="22">251</option>
-            <option value="23">252</option>
+          <select class="input" name="batch_id" id="batch_id">
+            <option value="">Select Batch (Required for Students)</option>
           </select>
         </div>
         <div class="field">
           <label class="label">Password</label>
-          <input class="input" type="password" name="password" placeholder="At least 8 chars, letters and numbers" required />
+          <input class="input" type="password" name="password" id="password" placeholder="At least 8 chars, letters and numbers" required />
+          <div id="password-strength" class="password-strength" style="display: none;"></div>
+        </div>
+        <div class="field">
+          <label class="label">Confirm Password</label>
+          <input class="input" type="password" name="confirm_password" id="confirm_password" placeholder="Confirm your password" required />
+          <div id="password-match" class="password-strength" style="display: none;"></div>
         </div>
         <button class="btn btn-primary" type="submit">Create account</button>
         <div id="error" class="error"></div>

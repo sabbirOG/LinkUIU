@@ -36,33 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $token_valid) {
                 'confirm_password' => $confirm_password
             ];
             
-            $context = stream_context_create([
-                'http' => [
-                    'header' => [
-                        'Content-Type: application/json',
-                        'X-CSRF-Token: ' . ($_SESSION['csrf_token'] ?? '')
-                    ],
-                    'method' => 'POST',
-                    'content' => json_encode($payload),
-                    'timeout' => 10
-                ]
-            ]);
+            $result = makeApiCall('/auth/reset-password', 'POST', $payload, false);
             
-            $response = @file_get_contents($api_base . '/auth/reset-password', false, $context);
-            
-            if ($response === false) {
-                throw new Exception('Cannot connect to server. Please check if the backend server is running.');
-            }
-            
-            $result = json_decode($response, true);
-            
-            if (isset($result['error'])) {
-                $error_message = $result['error'];
-            } else {
-                $success_message = 'Password has been reset successfully! Redirecting to login...';
-                // Redirect to login after 3 seconds
-                header("refresh:3;url=./login.php");
-            }
+            $success_message = 'Password has been reset successfully! Redirecting to login...';
+            // Redirect to login after 3 seconds
+            header("refresh:3;url=./login.php");
         } catch (Exception $e) {
             $error_message = $e->getMessage();
         }

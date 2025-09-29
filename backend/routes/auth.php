@@ -31,5 +31,15 @@ route('GET', '/auth/me', function () {
     return $controller->me($authUserId);
 });
 
+route('POST', '/auth/forgot-password', function () {
+    $controller = new authController();
+    return $controller->forgotPassword(json_decode(file_get_contents('php://input'), true) ?: []);
+});
+
+route('POST', '/auth/reset-password', function () {
+    $controller = new authController();
+    return $controller->resetPassword(json_decode(file_get_contents('php://input'), true) ?: []);
+});
+
 ?>
 

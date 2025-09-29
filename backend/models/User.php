@@ -24,7 +24,7 @@ class User {
     }
 
     public function findById(int $id): ?array {
-        $stmt = $this->pdo->prepare('SELECT id, name, email, user_type, department_id, batch_id, current_job, designation, company, location_city, location_country, skills, interests, linkedin, github, website, resume, profile_visibility, created_at FROM users WHERE id = ? LIMIT 1');
+        $stmt = $this->pdo->prepare('SELECT id, name, email, student_id, user_type, department_id, batch_id, current_job, designation, company, location_city, location_country, skills, interests, linkedin, github, instagram, facebook, twitter, website, resume, profile_visibility, created_at FROM users WHERE id = ? LIMIT 1');
         $stmt->execute([$id]);
         $row = $stmt->fetch();
         return $row ?: null;
@@ -37,7 +37,7 @@ class User {
     }
 
     public function updateProfile(int $id, array $fields): bool {
-        $allowed = ['name', 'current_job', 'designation', 'company', 'location_city', 'location_country', 'skills', 'interests', 'linkedin', 'github', 'website', 'resume', 'profile_visibility'];
+        $allowed = ['name', 'current_job', 'designation', 'company', 'location_city', 'location_country', 'skills', 'interests', 'linkedin', 'github', 'instagram', 'facebook', 'twitter', 'website', 'resume', 'profile_visibility'];
         $set = [];
         $values = [];
         foreach ($allowed as $key) {
