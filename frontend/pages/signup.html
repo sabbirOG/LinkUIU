@@ -7,6 +7,59 @@
   <link rel="stylesheet" href="../assets/css/style.css" />
   <script defer src="../assets/js/main.js"></script>
   <script>
+    // Department data organized by program level
+    const departments = {
+      undergraduate: [
+        { id: 1, name: 'CSE (Computer Science & Engineering)', school: 'School of Science and Engineering (SoSE)' },
+        { id: 2, name: 'EEE (Electrical & Electronic Engineering)', school: 'School of Science and Engineering (SoSE)' },
+        { id: 5, name: 'CE (Civil Engineering)', school: 'School of Science and Engineering (SoSE)' },
+        { id: 12, name: 'Data Science', school: 'School of Science and Engineering (SoSE)' },
+        { id: 3, name: 'BBA (Business Administration)', school: 'School of Business and Economics (SoBE)' },
+        { id: 4, name: 'BBA in AIS (Accounting Information System)', school: 'School of Business and Economics (SoBE)' },
+        { id: 6, name: 'ECO (Economics)', school: 'School of Business and Economics (SoBE)' },
+        { id: 7, name: 'EDS (Environment and Development Studies)', school: 'School of Humanities and Social Sciences (SoHS)' },
+        { id: 8, name: 'English (English Language & Literature)', school: 'School of Humanities and Social Sciences (SoHS)' },
+        { id: 11, name: 'MSJ (Media Studies and Journalism)', school: 'School of Humanities and Social Sciences (SoHS)' },
+        { id: 9, name: 'BGE (Biotechnology & Genetic Engineering)', school: 'School of Life Sciences (SoLS)' },
+        { id: 10, name: 'Pharmacy', school: 'School of Life Sciences (SoLS)' }
+      ],
+      graduate: [
+        { id: 13, name: 'MBA (Master of Business Administration)', school: 'School of Business and Economics (SoBE)' },
+        { id: 14, name: 'EMBA (Executive Master of Business Administration)', school: 'School of Business and Economics (SoBE)' },
+        { id: 15, name: 'MSCSE (Master of Science in Computer Science & Engineering)', school: 'School of Science and Engineering (SoSE)' },
+        { id: 16, name: 'MDS (Master in Development Studies)', school: 'School of Humanities and Social Sciences (SoHS)' },
+        { id: 17, name: 'M.Sc. in Economics', school: 'School of Business and Economics (SoBE)' }
+      ]
+    };
+
+    // Update departments based on program level
+    function updateDepartments() {
+      const programLevel = document.getElementById('program_level').value;
+      const departmentSelect = document.getElementById('department_id');
+      
+      // Clear existing options
+      departmentSelect.innerHTML = '<option value="">Select Department</option>';
+      
+      if (programLevel && departments[programLevel]) {
+        let currentSchool = '';
+        departments[programLevel].forEach(dept => {
+          // Add school header if it's different from the previous one
+          if (dept.school !== currentSchool) {
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = dept.school;
+            departmentSelect.appendChild(optgroup);
+            currentSchool = dept.school;
+          }
+          
+          // Add department option
+          const option = document.createElement('option');
+          option.value = dept.id;
+          option.textContent = dept.name;
+          departmentSelect.appendChild(option);
+        });
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('signup-form');
       const err = document.getElementById('error');
@@ -298,20 +351,17 @@
           <input class="input" name="student_id" placeholder="011XXXXXXX" pattern="01\d{8}" required />
         </div>
         <div class="field">
+          <label class="label">Program Level</label>
+          <select class="input" name="program_level" id="program_level" required onchange="updateDepartments()">
+            <option value="">Select Program Level</option>
+            <option value="undergraduate">Undergraduate Program</option>
+            <option value="graduate">Graduate Program</option>
+          </select>
+        </div>
+        <div class="field">
           <label class="label">Department</label>
-          <select class="input" name="department_id" required>
-            <option value="">Select Department</option>
-            <option value="1">CSE (Computer Science & Engineering)</option>
-            <option value="2">EEE (Electrical & Electronic Engineering)</option>
-            <option value="3">BBA in AIS (Business Administration in Accounting Information Systems)</option>
-            <option value="4">CE (Civil Engineering)</option>
-            <option value="5">ECO (Economics)</option>
-            <option value="6">EDS (Environment and Development Studies)</option>
-            <option value="7">English (English Language & Literature)</option>
-            <option value="8">BGE (Biotechnology & Genetic Engineering)</option>
-            <option value="9">Pharmacy</option>
-            <option value="10">MSJ (Media Studies and Journalism)</option>
-            <option value="11">Data Science</option>
+          <select class="input" name="department_id" id="department_id" required>
+            <option value="">Select Program Level First</option>
           </select>
         </div>
         <div class="field" id="batch_field" style="display: none;">

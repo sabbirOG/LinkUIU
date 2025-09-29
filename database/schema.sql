@@ -23,7 +23,8 @@ DROP TABLE IF EXISTS batches;
 -- 2. Departments Table
 CREATE TABLE departments (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE
+    name VARCHAR(100) NOT NULL UNIQUE,
+    program_level ENUM('undergraduate', 'graduate') NOT NULL DEFAULT 'undergraduate'
 );
 
 -- 3. Batches Table
@@ -142,25 +143,33 @@ CREATE INDEX idx_sessions_user ON sessions(user_id);
 -- ======================================
 -- Sample Data Insert (Optional)
 -- ======================================
-INSERT INTO departments (id, name) VALUES 
-(1, 'CSE (Computer Science & Engineering)'),
-(2, 'EEE (Electrical & Electronic Engineering)'),
-(3, 'BBA in AIS (Business Administration in Accounting Information Systems)'),
-(4, 'CE (Civil Engineering)'),
-(5, 'ECO (Economics)'),
-(6, 'EDS (Environment and Development Studies)'),
-(7, 'English (English Language & Literature)'),
-(8, 'BGE (Biotechnology & Genetic Engineering)'),
-(9, 'Pharmacy'),
-(10, 'MSJ (Media Studies and Journalism)'),
-(11, 'Data Science');
+INSERT INTO departments (id, name, program_level) VALUES 
+-- Undergraduate Programs
+(1, 'CSE (Computer Science & Engineering)', 'undergraduate'),
+(2, 'EEE (Electrical & Electronic Engineering)', 'undergraduate'),
+(3, 'BBA (Business Administration)', 'undergraduate'),
+(4, 'BBA in AIS (Accounting Information System)', 'undergraduate'),
+(5, 'CE (Civil Engineering)', 'undergraduate'),
+(6, 'ECO (Economics)', 'undergraduate'),
+(7, 'EDS (Environment and Development Studies)', 'undergraduate'),
+(8, 'English (English Language & Literature)', 'undergraduate'),
+(9, 'BGE (Biotechnology & Genetic Engineering)', 'undergraduate'),
+(10, 'Pharmacy', 'undergraduate'),
+(11, 'MSJ (Media Studies and Journalism)', 'undergraduate'),
+(12, 'Data Science', 'undergraduate'),
+-- Graduate Programs
+(13, 'MBA (Master of Business Administration)', 'graduate'),
+(14, 'EMBA (Executive Master of Business Administration)', 'graduate'),
+(15, 'MSCSE (Master of Science in Computer Science & Engineering)', 'graduate'),
+(16, 'MDS (Master in Development Studies)', 'graduate'),
+(17, 'M.Sc. in Economics', 'graduate');
 INSERT INTO batches (trimester) VALUES (171), (172), (173), (181), (182), (183), (191), (192), (193), (201), (202), (203), (211), (212), (213), (221), (222), (223), (241), (242), (243), (251), (252);
 
 -- Sample Users
 INSERT INTO users (id, name, email, student_id, password, user_type, department_id, batch_id, current_job, designation, company, location_city, location_country, skills, interests, linkedin, github, website, resume, profile_visibility) VALUES
 (1, 'Alice Ahmed', 'alice@alumni.uiu.ac.bd', '011111111', '$2y$10$Oq3Y0dJ3c0EO2v8v3v2W6O8oXwM4aQ9X3k4kK9w4H0Gkzq8o8m1mS', 'alumni', 1, 1, 'Software Engineer', 'Engineer', 'TechNova', 'Dhaka', 'Bangladesh', 'PHP,MySQL,REST', NULL, 'https://linkedin.com/in/alice', NULL, NULL, NULL, 'public'),
 (2, 'Bashir Khan', 'bashir@bscse.uiu.ac.bd', '012222222', '$2y$10$Oq3Y0dJ3c0EO2v8v3v2W6O8oXwM4aQ9X3k4kK9w4H0Gkzq8o8m1mS', 'student', 1, 2, NULL, NULL, NULL, 'Chittagong', 'Bangladesh', 'Python,Data', NULL, NULL, NULL, NULL, NULL, 'public'),
-(3, 'Chaya Rahman', 'chaya@alumni.uiu.ac.bd', '013333333', '$2y$10$Oq3Y0dJ3c0EO2v8v3v2W6O8oXwM4aQ9X3k4kK9w4H0Gkzq8o8m1mS', 'alumni', 1, 3, 'Product Manager', 'PM', 'BrightApps', 'Sylhet', 'Bangladesh', 'Product,Agile', NULL, 'https://linkedin.com/in/chaya', NULL, NULL, NULL, 'public')
+(3, 'Chaya Rahman', 'chaya@alumni.uiu.ac.bd', '013333333', '$2y$10$Oq3Y0dJ3c0EO2v8v3v2W6O8oXwM4aQ9X3k4kK9w4H0Gkzq8o8m1mS', 'alumni', 3, 3, 'Product Manager', 'PM', 'BrightApps', 'Sylhet', 'Bangladesh', 'Product,Agile', NULL, 'https://linkedin.com/in/chaya', NULL, NULL, NULL, 'public')
 ON DUPLICATE KEY UPDATE name = VALUES(name);
 
 -- Sample Jobs
