@@ -18,9 +18,9 @@
         outline: none;
       }
     </style>
-    <link rel="preload" href="../assets/images/alumni/featured/alumni-tarek.jpg" as="image">
-    <link rel="preload" href="../assets/images/alumni/featured/alumni-zakir.jpg" as="image">
-    <link rel="preload" href="../assets/images/alumni/featured/alumni-sonet.jpg" as="image">
+    <link rel="preload" href="../assets/images/featured/alumni-tarek.jpg" as="image">
+    <link rel="preload" href="../assets/images/featured/alumni-zakir.jpg" as="image">
+    <link rel="preload" href="../assets/images/featured/alumni-sonet.jpg" as="image">
 </head>
 <body>
     <header class="header">
@@ -327,11 +327,9 @@
             
             // Try different possible paths
             const fallbackPaths = [
-                `../assets/images/alumni/featured/${imageName}`,
+                `../assets/images/featured/${imageName}`,
                 `./assets/images/featured/${imageName}`,
-                `./assets/images/alumni/featured/${imageName}`,
-                `/LinkUIU/frontend/assets/images/featured/${imageName}`,
-                `/LinkUIU/frontend/assets/images/alumni/featured/${imageName}`
+                `/LinkUIU/frontend/assets/images/featured/${imageName}`
             ];
             
             let currentIndex = 0;

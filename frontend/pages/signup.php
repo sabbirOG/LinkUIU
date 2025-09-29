@@ -491,11 +491,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </button>
       <nav class="nav">
         <span class="nav-link" onclick="location.href='./landing.html'" style="cursor: pointer;">Home</span>
-        <span class="nav-link" onclick="location.href='./jobs.html'" style="cursor: pointer;">Jobs</span>
-        <span class="nav-link" onclick="location.href='./connections.html'" style="cursor: pointer;">Connect</span>
-        <span class="nav-link" onclick="location.href='./messages.html'" style="cursor: pointer;">Messages</span>
-        <span class="nav-link" onclick="location.href='./search.html'" style="cursor: pointer;">Directory</span>
-        <span class="nav-link" onclick="location.href='./profile.html'" style="cursor: pointer;">Profile</span>
+        <span class="nav-link" onclick="location.href='./jobs.php'" style="cursor: pointer;">Jobs</span>
+        <span class="nav-link" onclick="location.href='./connections.php'" style="cursor: pointer;">Connect</span>
+        <span class="nav-link" onclick="location.href='./messages.php'" style="cursor: pointer;">Messages</span>
+        <span class="nav-link" onclick="location.href='./search.php'" style="cursor: pointer;">Directory</span>
+        <span class="nav-link" onclick="location.href='./profile.php'" style="cursor: pointer;">Profile</span>
         <a href="./login.php" class="btn btn-primary">Login</a>
       </nav>
     </div>
@@ -509,11 +509,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="mobile-nav-links">
           <span onclick="location.href='./landing.html'; closeMobileMenu();" style="cursor: pointer;">Home</span>
-          <span onclick="location.href='./jobs.html'; closeMobileMenu();" style="cursor: pointer;">Jobs</span>
-          <span onclick="location.href='./connections.html'; closeMobileMenu();" style="cursor: pointer;">Connect</span>
-          <span onclick="location.href='./messages.html'; closeMobileMenu();" style="cursor: pointer;">Messages</span>
-          <span onclick="location.href='./search.html'; closeMobileMenu();" style="cursor: pointer;">Directory</span>
-          <span onclick="location.href='./profile.html'; closeMobileMenu();" style="cursor: pointer;">Profile</span>
+          <span onclick="location.href='./jobs.php'; closeMobileMenu();" style="cursor: pointer;">Jobs</span>
+          <span onclick="location.href='./connections.php'; closeMobileMenu();" style="cursor: pointer;">Connect</span>
+          <span onclick="location.href='./messages.php'; closeMobileMenu();" style="cursor: pointer;">Messages</span>
+          <span onclick="location.href='./search.php'; closeMobileMenu();" style="cursor: pointer;">Directory</span>
+          <span onclick="location.href='./profile.php'; closeMobileMenu();" style="cursor: pointer;">Profile</span>
           <a href="./login.php" class="btn btn-primary">Login</a>
         </div>
       </div>

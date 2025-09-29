@@ -31,17 +31,17 @@
         
         if (!token) {
           // No token - redirect to landing page
-          window.location.replace('landing.html');
+          window.location.replace('frontend/pages/landing.html');
           return;
         }
 
         // For now, just redirect to dashboard if token exists
         // TODO: Add proper token validation when needed
-        window.location.replace('frontend/pages/dashboard.html');
+        window.location.replace('frontend/pages/dashboard.php');
       } catch (error) {
         // Any error - redirect to landing page
         console.log('Auth check failed, redirecting to landing page');
-        window.location.replace('landing.html');
+        window.location.replace('frontend/pages/landing.html');
       }
     }
 

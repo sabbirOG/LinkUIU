@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['auth_user'] = $result['user'];
                     $success_message = 'Login successful! Redirecting to dashboard...';
                     // Redirect to dashboard after 2 seconds
-                    header("refresh:2;url=./dashboard.html");
+                    header("refresh:2;url=./dashboard.php");
                 }
             } catch (Exception $e) {
                 $error_message = $e->getMessage();
@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           const data = await LinkUIU.api('/auth/login', { method: 'POST', body: payload });
           LinkUIU.saveAuth(data);
           LinkUIU.showToast('Logged in', 'success');
-          location.href = './dashboard.html';
+          location.href = './dashboard.php';
         } catch (e) {
           err.textContent = e.message;
           LinkUIU.showToast(e.message, 'error');
