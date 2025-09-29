@@ -5,6 +5,7 @@ global $ROUTES;
 if (!isset($ROUTES)) { $ROUTES = []; }
 
 route('GET', '/jobs', function () {
+    requireAuth();
     $controller = new jobController();
     return $controller->listJobs();
 });
@@ -18,6 +19,7 @@ route('POST', '/jobs', function () {
 });
 
 route('GET', '/jobs/(\d+)', function ($jobId) {
+    requireAuth();
     $controller = new jobController();
     return $controller->getJob((int)$jobId);
 });

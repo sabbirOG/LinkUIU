@@ -10,6 +10,7 @@ route('GET', '/search/users', function () {
 });
 
 route('GET', '/search/jobs', function () {
+    requireAuth();
     $controller = new searchController();
     return $controller->jobs($_GET);
 });
