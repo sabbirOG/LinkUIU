@@ -705,6 +705,16 @@ input, button { font: inherit; }
   font-size: 1rem;
 }
 
+/* Remove focus outline from buttons */
+.btn:focus {
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.btn:active {
+  outline: none;
+}
+
 .btn-primary { 
   background: linear-gradient(135deg, #ff6f00, #f57c00); 
   color: white; 
