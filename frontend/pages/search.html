@@ -5,8 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Search - LinkUIU</title>
   <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    /* Desktop layout for search results */
+    @media (min-width: 768px) {
+      .search-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      
+      .search-form-section {
+        position: sticky;
+        top: 20px;
+        height: fit-content;
+      }
+      
+      .search-results-section {
+        min-height: 500px;
+      }
+      
+      .search-results-section h3 {
+        margin-bottom: 20px;
+        color: var(--color-text);
+        font-size: 1.2rem;
+      }
+    }
+    
+    /* Mobile layout remains single column */
+    @media (max-width: 767px) {
+      .search-container {
+        display: block;
+      }
+    }
+  </style>
   <script defer src="../assets/js/main.js"></script>
   <script>
+    // Check if user is authenticated
+    const isAuthenticated = !!localStorage.getItem('auth_token');
+    
     async function doSearch(e) {
       e && e.preventDefault();
       const tab = document.querySelector('input[name=tab]:checked').value;
@@ -14,9 +53,14 @@
       const location = document.getElementById('location').value.trim();
       const out = document.getElementById('results');
       out.innerHTML = '';
+      
+      console.log('Searching for:', { tab, q, location });
+      
       try {
         if (tab === 'users') {
+          console.log('Searching users with query:', q);
           const u = await LinkUIU.api(`/search/users?q=${encodeURIComponent(q)}`);
+          console.log('Search results:', u);
           if (!u.length) {
             const empty = document.createElement('div'); empty.className='subtitle'; empty.textContent='No users found'; out.replaceChildren(empty); return;
           }
@@ -49,7 +93,16 @@
             out.appendChild(card);
           }
         } else {
-          const j = await LinkUIU.api(`/search/jobs?q=${encodeURIComponent(q)}&location=${encodeURIComponent(location)}`);
+          // Only allow job search for authenticated users
+          if (!isAuthenticated) {
+            const err = document.createElement('div'); 
+            err.className='error'; 
+            err.innerHTML = 'Please <a href="login.html">login</a> to search for jobs.';
+            out.replaceChildren(err); 
+            return;
+          }
+          
+          const j = await LinkUIU.api(`/search/jobs?q=${encodeURIComponent(q)}&location=${encodeURIComponent(location)}`, { auth: true });
           if (!j.length) {
             const empty = document.createElement('div'); empty.className='subtitle'; empty.textContent='No jobs found'; out.replaceChildren(empty); return;
           }
@@ -64,46 +117,50 @@
         const err = document.createElement('div'); err.className='error'; err.textContent = e.message; out.replaceChildren(err);
       }
     }
+    
     document.addEventListener('DOMContentLoaded', () => {
+      // Generate appropriate navbar based on authentication status
+      const navbarContainer = document.getElementById('navbar-container');
+      navbarContainer.innerHTML = LinkUIU.createStandardNavbar(isAuthenticated);
+      
+      // Hide job search option for non-authenticated users
+      const jobRadio = document.querySelector('input[name=tab][value="jobs"]');
+      const jobLabel = jobRadio ? jobRadio.parentElement : null;
+      const locationInput = document.getElementById('location');
+      
+      if (!isAuthenticated) {
+        if (jobRadio) jobRadio.style.display = 'none';
+        if (jobLabel) jobLabel.style.display = 'none';
+        if (locationInput) locationInput.style.display = 'none';
+      }
+      
       document.getElementById('search-form').addEventListener('submit', doSearch);
       document.querySelectorAll('input[name=tab]').forEach(r=>r.addEventListener('change', doSearch));
     });
   </script>
 </head>
 <body>
-  <div class="header"><div class="header-inner">
-    <div class="brand-left">
-      <img class="uiu-logo" src="../assets/images/uiu_logo.png?v=2" alt="UIU logo" />
+  <div id="navbar-container"></div>
+  <div class="search-container">
+    <div class="search-form-section">
+      <div class="card">
+        <h3>Search Directory</h3>
+        <form id="search-form">
+          <input id="q" class="input" placeholder="Search by name, skills, or ID..." />
+          <input id="location" class="input" placeholder="Location (for jobs)" />
+          <div class="row">
+            <label class="row"><input type="radio" name="tab" value="users" checked />&nbsp;Users</label>
+            <label class="row"><input type="radio" name="tab" value="jobs" />&nbsp;Jobs</label>
+          </div>
+          <button class="btn btn-primary">Search</button>
+        </form>
+      </div>
     </div>
-    <div class="brand-center">
+    
+    <div class="search-results-section">
+      <h3>Search Results</h3>
+      <div id="results" style="display:grid; gap:16px;"></div>
     </div>
-    <div class="brand-right">
-      <img class="linkuiu-logo" src="../assets/images/linkuiu_logo.png" alt="LinkUIU logo" onclick="location.href='./dashboard.html'" style="cursor: pointer;" />
-    </div>
-    <div class="nav">
-      <a href="./dashboard.html">Home</a>
-      <a href="./profile.html">Profile</a>
-      <a href="./jobs.html">Jobs</a>
-      <a href="./applications.html">My Applications</a>
-      <a href="./connections.html">Connections</a>
-      <a href="./messages.html">Messages</a>
-      <a href="./search.html">Search</a>
-      <button class="btn btn-primary" onclick="localStorage.clear(); location.href='./login.html'">Logout</button>
-    </div>
-  </div></div>
-  <div class="container">
-    <div class="card mt-24">
-      <form id="search-form" class="row">
-        <input id="q" class="input" placeholder="Search..." />
-        <input id="location" class="input" placeholder="Location (for jobs)" />
-        <div class="row">
-          <label class="row"><input type="radio" name="tab" value="users" checked />&nbsp;Users</label>
-          <label class="row"><input type="radio" name="tab" value="jobs" />&nbsp;Jobs</label>
-        </div>
-        <button class="btn btn-primary">Search</button>
-      </form>
-    </div>
-    <div id="results" class="mt-24" style="display:grid; gap:16px;"></div>
   </div>
 </body>
 </html>

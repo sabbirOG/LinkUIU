@@ -142,9 +142,44 @@ CREATE INDEX idx_sessions_user ON sessions(user_id);
 -- ======================================
 -- Sample Data Insert (Optional)
 -- ======================================
-INSERT INTO departments (name) VALUES ('CSE'), ('EEE'), ('BBA'), ('CE'), ('ECO'), ('EDS'), ('English'), ('BGE'), ('Pharm');
+INSERT INTO departments (id, name) VALUES 
+(1, 'CSE (Computer Science & Engineering)'),
+(2, 'EEE (Electrical & Electronic Engineering)'),
+(3, 'BBA in AIS (Business Administration in Accounting Information Systems)'),
+(4, 'CE (Civil Engineering)'),
+(5, 'ECO (Economics)'),
+(6, 'EDS (Environment and Development Studies)'),
+(7, 'English (English Language & Literature)'),
+(8, 'BGE (Biotechnology & Genetic Engineering)'),
+(9, 'Pharmacy'),
+(10, 'MSJ (Media Studies and Journalism)'),
+(11, 'Data Science');
 INSERT INTO batches (trimester) VALUES (171), (172), (173), (181), (182), (183), (191), (192), (193), (201), (202), (203), (211), (212), (213), (221), (222), (223), (241), (242), (243), (251), (252);
 
--- Sample user inserts are provided in database/seed.sql. Keeping schema import clean.
+-- Sample Users
+INSERT INTO users (id, name, email, student_id, password, user_type, department_id, batch_id, current_job, designation, company, location_city, location_country, skills, interests, linkedin, github, website, resume, profile_visibility) VALUES
+(1, 'Alice Ahmed', 'alice@alumni.uiu.ac.bd', '011111111', '$2y$10$Oq3Y0dJ3c0EO2v8v3v2W6O8oXwM4aQ9X3k4kK9w4H0Gkzq8o8m1mS', 'alumni', 1, 1, 'Software Engineer', 'Engineer', 'TechNova', 'Dhaka', 'Bangladesh', 'PHP,MySQL,REST', NULL, 'https://linkedin.com/in/alice', NULL, NULL, NULL, 'public'),
+(2, 'Bashir Khan', 'bashir@bscse.uiu.ac.bd', '012222222', '$2y$10$Oq3Y0dJ3c0EO2v8v3v2W6O8oXwM4aQ9X3k4kK9w4H0Gkzq8o8m1mS', 'student', 1, 2, NULL, NULL, NULL, 'Chittagong', 'Bangladesh', 'Python,Data', NULL, NULL, NULL, NULL, NULL, 'public'),
+(3, 'Chaya Rahman', 'chaya@alumni.uiu.ac.bd', '013333333', '$2y$10$Oq3Y0dJ3c0EO2v8v3v2W6O8oXwM4aQ9X3k4kK9w4H0Gkzq8o8m1mS', 'alumni', 1, 3, 'Product Manager', 'PM', 'BrightApps', 'Sylhet', 'Bangladesh', 'Product,Agile', NULL, 'https://linkedin.com/in/chaya', NULL, NULL, NULL, 'public')
+ON DUPLICATE KEY UPDATE name = VALUES(name);
+
+-- Sample Jobs
+INSERT INTO jobs (id, posted_by, title, company, description, location, created_at) VALUES
+(1, 1, 'Backend Developer', 'TechNova', 'Build APIs in PHP', 'Dhaka', NOW()),
+(2, 1, 'Data Analyst', 'InsightWorks', 'SQL + dashboards', 'Chittagong', NOW()),
+(3, 3, 'Product Manager', 'BrightApps', 'Own roadmap and execution', 'Sylhet', NOW())
+ON DUPLICATE KEY UPDATE title = VALUES(title);
+
+-- Sample Connections
+INSERT INTO connections (id, user_id, connection_id, status) VALUES
+(1, 1, 2, 'accepted'),
+(2, 1, 3, 'pending')
+ON DUPLICATE KEY UPDATE status = VALUES(status);
+
+-- Sample Messages
+INSERT INTO messages (id, sender_id, receiver_id, message, created_at) VALUES
+(1, 1, 2, 'Hey Bashir, good to connect!', NOW()),
+(2, 2, 1, 'Hi Alice! Likewise. Are you hiring?', NOW())
+ON DUPLICATE KEY UPDATE message = VALUES(message);
 
 

@@ -12,10 +12,11 @@ class searchController {
         $sql = 'SELECT id, name, email, department_id, batch_id, skills, location_city, location_country FROM users WHERE profile_visibility = "public"';
         $params = [];
         if ($q !== '') {
-            $sql .= ' AND (name LIKE ? OR skills LIKE ?)';
+            $sql .= ' AND (name LIKE ? OR skills LIKE ? OR id = ?)';
             $like = '%' . $q . '%';
             $params[] = $like;
             $params[] = $like;
+            $params[] = $q;
         }
         if ($departmentId) {
             $sql .= ' AND department_id = ?';
