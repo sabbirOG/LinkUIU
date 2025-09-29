@@ -485,11 +485,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="mobile-nav-links">
           <span onclick="location.href='./landing.html'; closeMobileMenu();" style="cursor: pointer;">Home</span>
-          <span onclick="location.href='./jobs.html'; closeMobileMenu();" style="cursor: pointer;">Jobs</span>
-          <span onclick="location.href='./connections.html'; closeMobileMenu();" style="cursor: pointer;">Connect</span>
-          <span onclick="location.href='./messages.html'; closeMobileMenu();" style="cursor: pointer;">Messages</span>
-          <span onclick="location.href='./search.html'; closeMobileMenu();" style="cursor: pointer;">Directory</span>
-          <span onclick="location.href='./profile.html'; closeMobileMenu();" style="cursor: pointer;">Profile</span>
+          <span onclick="location.href='./jobs.php'; closeMobileMenu();" style="cursor: pointer;">Jobs</span>
+          <span onclick="location.href='./connections.php'; closeMobileMenu();" style="cursor: pointer;">Connect</span>
+          <span onclick="location.href='./messages.php'; closeMobileMenu();" style="cursor: pointer;">Messages</span>
+          <span onclick="location.href='./search.php'; closeMobileMenu();" style="cursor: pointer;">Directory</span>
+          <span onclick="location.href='./profile.php'; closeMobileMenu();" style="cursor: pointer;">Profile</span>
           <a href="./login.php" class="btn btn-primary">Login</a>
         </div>
       </div>

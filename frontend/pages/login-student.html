@@ -26,7 +26,7 @@
           const data = await LinkUIU.api('/auth/login', { method: 'POST', body: payload });
           LinkUIU.saveAuth(data);
           LinkUIU.showToast('Welcome back, Student!', 'success');
-          location.href = './dashboard.html';
+          location.href = './dashboard.php';
         } catch (e) {
           err.textContent = e.message;
           LinkUIU.showToast(e.message, 'error');
@@ -71,7 +71,7 @@
         <button class="btn btn-primary" type="submit">Login as Student</button>
         <div id="error" class="error"></div>
         <div class="mt-16">
-          <p>New student? <a href="./signup.html">Create an account</a></p>
+          <p>New student? <a href="./signup.php">Create an account</a></p>
           <p>Are you an alumni? <a href="./login-alumni.html">Alumni Login</a></p>
         </div>
       </form>
