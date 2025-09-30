@@ -41,7 +41,8 @@ function makeApiCall($endpoint, $method = 'GET', $data = null, $auth = false) {
             'method' => $method,
             'content' => $data ? json_encode($data) : null,
             'timeout' => 10,
-            'ignore_errors' => true
+            'ignore_errors' => true,
+            'follow_location' => false
         ]
     ]);
     

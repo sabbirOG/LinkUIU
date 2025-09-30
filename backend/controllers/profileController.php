@@ -27,6 +27,7 @@ class profileController {
             'company' => $data['company'] ?? null,
             'location_city' => $data['location_city'] ?? null,
             'location_country' => $data['location_country'] ?? null,
+            'bio' => $data['bio'] ?? null,
             'skills' => $data['skills'] ?? null,
             'interests' => $data['interests'] ?? null,
             'linkedin' => $data['linkedin'] ?? null,
@@ -36,6 +37,7 @@ class profileController {
             'twitter' => $data['twitter'] ?? null,
             'website' => $data['website'] ?? null,
             'resume' => $data['resume'] ?? null,
+            'resume_visibility' => $data['resume_visibility'] ?? null,
             'profile_visibility' => $data['profile_visibility'] ?? null,
         ]);
         if (!$updated) {
@@ -87,6 +89,98 @@ class profileController {
         $pdo = get_pdo_connection();
         $userModel = new User($pdo);
         $userModel->updateProfile($userId, ['resume' => $safeName]);
+        return ['status' => 'uploaded', 'file' => $safeName];
+    }
+
+    public function uploadCoverPhoto(int $userId): array {
+        if (!isset($_FILES['cover_photo'])) {
+            http_response_code(400);
+            return ['error' => 'File field cover_photo is required'];
+        }
+        $file = $_FILES['cover_photo'];
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            http_response_code(400);
+            return ['error' => 'Upload failed'];
+        }
+        $maxSize = 5 * 1024 * 1024; // 5MB
+        if ($file['size'] > $maxSize) {
+            http_response_code(400);
+            return ['error' => 'File too large (max 5MB)'];
+        }
+        $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        if (!in_array($mime, $allowed, true)) {
+            http_response_code(400);
+            return ['error' => 'Only image files allowed (JPEG, PNG, GIF, WebP)'];
+        }
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (!in_array($ext, $allowedExts, true)) {
+            http_response_code(400);
+            return ['error' => 'Only image extensions allowed (.jpg, .jpeg, .png, .gif, .webp)'];
+        }
+        // Store outside the web root (one level up from backend)
+        $uploadDir = realpath(__DIR__ . '/..' . '/../') . '/storage/images/cover-photos';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0775, true);
+        }
+        $safeName = 'cover_' . $userId . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+        $dest = $uploadDir . '/' . $safeName;
+        if (!move_uploaded_file($file['tmp_name'], $dest)) {
+            http_response_code(500);
+            return ['error' => 'Could not save file'];
+        }
+        $pdo = get_pdo_connection();
+        $userModel = new User($pdo);
+        $userModel->updateProfile($userId, ['cover_photo' => $safeName]);
+        return ['status' => 'uploaded', 'file' => $safeName];
+    }
+
+    public function uploadProfilePhoto(int $userId): array {
+        if (!isset($_FILES['profile_photo'])) {
+            http_response_code(400);
+            return ['error' => 'File field profile_photo is required'];
+        }
+        $file = $_FILES['profile_photo'];
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            http_response_code(400);
+            return ['error' => 'Upload failed'];
+        }
+        $maxSize = 5 * 1024 * 1024; // 5MB
+        if ($file['size'] > $maxSize) {
+            http_response_code(400);
+            return ['error' => 'File too large (max 5MB)'];
+        }
+        $allowed = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        if (!in_array($mime, $allowed, true)) {
+            http_response_code(400);
+            return ['error' => 'Only image files allowed (JPEG, PNG, GIF, WebP)'];
+        }
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        if (!in_array($ext, $allowedExts, true)) {
+            http_response_code(400);
+            return ['error' => 'Only image extensions allowed (.jpg, .jpeg, .png, .gif, .webp)'];
+        }
+        // Store outside the web root (one level up from backend)
+        $uploadDir = realpath(__DIR__ . '/..' . '/../') . '/storage/images/profile-photos';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0775, true);
+        }
+        $safeName = 'profile_' . $userId . '_' . bin2hex(random_bytes(6)) . '.' . $ext;
+        $dest = $uploadDir . '/' . $safeName;
+        if (!move_uploaded_file($file['tmp_name'], $dest)) {
+            http_response_code(500);
+            return ['error' => 'Could not save file'];
+        }
+        $pdo = get_pdo_connection();
+        $userModel = new User($pdo);
+        $userModel->updateProfile($userId, ['profile_photo' => $safeName]);
         return ['status' => 'uploaded', 'file' => $safeName];
     }
 }

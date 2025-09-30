@@ -50,32 +50,50 @@ require_once __DIR__ . '/models/Session.php';
 
 function getBearerToken(): ?string {
     $auth = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    error_log('getBearerToken: HTTP_AUTHORIZATION = ' . $auth);
+    
     if (stripos($auth, 'Bearer ') === 0) {
-        return substr($auth, 7);
+        $token = substr($auth, 7);
+        error_log('getBearerToken: Found token in HTTP_AUTHORIZATION: ' . substr($token, 0, 10) . '...');
+        return $token;
     }
+    
     // Fallback for some server envs
     $authAlt = $_SERVER['Authorization'] ?? '';
+    error_log('getBearerToken: Authorization = ' . $authAlt);
+    
     if (stripos($authAlt, 'Bearer ') === 0) {
-        return substr($authAlt, 7);
+        $token = substr($authAlt, 7);
+        error_log('getBearerToken: Found token in Authorization: ' . substr($token, 0, 10) . '...');
+        return $token;
     }
+    
+    error_log('getBearerToken: No valid token found');
     return null;
 }
 
 function requireAuth(): int {
     $token = getBearerToken();
     if (!$token) {
+        error_log('requireAuth: No token provided');
         http_response_code(401);
         echo json_encode(['error' => 'Unauthorized']);
         exit;
     }
+    
+    error_log('requireAuth: Token received: ' . substr($token, 0, 10) . '...');
+    
     $pdo = get_pdo_connection();
     $sessionModel = new Session($pdo);
     $session = $sessionModel->findByToken($token);
     if (!$session) {
+        error_log('requireAuth: Invalid token - no session found');
         http_response_code(401);
         echo json_encode(['error' => 'Invalid token']);
         exit;
     }
+    
+    error_log('requireAuth: Valid session found for user ID: ' . $session['user_id']);
     return (int)$session['user_id'];
 }
 

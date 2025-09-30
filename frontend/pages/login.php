@@ -41,6 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['auth_token'] = $result['token'];
                 $_SESSION['auth_user'] = $result['user'];
                 $success_message = 'Login successful! Redirecting to dashboard...';
+                
+                // Also store token in localStorage for JavaScript API calls
+                echo '<script>
+                    localStorage.setItem("auth_token", "' . addslashes($result['token']) . '");
+                    localStorage.setItem("auth_user", ' . json_encode($result['user']) . ');
+                </script>';
+                
                 // Redirect to dashboard after 2 seconds
                 header("refresh:2;url=./dashboard.php");
             } catch (Exception $e) {

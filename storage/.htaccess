@@ -1,0 +1,9 @@
+# Deny direct access to storage files
+Order Deny,Allow
+Deny from all
+
+# Allow access to specific file types if needed
+# <FilesMatch "\.(jpg|jpeg|png|gif|webp|pdf)$">
+#     Order Allow,Deny
+#     Allow from all
+# </FilesMatch>
