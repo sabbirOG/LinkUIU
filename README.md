@@ -1,39 +1,71 @@
-# LinkUIU - UIU Alumni Network
+🎓 LinkUIU - UIU Alumni Network
 
-A comprehensive alumni networking platform for United International University (UIU) students and graduates.
+A comprehensive alumni networking platform for United International University (UIU) students and graduates. Connect, collaborate, and grow your professional network with fellow UIU alumni worldwide.
 
-## Quick Start
+🌟 Features
 
-### GitHub Setup
-1. Create a new repository on GitHub (don't initialize with README)
-2. Add remote: `git remote add origin https://github.com/yourusername/LinkUIU.git`
-3. Push: `git push -u origin main`
-4. Done! Your code is now on GitHub
+🔐 Authentication & User Management – Secure login/signup for students & alumni
 
-### Local Development
-Backend: PHP (PDO MySQL)
+👤 Profile System – Cover photo, profile photo, bio, education, skills, and experience (LinkedIn-style)
 
-Setup
-- Import schema
-  - mysql -h localhost -u root -p < database/schema.sql
-- Seed sample data
-  - mysql -h localhost -u root -p link_uiu_db < database/seed.sql
-- Run backend
-  - php -S localhost:8000 -t backend backend/index.php
+📄 Automated Resume – Generate & download resumes dynamically from profile data (public/private option)
 
-Notes
-- batch_id may be NULL (ON DELETE SET NULL). Handle in UI/API by treating missing batch as "Not specified".
-- Passwords: Always use PHP password_hash() and password_verify(). The seed uses placeholder bcrypt hashes for dev only.
-- Search: users.skills has a prefix index (50). For advanced search later, you can enable a FULLTEXT index:
-  - ALTER TABLE users ADD FULLTEXT INDEX fulltext_users_skills (skills);
+🌍 Networking – Connect with alumni, view their profiles & professional journeys
 
-Deployment
-- Set environment variables (or .env):
-  - APP_ENV=production
-  - DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS
-  - ALLOWED_ORIGINS=https://yourdomain.com
-- Serve via nginx/Apache using examples in deploy/nginx.conf or deploy/apache.conf
-- For frontend pages in production, add before main.js:
-  - <script>window.APP_API_BASE='https://api.yourdomain.com';</script>
+💼 Job/Internship Board – Share and explore career opportunities
+
+📰 News & Events – Stay updated with seminars, workshops, and alumni activities
+
+💬 Messaging – Communicate directly with peers and alumni
+
+🛠️ Tech Stack
+
+Frontend: HTML, CSS, JavaScript
+
+Backend: PHP, MySQL
+
+Other Tools: JWT Authentication, CSRF Protection
+
+⚙️ Installation & Setup
+
+Clone the repository:
+
+git clone https://github.com/your-username/linkuiu.git
+cd linkuiu
 
 
+Set up the backend:
+
+Import the database from /backend/database/linkuiu.sql
+
+Update your config.php file with DB credentials
+
+Start local server (e.g. XAMPP / LAMP / WAMP)
+
+Run frontend:
+
+Open frontend/index.html in browser (or deploy to any static hosting)
+
+🤝 Contributing
+
+Contributions are welcome!
+
+Fork the repo
+
+Create a new branch (feature/your-feature)
+
+Commit changes
+
+Open a Pull Request
+
+📜 License
+
+This project is licensed under the MIT License
+.
+
+👨‍💻 Author
+
+Sabbir Ahmed
+🔗 GitHub
+
+✨ With LinkUIU, UIU alumni can stay connected, grow careers, and build a stronger professional community!
