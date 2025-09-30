@@ -30,27 +30,6 @@ route('POST', '/profile/(\d+)/resume', function ($userId) {
     return $controller->uploadResume((int)$userId);
 });
 
-// Upload cover photo (multipart/form-data, field name: cover_photo)
-route('POST', '/profile/(\d+)/cover-photo', function ($userId) {
-    $authUserId = requireAuth();
-    if ($authUserId !== (int)$userId) {
-        http_response_code(403);
-        return ['error' => 'Forbidden'];
-    }
-    $controller = new profileController();
-    return $controller->uploadCoverPhoto((int)$userId);
-});
-
-// Upload profile photo (multipart/form-data, field name: profile_photo)
-route('POST', '/profile/(\d+)/profile-photo', function ($userId) {
-    $authUserId = requireAuth();
-    if ($authUserId !== (int)$userId) {
-        http_response_code(403);
-        return ['error' => 'Forbidden'];
-    }
-    $controller = new profileController();
-    return $controller->uploadProfilePhoto((int)$userId);
-});
 
 ?>
 

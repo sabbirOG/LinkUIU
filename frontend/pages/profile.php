@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           localStorage.setItem('auth_user', JSON.stringify(authUser));
         }
       }
+      
     });
     
     async function removeResume() {
@@ -162,32 +163,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <!-- LinkedIn-Style Profile Header -->
         <div class="profile-header-linkedin">
-          <!-- Cover Photo Section -->
-          <div class="cover-photo-section">
-            <div class="cover-photo-menu">
-              <button class="menu-dots cover-menu-dots" onclick="toggleMenu('cover-menu')">⋯</button>
-              <div class="dropdown-menu" id="cover-menu">
-                <a href="#" onclick="editCoverPhoto()">Edit Cover Photo</a>
-              </div>
-            </div>
-            <div class="cover-photo" id="cover-photo">
-              <div class="cover-photo-overlay"></div>
-              <div class="cover-photo-placeholder">
-                <div class="cover-photo-icon">📸</div>
-                <div class="cover-photo-text">Add Cover Photo</div>
-              </div>
-            </div>
-          </div>
           
           <!-- Profile Picture and Info Section -->
           <div class="profile-info-section">
             <div class="profile-picture-container">
-              <div class="profile-picture-menu">
-                <button class="menu-dots profile-menu-dots" onclick="toggleMenu('profile-menu')">⋯</button>
-                <div class="dropdown-menu" id="profile-menu">
-                  <a href="#" onclick="editProfilePhoto()">Edit Profile Photo</a>
-                </div>
-              </div>
               <div class="profile-picture" id="profile-picture">
                 <div class="profile-picture-placeholder">
                   <?php 
@@ -661,83 +640,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
 
-    function editCoverPhoto() {
-      const content = `
-        <div class="modal-file-upload" onclick="document.getElementById('coverPhotoInput').click()">
-          <div style="font-size: 48px; margin-bottom: 16px;">📸</div>
-          <div style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">Upload Cover Photo</div>
-          <div style="color: #6b7280;">Click here or drag and drop an image file</div>
-          <div style="font-size: 14px; color: #9ca3af; margin-top: 8px;">Supports: JPG, PNG, GIF (Max 5MB)</div>
-        </div>
-        <input type="file" id="coverPhotoInput" accept="image/*" style="display: none;" onchange="handleCoverPhotoUpload(this.files[0])">
-        <div id="coverPhotoPreview" class="modal-file-info" style="display: none;"></div>
-      `;
-      
-      const footer = `
-        <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="modal-btn modal-btn-primary" onclick="document.getElementById('coverPhotoInput').click()">Choose File</button>
-      `;
-      
-      openModal('Edit Cover Photo', content, footer);
-    }
-    
-    function handleCoverPhotoUpload(file) {
-      if (file) {
-        // Show file info
-        const preview = document.getElementById('coverPhotoPreview');
-        if (preview) {
-          preview.innerHTML = `
-            <strong>Selected file:</strong> ${file.name}<br>
-            <strong>Size:</strong> ${(file.size / 1024 / 1024).toFixed(2)} MB<br>
-            <strong>Type:</strong> ${file.type}
-          `;
-          preview.style.display = 'block';
-        }
-        
-        // Upload the file
-        uploadCoverPhoto(file);
-        closeModal();
-      }
-    }
 
-    function editProfilePhoto() {
-      const content = `
-        <div class="modal-file-upload" onclick="document.getElementById('profilePhotoInput').click()">
-          <div style="font-size: 48px; margin-bottom: 16px;">👤</div>
-          <div style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">Upload Profile Photo</div>
-          <div style="color: #6b7280;">Click here or drag and drop an image file</div>
-          <div style="font-size: 14px; color: #9ca3af; margin-top: 8px;">Supports: JPG, PNG, GIF (Max 5MB)</div>
-        </div>
-        <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;" onchange="handleProfilePhotoUpload(this.files[0])">
-        <div id="profilePhotoPreview" class="modal-file-info" style="display: none;"></div>
-      `;
-      
-      const footer = `
-        <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="modal-btn modal-btn-primary" onclick="document.getElementById('profilePhotoInput').click()">Choose File</button>
-      `;
-      
-      openModal('Edit Profile Photo', content, footer);
-    }
-    
-    function handleProfilePhotoUpload(file) {
-      if (file) {
-        // Show file info
-        const preview = document.getElementById('profilePhotoPreview');
-        if (preview) {
-          preview.innerHTML = `
-            <strong>Selected file:</strong> ${file.name}<br>
-            <strong>Size:</strong> ${(file.size / 1024 / 1024).toFixed(2)} MB<br>
-            <strong>Type:</strong> ${file.type}
-          `;
-          preview.style.display = 'block';
-        }
-        
-        // Upload the file
-        uploadProfilePhoto(file);
-        closeModal();
-      }
-    }
 
     function changeLocation() {
       const currentCity = '<?php echo htmlspecialchars($profile_data['location_city'] ?? ''); ?>';
@@ -1429,39 +1332,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const authToken = getAuthToken();
       const csrfToken = '<?php echo $_SESSION['csrf_token'] ?? ''; ?>';
       
-        // Debug logging
-        console.log('=== UPLOAD DEBUG INFO ===');
-        console.log('Endpoint:', endpoint);
-        console.log('File details:', { name: file.name, size: file.size, type: file.type });
-        console.log('Auth token present:', !!authToken);
-        console.log('Auth token length:', authToken ? authToken.length : 0);
-        console.log('Auth token preview:', authToken ? authToken.substring(0, 10) + '...' : 'N/A');
-        console.log('CSRF token present:', !!csrfToken);
-        console.log('CSRF token preview:', csrfToken ? csrfToken.substring(0, 10) + '...' : 'N/A');
-        console.log('API Base URL:', window.APP_API_BASE);
-        console.log('Full URL:', window.APP_API_BASE + endpoint);
-        console.log('User ID from PHP:', '<?php echo $user['id']; ?>');
-        console.log('Session auth_user:', <?php echo json_encode($_SESSION['auth_user'] ?? null); ?>);
-        
-        // Test authentication by making a simple API call first
-        try {
-          const testResponse = await fetch(window.APP_API_BASE + '/auth/me', {
-            method: 'GET',
-            headers: {
-              'Authorization': 'Bearer ' + authToken,
-              'Content-Type': 'application/json'
-            }
-          });
-          console.log('Auth test response status:', testResponse.status);
-          if (testResponse.ok) {
-            const testResult = await testResponse.json();
-            console.log('Auth test successful, user:', testResult);
-          } else {
-            console.error('Auth test failed:', await testResponse.text());
-          }
-        } catch (authError) {
-          console.error('Auth test error:', authError);
-        }
       
       if (!authToken) {
         throw new Error('User not authenticated, please log in again');
@@ -1477,8 +1347,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           headers['X-CSRF-Token'] = csrfToken;
         }
         
-        console.log('Request headers:', headers);
-        
         const response = await fetch(window.APP_API_BASE + endpoint, {
           method: 'POST',
           headers: headers,
@@ -1486,13 +1354,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           // Note: Don't set Content-Type for FormData - browser sets it automatically with boundary
         });
         
-        console.log('Response status:', response.status);
-        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-        
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('Upload failed - Status:', response.status);
-          console.error('Upload failed - Response:', errorText);
           
           // Handle 401 specifically
           if (response.status === 401) {
@@ -1504,7 +1367,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         const result = await response.json();
-        console.log('Upload successful:', result);
         return result;
       } catch (error) {
         console.error('Error uploading file:', error);
@@ -1512,115 +1374,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
     }
 
-    async function uploadCoverPhoto(file) {
-      try {
-        console.log('Starting cover photo upload...', file);
-        
-        // Validate file
-        if (!file) {
-          throw new Error('No file selected');
-        }
-        
-        // Check file size (5MB limit)
-        if (file.size > 5 * 1024 * 1024) {
-          throw new Error('File size must be less than 5MB');
-        }
-        
-        // Check file type
-        if (!file.type.startsWith('image/')) {
-          throw new Error('Please select an image file');
-        }
-        
-        // Upload the file
-        const result = await uploadFile(`/profile/<?php echo $user['id']; ?>/cover-photo`, file, 'cover_photo');
-        console.log('Cover photo upload result:', result);
-        
-        // Show success message immediately
-        showSuccessMessage('Cover photo uploaded successfully!');
-        
-        // Update cover photo display immediately with the uploaded file
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const coverPhoto = document.getElementById('cover-photo');
-          if (coverPhoto) {
-            coverPhoto.style.backgroundImage = `url(${e.target.result})`;
-            const placeholder = coverPhoto.querySelector('.cover-photo-placeholder');
-            if (placeholder) {
-              placeholder.style.display = 'none';
-            }
-          }
-        };
-        reader.readAsDataURL(file);
-        
-        // Reload page after a short delay to show the new image from server
-        setTimeout(() => {
-          location.reload();
-        }, 1500);
-        
-      } catch (error) {
-        console.error('Error uploading cover photo:', error);
-        if (error.message.includes('Session expired')) {
-          handleAuthError(error);
-        } else {
-          showErrorMessage('Error uploading cover photo: ' + error.message);
-        }
-      }
-    }
 
-    async function uploadProfilePhoto(file) {
-      try {
-        console.log('Starting profile photo upload...', file);
-        
-        // Validate file
-        if (!file) {
-          throw new Error('No file selected');
-        }
-        
-        // Check file size (5MB limit)
-        if (file.size > 5 * 1024 * 1024) {
-          throw new Error('File size must be less than 5MB');
-        }
-        
-        // Check file type
-        if (!file.type.startsWith('image/')) {
-          throw new Error('Please select an image file');
-        }
-        
-        // Upload the file
-        const result = await uploadFile(`/profile/<?php echo $user['id']; ?>/profile-photo`, file, 'profile_photo');
-        console.log('Profile photo upload result:', result);
-        
-        // Show success message immediately
-        showSuccessMessage('Profile photo uploaded successfully!');
-        
-        // Update profile photo display immediately with the uploaded file
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const profilePicture = document.getElementById('profile-picture');
-          if (profilePicture) {
-            profilePicture.style.backgroundImage = `url(${e.target.result})`;
-            const placeholder = profilePicture.querySelector('.profile-picture-placeholder');
-            if (placeholder) {
-              placeholder.style.display = 'none';
-            }
-          }
-        };
-        reader.readAsDataURL(file);
-        
-        // Reload page after a short delay to show the new image from server
-        setTimeout(() => {
-          location.reload();
-        }, 1500);
-        
-      } catch (error) {
-        console.error('Error uploading profile photo:', error);
-        if (error.message.includes('Session expired')) {
-          handleAuthError(error);
-        } else {
-          showErrorMessage('Error uploading profile photo: ' + error.message);
-        }
-      }
-    }
 
     async function uploadResumeFile(file) {
       try {
@@ -1633,6 +1387,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         showErrorMessage('Error uploading resume: ' + error.message);
       }
     }
+
+
+
+
 
     async function updateLocation(city, country) {
       try {
@@ -1834,29 +1592,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     function showSuccessMessage(message) {
+      // Remove any existing success messages
+      const existingMessages = document.querySelectorAll('.success-message');
+      existingMessages.forEach(msg => msg.remove());
+      
       // Create a temporary success message
       const successDiv = document.createElement('div');
+      successDiv.className = 'success-message';
       successDiv.style.cssText = `
         position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #10b981;
+        top: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #10b981, #059669);
         color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
         z-index: 10000;
-        font-weight: 500;
-        animation: slideIn 0.3s ease;
+        font-weight: 600;
+        font-size: 16px;
+        animation: slideInSuccess 0.4s ease;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        min-width: 300px;
+        text-align: center;
       `;
-      successDiv.textContent = message;
+      
+      // Add icon and message
+      successDiv.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <span style="font-size: 20px;">✅</span>
+          <span>${message}</span>
+        </div>
+      `;
+      
       document.body.appendChild(successDiv);
       
-      // Remove after 3 seconds
+      // Remove after 5 seconds
       setTimeout(() => {
-        successDiv.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => successDiv.remove(), 300);
-      }, 3000);
+        successDiv.style.animation = 'slideOutSuccess 0.4s ease';
+        setTimeout(() => successDiv.remove(), 400);
+      }, 5000);
     }
 
     function showErrorMessage(message) {
@@ -1895,6 +1671,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       @keyframes slideOut {
         from { transform: translateX(0); opacity: 1; }
         to { transform: translateX(100%); opacity: 0; }
+      }
+      
+      @keyframes slideInSuccess {
+        from { 
+          transform: translateX(100%) scale(0.8); 
+          opacity: 0; 
+        }
+        to { 
+          transform: translateX(0) scale(1); 
+          opacity: 1; 
+        }
+      }
+      
+      @keyframes slideOutSuccess {
+        from { 
+          transform: translateX(0) scale(1); 
+          opacity: 1; 
+        }
+        to { 
+          transform: translateX(100%) scale(0.8); 
+          opacity: 0; 
+        }
       }
       
       /* Dropdown Menu Styles */
@@ -1975,6 +1773,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       .profile-picture-menu .dropdown-menu {
         right: 0;
         left: auto;
+      }
+
+      /* Simple Profile Picture Styles */
+      .profile-picture-container {
+        position: relative;
+        margin-top: -60px;
+        margin-left: 24px;
+        z-index: 10;
+      }
+
+      .profile-picture {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 4px solid white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .profile-picture:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .profile-picture-placeholder {
+        font-size: 56px;
+        font-weight: bold;
+        color: #6b7280;
+        pointer-events: none;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .profile-picture-container {
+          margin-left: 16px;
+          margin-top: -50px;
+        }
+        
+        .profile-picture {
+          width: 120px;
+          height: 120px;
+        }
+        
+        .profile-picture-placeholder {
+          font-size: 48px;
+        }
       }
       
       /* Section Headers */
