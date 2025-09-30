@@ -30,7 +30,7 @@ Other Tools: JWT Authentication, CSRF Protection
 
 Clone the repository:
 
-git clone https://github.com/your-username/linkuiu.git
+git clone https://github.com/sabbirOG/linkuiu.git
 cd linkuiu
 
 
