@@ -8,6 +8,11 @@ import Footer from "@/components/Footer";
 import { authService } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
+// Metadata is handled by a parent layout or a special component in 'use client' files, 
+// but since this is a Next.js 14 App Router, I should ideally have a separate metadata file 
+// or move the Client logic to a subcomponent. 
+// However, I will add a simple title tag directly in the return for now.
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
