@@ -93,20 +93,20 @@ export default function LandingPage() {
         
         <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center">
           <div className="inline-flex items-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80 leading-none">The Global UIU Institutional Network</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80 leading-none">The Official United International University (UIU) Alumni Connect</span>
           </div>
           
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-8 animate-in fade-in zoom-in duration-1000">
-            The Professional <span className="text-[#f97316]">Network</span> <br /> of UIU Graduates
+            The Elite <span className="text-[#f97316]">Alumni Community</span> <br /> of UIU Graduates
           </h1>
           
           <p className="max-w-2xl mx-auto text-base sm:text-lg font-medium text-slate-300 leading-relaxed px-4 opacity-80 mb-12">
-            Connecting leaders and global achievers. A secure professional hub built for the United International University community.
+            Join the official UIU Alumni Association network. Connecting leaders and global achievers through the definitive alumni directory and professional hub.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
-            <Link href="/dashboard/directory" className="w-full sm:w-auto bg-[#f97316] hover:bg-orange-600 text-white px-10 py-4 rounded-xl font-bold text-sm transition-all shadow-xl active:scale-95">Expand Your Network</Link>
-            <Link href="/login" className="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/20 px-10 py-4 rounded-xl font-bold text-sm transition-all active:scale-95">Sign In to Dashboard</Link>
+            <Link href="/dashboard/directory" className="w-full sm:w-auto bg-[#f97316] hover:bg-orange-600 text-white px-10 py-4 rounded-xl font-bold text-sm transition-all shadow-xl active:scale-95">Explore Alumni Directory</Link>
+            <Link href="/login" className="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/20 px-10 py-4 rounded-xl font-bold text-sm transition-all active:scale-95">Sign In to LinkedUIU</Link>
           </div>
         </div>
       </section>

@@ -32,7 +32,7 @@ export default function Footer() {
                 links: [
                   { name: "Global Directory", path: "/dashboard/directory" },
                   { name: "Career Hub", path: "/dashboard/jobs" },
-                  { name: "Pulse Feed", path: "/dashboard" },
+                  { name: "Activity Feed", path: "/dashboard" },
                   { name: "Identity Portal", path: "/dashboard/profile/self" }
                 ] 
               },
@@ -75,7 +75,7 @@ export default function Footer() {
 
         <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-[9px] font-black text-slate-700 uppercase tracking-[0.5em]">
-            &copy; 2026 <span className="text-[#f97316]">UIU ALUMNI PROTOCOL</span> · Institutional Grade Edition
+            &copy; 2026 <span className="text-[#f97316]">United International University Alumni Association</span> · Official Platform
           </p>
 
           <div className="flex items-center gap-8 opacity-20 hover:opacity-50 transition-opacity duration-500 grayscale">
