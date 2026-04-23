@@ -199,7 +199,7 @@ export default function ProfilePage() {
 
   if (!isLoaded) return <div className="min-h-screen bg-slate-50 flex items-center justify-center font-black uppercase tracking-[0.4em] text-slate-300">Synchronizing Identity...</div>;
 
-  const tabs = [
+  const tabs: { key: "about" | "experience" | "education" | "achievements"; label: string; icon: any }[] = [
     { key: "about", label: "About", icon: User },
     { key: "experience", label: "Experience", icon: Briefcase },
     { key: "education", label: "Education", icon: GraduationCap },

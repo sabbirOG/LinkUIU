@@ -19,7 +19,7 @@ interface Profile {
   job?: string;
   company?: string;
   bio?: string;
-  skills?: string[];
+  skills?: string | string[];
   experience?: any[];
   education?: any[];
   profile_photo?: string;
