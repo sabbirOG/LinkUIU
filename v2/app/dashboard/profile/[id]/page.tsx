@@ -24,10 +24,12 @@ function EditModal({ field, value, onSave, onClose }: {
     ? (typeof value === 'object' ? value : { title: "", company: "", period: "", desc: "" })
     : field === "education" 
     ? (typeof value === 'object' ? value : { degree: "", school: "", period: "", grade: "" })
+    : field === "links"
+    ? (typeof value === 'object' ? value : { linkedin: "", github: "" })
     : value
   );
 
-  const isComplex = field === "experience" || field === "education";
+  const isComplex = field === "experience" || field === "education" || field === "links";
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={onClose}>
@@ -41,7 +43,18 @@ function EditModal({ field, value, onSave, onClose }: {
         </div>
 
         <div className="space-y-5">
-           {field === "experience" ? (
+           {field === "links" ? (
+             <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">LinkedIn Username</label>
+                  <input value={formData.linkedin} onChange={e => setFormData({...formData, linkedin: e.target.value})} className="w-full bg-slate-50 border-slate-100 px-4 py-3 rounded-xl text-sm font-semibold outline-none focus:border-[#f97316] border" placeholder="e.g. linkedin.com/in/username" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">GitHub Username</label>
+                  <input value={formData.github} onChange={e => setFormData({...formData, github: e.target.value})} className="w-full bg-slate-50 border-slate-100 px-4 py-3 rounded-xl text-sm font-semibold outline-none focus:border-[#f97316] border" placeholder="e.g. github.com/username" />
+                </div>
+             </div>
+           ) : field === "experience" ? (
              <>
                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">
@@ -271,10 +284,21 @@ export default function ProfilePage() {
                         </button>
                       )}
                     </div>
-                    <p className="text-base text-slate-600 font-medium">
-                      {profile.job} <span className="text-slate-300 mx-1">at</span>
-                      <span className="text-[#f97316] font-semibold">{profile.company}</span>
-                    </p>
+                    <div className="flex items-center gap-2 text-base text-slate-600 font-medium">
+                      {profile.job ? (
+                        <span>{profile.job}</span>
+                      ) : profile.isSelf ? (
+                        <button onClick={() => setEditModal({ field: "job", value: "" })} className="text-slate-300 hover:text-[#f97316] transition-colors italic">Set Professional Title</button>
+                      ) : null}
+                      
+                      {(profile.job || profile.company) && (profile.isSelf || (profile.job && profile.company)) && <span className="text-slate-200 mx-1">at</span>}
+                      
+                      {profile.company ? (
+                        <span className="text-[#f97316] font-semibold">{profile.company}</span>
+                      ) : profile.isSelf ? (
+                        <button onClick={() => setEditModal({ field: "company", value: "" })} className="text-[#f97316]/40 hover:text-[#f97316] transition-colors italic">Set Company</button>
+                      ) : null}
+                    </div>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-500 font-medium">
                       <span className="flex items-center gap-1.5"><MapPin size={14} className="text-slate-400" />{profile.location}</span>
                       <span className="flex items-center gap-1.5"><GraduationCap size={14} className="text-slate-400" />UIU · {profile.dept} · {profile.batch}</span>
@@ -285,12 +309,11 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-2">
                     {profile.isSelf ? (
                       <>
-                        <button onClick={() => setEditModal({ field: "bio", value: profile.bio || "" })} className="px-5 py-2.5 border border-slate-200 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-50 transition-all active:scale-[0.98]">
-                          Edit Profile
+                        <button onClick={() => setEditModal({ field: "bio", value: profile.bio || "" })} className="px-6 py-3 bg-[#f97316] text-white text-[10px] font-black uppercase tracking-[0.15em] rounded-xl hover:bg-orange-600 transition-all active:scale-[0.95] shadow-lg shadow-orange-500/10 flex items-center gap-2">
+                           <Pencil size={14} /> Profile Settings
                         </button>
-                        <button className="px-5 py-2.5 bg-[#0f172a] text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition-all active:scale-[0.98]">
-                          <FileText size={14} className="inline mr-2" />
-                          CV
+                        <button className="px-6 py-3 bg-[#0f172a] text-white text-[10px] font-black uppercase tracking-[0.15em] rounded-xl hover:bg-slate-800 transition-all active:scale-[0.95] flex items-center gap-2">
+                          <FileText size={14} /> Professional CV
                         </button>
                       </>
                     ) : (
@@ -353,7 +376,10 @@ export default function ProfilePage() {
                 </a>
               )}
               {profile.isSelf && (
-                <button className="flex items-center gap-2 px-3 py-1.5 border border-dashed border-slate-200 rounded-lg text-xs font-semibold text-slate-300 hover:text-[#f97316] transition-all">
+                <button 
+                  onClick={() => setEditModal({ field: "links", value: profile.links || { linkedin: "", github: "" } })}
+                  className="flex items-center gap-2 px-3 py-1.5 border border-dashed border-slate-200 rounded-lg text-xs font-semibold text-slate-300 hover:text-[#f97316] transition-all"
+                >
                    Add Link
                 </button>
               )}
@@ -440,7 +466,7 @@ export default function ProfilePage() {
                             <p className="text-sm font-medium text-slate-500 mt-3 leading-relaxed">{exp.desc}</p>
                          </div>
                          {profile.isSelf && (
-                           <button onClick={() => setEditModal({ field: "experience", value: exp })} className="text-slate-300 hover:text-[#f97316] opacity-0 group-hover:opacity-100 transition-all ml-2">
+                           <button onClick={() => setEditModal({ field: "experience", value: exp })} className="text-slate-300 hover:text-[#f97316] transition-all ml-2">
                              <Pencil size={18} />
                            </button>
                          )}
@@ -476,7 +502,7 @@ export default function ProfilePage() {
                             <span className="inline-block mt-3 px-3 py-1 bg-slate-50 text-slate-600 text-[10px] font-bold rounded uppercase border border-slate-100">{edu.grade}</span>
                          </div>
                          {profile.isSelf && (
-                           <button onClick={() => setEditModal({ field: "education", value: edu })} className="text-slate-300 hover:text-[#f97316] opacity-0 group-hover:opacity-100 transition-all ml-2">
+                           <button onClick={() => setEditModal({ field: "education", value: edu })} className="text-slate-300 hover:text-[#f97316] transition-all ml-2">
                              <Pencil size={18} />
                            </button>
                          )}
@@ -503,7 +529,7 @@ export default function ProfilePage() {
                         <Star size={20} className="text-[#f97316] group-hover:scale-110 transition-transform" />
                         <span className="text-sm font-bold text-slate-700 flex-1">{ach}</span>
                         {profile.isSelf && (
-                           <button onClick={() => setEditModal({ field: "achievements", value: (profile.achievements || []).join(", ") })} className="text-slate-300 hover:text-[#f97316] opacity-0 group-hover:opacity-100 transition-all">
+                           <button onClick={() => setEditModal({ field: "achievements", value: (profile.achievements || []).join(", ") })} className="text-slate-300 hover:text-[#f97316] transition-all">
                              <Pencil size={15} />
                            </button>
                          )}
@@ -589,23 +615,29 @@ export default function ProfilePage() {
               <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4 shadow-sm">
                 <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Hub Contact</h3>
                 <div className="space-y-4">
-                   <div className="flex items-center justify-between group">
+                   <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3 text-sm text-slate-600 font-medium overflow-hidden">
                         <Mail size={16} className="text-slate-400 shrink-0" /> 
                         <span className="truncate">{profile.email}</span>
                       </div>
-                      <button onClick={() => setEditModal({ field: "email", value: profile.email })} className="text-slate-300 hover:text-[#f97316] opacity-0 group-hover:opacity-100 transition-all shrink-0">
-                        <Pencil size={13} />
-                      </button>
+                      <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest bg-slate-50 px-2 py-0.5 rounded">Permanent</span>
                    </div>
-                   <div className="flex items-center justify-between group">
+                   <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3 text-sm text-slate-600 font-medium overflow-hidden">
                         <Phone size={16} className="text-slate-400 shrink-0" /> 
-                        <span className="truncate">{profile.phone}</span>
+                        {profile.phone ? (
+                          <span className="truncate">{profile.phone}</span>
+                        ) : profile.isSelf ? (
+                          <button onClick={() => setEditModal({ field: "phone", value: "" })} className="text-slate-300 hover:text-[#f97316] italic transition-colors">Add Phone Number</button>
+                        ) : (
+                          <span className="text-slate-300 italic">Not shared</span>
+                        )}
                       </div>
-                      <button onClick={() => setEditModal({ field: "phone", value: profile.phone })} className="text-slate-300 hover:text-[#f97316] opacity-0 group-hover:opacity-100 transition-all shrink-0">
-                        <Pencil size={13} />
-                      </button>
+                      {profile.isSelf && profile.phone && (
+                        <button onClick={() => setEditModal({ field: "phone", value: profile.phone })} className="text-slate-300 hover:text-[#f97316] transition-all shrink-0">
+                          <Pencil size={13} />
+                        </button>
+                      )}
                    </div>
                 </div>
               </div>

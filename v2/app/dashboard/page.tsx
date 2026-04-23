@@ -229,9 +229,9 @@ export default function DashboardHome() {
            <div className="px-5 space-y-4">
               <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em]">© 2026 UIU ALUMNI PROTOCOL</p>
               <div className="flex gap-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
-                 <span className="hover:text-slate-900 cursor-pointer">Terms</span>
-                 <span className="hover:text-slate-900 cursor-pointer">Privacy</span>
-                 <span className="hover:text-slate-900 cursor-pointer">Identity</span>
+                 <Link href="https://www.uiu.ac.bd/governance/" target="_blank" className="hover:text-slate-900 transition-colors">Governance</Link>
+                 <Link href="https://www.uiu.ac.bd/privacy-policy/" target="_blank" className="hover:text-slate-900 transition-colors">Privacy</Link>
+                 <Link href="/dashboard/profile/self" className="hover:text-slate-900 transition-colors">Identity</Link>
               </div>
            </div>
         </aside>
