@@ -29,8 +29,8 @@ export default function ConnectionsPage() {
     const dataSource = activeTab === "requests" ? pendingRequests : connectedNetwork;
     return dataSource.filter(person =>
       person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      person.job.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      person.batch.includes(searchQuery)
+      (person.job || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (person.batch || "").includes(searchQuery)
     );
   }, [activeTab, searchQuery, pendingRequests, connectedNetwork]);
 
