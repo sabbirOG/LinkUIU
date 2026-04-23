@@ -69,22 +69,22 @@ export default function RegisterPage() {
     <main className="min-h-screen bg-[#fcfcfc] flex flex-col font-sans">
       <Navbar />
       
-      <div className="flex-1 flex items-center justify-center p-6 pt-24 md:pt-32 pb-12">
-        <div className="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col md:flex-row min-h-[700px]">
+      <div className="flex-1 flex items-center justify-center p-6 pt-24 pb-12">
+        <div className="max-w-4xl w-full bg-white rounded-[2rem] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col md:flex-row border border-slate-100">
           
           {/* Left Sidebar - Dark Branding */}
-          <div className="md:w-5/12 bg-[#0f172a] text-white p-12 flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(#ffffff 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }}></div>
+          <div className="md:w-[38%] bg-[#0f172a] text-white p-10 flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#ffffff 0.5px, transparent 0.5px)', backgroundSize: '16px 16px' }}></div>
             
             <div className="relative z-10 space-y-12">
-               <div className="flex items-center gap-4">
-                  <img src="/assets/images/uiu_logo.png" alt="UIU" className="h-10 brightness-0 invert" />
-                  <div className="w-px h-6 bg-white/20"></div>
-                  <span className="text-sm font-bold tracking-tight text-slate-100 italic">Join LinkUIU</span>
+               <div className="flex items-center gap-3">
+                  <img src="/assets/images/uiu_logo.png" alt="UIU" className="h-8 brightness-0 invert opacity-60" />
+                  <div className="w-px h-5 bg-white/10"></div>
+                  <span className="text-[11px] font-bold tracking-widest text-slate-400 uppercase">Institutional</span>
                </div>
                
                <div className="space-y-6">
-                  <h1 className="text-4xl font-extrabold leading-tight tracking-tight">
+                  <h1 className="text-3xl font-black leading-tight tracking-tight">
                     Start your <br />
                     professional <br />
                     <span className="text-[#f97316]">Alumni Journey.</span>
@@ -116,7 +116,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Right Area - Register Form */}
-          <div className="md:w-7/12 p-8 md:p-16 flex flex-col justify-center">
+          <div className="md:w-[60%] p-8 md:p-12 flex flex-col justify-center">
              <div className="max-w-md mx-auto w-full space-y-8">
                 <div className="space-y-2">
                    <h2 className="text-3xl font-black text-slate-900 tracking-tight">Create Account</h2>

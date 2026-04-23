@@ -41,55 +41,52 @@ export default function LoginPage() {
     <main className="min-h-screen bg-[#fcfcfc] flex flex-col font-sans">
       <Navbar />
       
-      <div className="flex-1 flex items-center justify-center p-6 pt-24 md:pt-32 pb-12">
-        <div className="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-[0_20px_80px_-20px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col md:flex-row min-h-[700px]">
+      <div className="flex-1 flex items-center justify-center p-6 pt-24 pb-12">
+        <div className="max-w-4xl w-full bg-white rounded-[2rem] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col md:flex-row border border-slate-100">
           
           {/* Left Sidebar - Dark Branding */}
-          <div className="md:w-5/12 bg-[#0f172a] text-white p-12 flex flex-col justify-between relative overflow-hidden">
-            {/* Background Texture */}
-            <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: 'radial-gradient(#ffffff 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }}></div>
+          <div className="md:w-[38%] bg-[#0f172a] text-white p-10 flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#ffffff 0.5px, transparent 0.5px)', backgroundSize: '16px 16px' }}></div>
             
-            <div className="relative z-10 space-y-12">
-               <div className="flex items-center gap-4">
-                  <img src="/assets/images/uiu_logo.png" alt="UIU" className="h-10 brightness-0 invert" />
-                  <div className="w-px h-6 bg-white/20"></div>
-                  <span className="text-sm font-bold tracking-tight text-slate-100 italic">Welcome Back</span>
+            <div className="relative z-10 space-y-10">
+               <div className="flex items-center gap-3">
+                  <img src="/assets/images/uiu_logo.png" alt="UIU" className="h-8 brightness-0 invert opacity-60" />
+                  <div className="w-px h-5 bg-white/10"></div>
+                  <span className="text-[11px] font-bold tracking-widest text-slate-400 uppercase">Institutional</span>
                </div>
                
-               <div className="space-y-6">
-                  <h1 className="text-4xl font-extrabold leading-tight tracking-tight">
+               <div className="space-y-4">
+                  <h1 className="text-3xl font-black leading-tight tracking-tight">
                     Continue your <br />
                     <span className="text-[#f97316]">Professional</span> <br />
                     Growth.
                   </h1>
                   
-                  <div className="space-y-5 pt-4">
+                  <div className="space-y-4 pt-4">
                      {[
-                       "Access exclusive job board",
-                       "Network with industry leaders",
-                       "Real-time alumni messaging",
-                       "Personalized career insights"
+                       "Premium Job Hub",
+                       "Global Connection",
+                       "Alumni Messaging",
+                       "Career Insights"
                      ].map((item, i) => (
-                       <div key={i} className="flex items-center gap-4 group/item">
-                         <div className="h-6 w-6 rounded-full bg-[#f97316] flex items-center justify-center text-white shadow-lg shadow-orange-900/20 group-hover/item:scale-110 transition-transform">
-                            <CheckCircle2 size={14} className="stroke-[3]" />
-                         </div>
-                         <span className="text-sm font-medium text-slate-300 group-hover/item:text-white transition-colors">{item}</span>
+                       <div key={i} className="flex items-center gap-3 group/item">
+                          <CheckCircle2 size={16} className="text-[#f97316] stroke-[2.5]" />
+                          <span className="text-[13px] font-semibold text-slate-400 group-hover/item:text-white transition-colors">{item}</span>
                        </div>
                      ))}
                   </div>
                </div>
             </div>
             
-            <div className="relative z-10">
-               <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">
-                  © UIU Alumni Association {new Date().getFullYear()}
-               </p>
+            <div className="relative z-10 pt-8 border-t border-white/5">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">
+                    © UIU PROTOCOL 2026
+                </p>
             </div>
           </div>
 
           {/* Right Area - Login Form */}
-          <div className="md:w-7/12 p-12 md:p-14 lg:p-20 flex flex-col justify-center">
+          <div className="md:w-[62%] p-8 md:p-12 flex flex-col justify-center bg-white">
              <div className="max-w-md mx-auto w-full space-y-8">
                 <div className="space-y-2">
                    <h2 className="text-3xl font-black text-slate-900 tracking-tight">Login to Account</h2>
