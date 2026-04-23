@@ -43,7 +43,7 @@ export default function JobsPage() {
   const filteredJobs = useMemo(() => {
     return storeJobs.map(job => ({
       ...job,
-      isApplied: applications.some(app => app.jobId === job.id && app.applicantId === currentUser.id)
+      isApplied: applications.some(app => app.jobId === job.id && app.applicantId === currentUser?.id)
     })).filter(job => {
       const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase()) || job.company.toLowerCase().includes(searchQuery.toLowerCase());
       const jobType = job.type || "Full-time";
@@ -55,7 +55,7 @@ export default function JobsPage() {
       
       return matchesSearch && matchesType && matchesTab;
     });
-  }, [searchQuery, selectedTypes, activeTab, storeJobs, applications, currentUser.id]);
+  }, [searchQuery, selectedTypes, activeTab, storeJobs, applications, currentUser?.id]);
 
   const executeApplication = async () => {
     if (!currentUser || !selectedJob) return;
@@ -106,7 +106,7 @@ export default function JobsPage() {
   };
 
   const confirmPublish = () => {
-    if (!newJob.title || !newJob.company) return;
+    if (!newJob.title || !newJob.company || !currentUser) return;
     
     const jobData = {
       ...newJob,
@@ -260,7 +260,7 @@ export default function JobsPage() {
                                  </div>
                               ) : (
                                  <button 
-                                    onClick={(e) => { e.stopPropagation(); handleApply(job.id); }}
+                                    onClick={(e) => { e.stopPropagation(); setSelectedJob(job); setApplyingJobId(job.id); }}
                                     className="bg-[#0f172a] text-white px-8 py-3 rounded-xl font-bold text-xs hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
                                  >
                                     Apply Now

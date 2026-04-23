@@ -14,7 +14,8 @@ import {
   CalendarDays,
   Target,
   ArrowUpRight,
-  Check
+  Check,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/lib/store";

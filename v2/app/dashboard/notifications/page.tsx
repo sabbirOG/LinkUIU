@@ -12,7 +12,8 @@ import {
   Heart,
   MessageSquare,
   UserPlus,
-  Send
+  Send,
+  Loader2
 } from "lucide-react";
 import { cn, formatRelativeTime } from "@/lib/utils";
 import { useGlobalStore } from "@/lib/store";

@@ -129,7 +129,7 @@ export default function MessagesPage() {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim() || !activeConvo) return;
+    if (!inputText.trim() || !activeConvo || !currentUser) return;
     
     const otherUserId = activeConvo.user_1_id === currentUser.id ? activeConvo.user_2_id : activeConvo.user_1_id;
     const text = inputText;
