@@ -43,6 +43,9 @@ export const metadata: Metadata = {
     title: "LinkedUIU | UIU Alumni Network",
     description: "Elite professional portal for United International University (UIU) alumni and students.",
   },
+  alternates: {
+    canonical: "https://linkeduiu.vercel.app/",
+  },
   robots: {
     index: true,
     follow: true,

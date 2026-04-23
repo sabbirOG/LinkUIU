@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/dashboard/settings', '/dashboard/messages'],
     },
-    sitemap: 'https://linkeduiu.com/sitemap.xml',
+    sitemap: 'https://linkeduiu.vercel.app/sitemap.xml',
   };
 }
