@@ -141,71 +141,80 @@ export default function JobsPage() {
   const employmentTypes = ["All Employment", "Full-time", "Part-time", "Hybrid", "Remote", "Contract", "Internship"];
 
   return (
-    <div className="min-h-screen bg-[#f8f9fb] font-sans">
+    <div className="min-h-screen bg-[#f8f9fb]">
       
-      {/* 1. HEADER */}
-      <div className="bg-white border-b border-slate-200 sticky top-[64px] z-30 pt-8 pb-4">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10">
-           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
-             <div>
-               <p className="text-[10px] font-bold text-[#f97316] uppercase tracking-widest flex items-center gap-1.5 mb-1">
-                 <Briefcase size={12} strokeWidth={2.5} /> Career Hub
-               </p>
-               <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 leading-none">
-                 Professional <span className="text-slate-300 font-light">Opportunities</span>
+      <div className="bg-white border-b border-slate-200 sticky top-[64px] z-30 pt-8 pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 mb-8">
+             <div className="space-y-4">
+               <div className="inline-flex items-center gap-2 text-[#f97316] font-black text-[10px] uppercase tracking-widest">
+                 <Briefcase size={14} strokeWidth={3} /> Career Hub
+               </div>
+               <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-slate-900 leading-none">
+                 Professional <span className="text-slate-200 font-normal">Opportunities</span>
                </h1>
              </div>
              <button 
                 onClick={() => setIsPostModalOpen(true)}
-                className="bg-[#0f172a] text-white px-6 py-3 rounded-xl font-bold text-xs flex items-center gap-2 hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
+                className="w-full lg:w-auto bg-slate-950 text-white px-8 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#f97316] transition-all active:scale-95 shadow-xl shadow-slate-200"
               >
-                 <Plus size={18} /> Post a Job
+                 <Plus size={18} strokeWidth={3} /> Post a Job
               </button>
            </div>
 
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-6">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
              <div className="flex-1 relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#f97316] transition-colors" size={18} />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#f97316] transition-colors" size={20} />
                 <input 
                   type="text" 
                   placeholder="Search by role, company or expertise..." 
-                  className="w-full bg-slate-50 border border-transparent focus:bg-white focus:border-[#f97316]/20 focus:ring-4 focus:ring-[#f97316]/5 rounded-xl pl-12 pr-4 py-3.5 text-sm font-medium transition-all outline-none" 
+                  className="w-full bg-slate-50 border border-slate-100 focus:bg-white focus:border-[#f97316]/20 focus:ring-4 focus:ring-[#f97316]/5 rounded-[20px] pl-14 pr-6 py-4 text-[14px] font-medium transition-all outline-none" 
                   value={searchQuery} 
                   onChange={(e) => setSearchQuery(e.target.value)} 
                 />
              </div>
-             <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-                {["all", "recommended", "applied"].map(tab => (
-                   <button 
-                    key={tab} 
-                    onClick={() => setActiveTab(tab)} 
-                    className={cn(
-                      "text-[10px] font-bold uppercase tracking-widest transition-all py-2.5 px-6 rounded-lg", 
-                      activeTab === tab ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"
-                    )}
-                  >
-                      {tab}
-                   </button>
-                ))}
+             
+             <div className="flex items-center gap-2">
+                <div className="flex-1 lg:flex-none flex items-center bg-slate-100 p-1 rounded-[16px] gap-1">
+                   {["all", "recommended", "applied"].map(tab => (
+                      <button 
+                       key={tab} 
+                       onClick={() => setActiveTab(tab)} 
+                       className={cn(
+                         "flex-1 lg:flex-none text-[9px] font-black uppercase tracking-[0.2em] transition-all py-3 px-6 rounded-[12px]", 
+                         activeTab === tab ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"
+                       )}
+                     >
+                         {tab}
+                      </button>
+                   ))}
+                </div>
+                <button 
+                  onClick={() => setIsMobileFilterOpen(true)}
+                  className="lg:hidden h-14 w-14 bg-slate-100 flex items-center justify-center rounded-2xl text-slate-600 active:scale-95 transition-all"
+                >
+                   <SlidersHorizontal size={20} />
+                </button>
              </div>
           </div>
         </div>
       </div>
 
-      {/* 2. BODY */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12">
-        <div className="grid lg:grid-cols-12 gap-10">
+      {/* 2. BODY - Adaptive Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10">
            
-           <aside className="lg:col-span-3">
+           {/* LEFT COLUMN: Filters (Desktop) */}
+           <aside className="lg:col-span-3 hidden lg:block">
               <div className="sticky top-[260px] space-y-8">
                  <div className="space-y-6">
                     <div className="flex justify-between items-center px-1">
-                        <h3 className="font-bold text-[11px] uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                          <SlidersHorizontal size={12} /> Employment
+                        <h3 className="font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
+                          <Target size={14} className="text-[#f97316]" /> Categorization
                         </h3>
                         <button onClick={() => setSelectedTypes(["All Employment"])} className="text-[10px] font-bold text-[#f97316] hover:underline">Reset</button>
                     </div>
-                    <div className="space-y-2.5">
+                    <div className="space-y-2">
                        {employmentTypes.map((type) => {
                          const isChecked = selectedTypes.includes(type);
                          return (
@@ -213,12 +222,12 @@ export default function JobsPage() {
                              key={type} 
                              onClick={() => toggleType(type)} 
                              className={cn(
-                               "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all border",
+                               "w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all border",
                                isChecked ? "bg-white border-[#f97316]/20 text-[#f97316] shadow-sm" : "bg-transparent border-transparent text-slate-500 hover:bg-white hover:border-slate-200"
                              )}
                            >
-                              <div className={cn("h-4 w-4 rounded-full border flex items-center justify-center transition-all", isChecked ? "border-[#f97316] bg-[#f97316]" : "border-slate-300 bg-white")}>
-                                 {isChecked && <div className="h-1.5 w-1.5 bg-white rounded-full" />}
+                              <div className={cn("h-4 w-4 rounded-md border flex items-center justify-center transition-all", isChecked ? "border-[#f97316] bg-[#f97316]" : "border-slate-300 bg-white")}>
+                                 {isChecked && <Check size={10} className="text-white" strokeWidth={4} />}
                               </div>
                               {type}
                            </button>
@@ -229,59 +238,93 @@ export default function JobsPage() {
               </div>
            </aside>
 
-           <div className="lg:col-span-9 space-y-6">
+           {/* Mobile Filter Drawer */}
+           {isMobileFilterOpen && (
+             <div className="fixed inset-0 z-[200] lg:hidden">
+                <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in" onClick={() => setIsMobileFilterOpen(false)} />
+                <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-8 animate-in slide-in-from-bottom duration-300 max-h-[80vh] overflow-y-auto">
+                   <div className="flex justify-between items-center mb-8">
+                      <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">Employment Filters</h3>
+                      <button onClick={() => setIsMobileFilterOpen(false)} className="h-10 w-10 bg-slate-100 rounded-full flex items-center justify-center"><X size={20} /></button>
+                   </div>
+                   <div className="grid grid-cols-2 gap-3 pb-8">
+                      {employmentTypes.map((type) => (
+                        <button 
+                          key={type}
+                          onClick={() => toggleType(type)}
+                          className={cn(
+                            "px-4 py-4 rounded-xl text-xs font-bold transition-all border text-center",
+                            selectedTypes.includes(type) ? "bg-[#f97316] border-[#f97316] text-white shadow-lg shadow-orange-200" : "bg-slate-50 border-slate-100 text-slate-500"
+                          )}
+                        >
+                           {type}
+                        </button>
+                      ))}
+                   </div>
+                   <button 
+                     onClick={() => setIsMobileFilterOpen(false)}
+                     className="w-full bg-slate-900 text-white h-14 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-slate-200"
+                   >
+                      Apply Filters
+                   </button>
+                </div>
+             </div>
+           )}
+
+           <div className="lg:col-span-9 space-y-4 sm:space-y-6">
               {filteredJobs.length > 0 ? (
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {filteredJobs.map((job) => (
                     <div 
                       key={job.id} 
                       onClick={() => setSelectedJob(job)}
-                      className="group bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:border-[#f97316]/30 transition-all cursor-pointer relative overflow-hidden"
+                      className="group bg-white border border-slate-200 p-5 sm:p-6 rounded-2xl shadow-sm hover:border-[#f97316]/30 transition-all duration-300 cursor-pointer relative overflow-hidden"
                     >
                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                          <div className="flex gap-5">
-                             <div className="h-14 w-14 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-300 group-hover:text-[#f97316] group-hover:bg-[#f97316]/5 transition-all"><Briefcase size={24} /></div>
-                             <div className="space-y-1">
-                                <h3 className="text-xl font-bold text-slate-900 leading-tight">{job.title}</h3>
-                                 <div className="flex flex-wrap items-center gap-3 text-xs font-medium text-slate-500">
-                                    <span className="text-[#f97316] font-bold">{job.company}</span>
-                                    <span className="h-1 w-1 bg-slate-200 rounded-full"></span>
-                                    <span>{job.type}</span>
-                                    <span className="h-1 w-1 bg-slate-200 rounded-full"></span>
+                          <div className="flex gap-4 sm:gap-5">
+                             <div className="h-14 w-14 sm:h-16 sm:w-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-300 group-hover:text-[#f97316] group-hover:bg-[#f97316]/5 transition-all"><Briefcase size={28} /></div>
+                             <div className="space-y-1 pt-1">
+                                <h3 className="text-xl font-black text-slate-900 tracking-tight leading-none group-hover:text-[#f97316] transition-colors">{job.title}</h3>
+                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px] font-bold text-slate-400 mt-2">
+                                    <span className="text-[#f97316] uppercase tracking-wider">{job.company}</span>
+                                    <span className="h-1 w-1 bg-slate-200 rounded-full hidden sm:block"></span>
+                                    <span className="bg-slate-50 px-2 py-0.5 rounded border border-slate-100 uppercase tracking-tighter">{job.type}</span>
                                     <span className="flex items-center gap-1.5"><MapPin size={14} className="text-slate-300" /> {job.location}</span>
                                  </div>
                              </div>
                           </div>
-                           <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end pt-4 md:pt-0 border-t md:border-none border-slate-50">
-                              <span className="text-lg font-bold text-slate-900">{job.salary}</span>
+                           <div className="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end pt-5 md:pt-0 border-t md:border-none border-slate-50">
+                              <span className="text-xl font-black text-slate-900 tracking-tighter">{job.salary}</span>
                               {job.isApplied ? (
-                                 <div className="px-5 py-2.5 bg-slate-50 text-slate-400 border border-slate-100 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
-                                    <Check size={14} /> Applied
+                                 <div className="px-6 py-3 bg-green-50 text-green-600 border border-green-100 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
+                                    <Check size={16} /> Applied
                                  </div>
                               ) : (
                                  <button 
                                     onClick={(e) => { e.stopPropagation(); setSelectedJob(job); setApplyingJobId(job.id); }}
-                                    className="bg-[#0f172a] text-white px-8 py-3 rounded-xl font-bold text-xs hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
+                                    className="bg-slate-900 text-white px-8 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#f97316] transition-all active:scale-95 shadow-xl shadow-slate-200 hover:shadow-orange-200"
                                  >
                                     Apply Now
                                  </button>
                               )}
                            </div>
                        </div>
-                       <div className="mt-6 pt-6 border-t border-slate-50 flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                             <Clock size={12} /> Posted {job.posted} · {job.postedBy?.name || "UIU Verified"}
+                       <div className="mt-6 pt-5 border-t border-slate-50 flex items-center justify-between">
+                          <div className="flex items-center gap-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                             <Clock size={12} className="text-[#f97316]" /> {job.posted} · <span className="opacity-60">{job.postedBy?.name || "Verified"}</span>
                           </div>
-                          <span className="px-2 py-1 bg-slate-50 text-slate-500 text-[10px] font-bold rounded border border-slate-100 uppercase tracking-wide">{job.category}</span>
+                          <span className="px-2.5 py-1 bg-slate-50 text-slate-500 text-[9px] font-black rounded border border-slate-100 uppercase tracking-widest">{job.category}</span>
                        </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="py-24 text-center space-y-4">
-                   <div className="h-16 w-16 bg-white border border-slate-200 rounded-2xl flex items-center justify-center text-slate-200 mx-auto shadow-sm"><Search size={28} /></div>
-                   <h3 className="text-lg font-bold text-slate-900">No vacancies match your criteria</h3>
-                   <p className="text-sm text-slate-400 font-medium">Try adjusting your search or filters to find more opportunities.</p>
+                <div className="py-24 text-center space-y-6 bg-white border border-dashed border-slate-200 rounded-3xl">
+                   <div className="h-20 w-20 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200 mx-auto shadow-sm"><Search size={32} /></div>
+                   <div className="space-y-1">
+                      <h3 className="text-lg font-black text-slate-900 tracking-tight">No Active Vacancies</h3>
+                      <p className="text-sm text-slate-400 font-medium">Try adjusting your filters to find matching opportunities.</p>
+                   </div>
                 </div>
               )}
            </div>

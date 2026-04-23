@@ -42,44 +42,44 @@ export default function ConnectionsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#f8f9fb] font-sans">
+    <div className="min-h-screen bg-[#f8f9fb]">
 
       {/* ── STICKY HEADER ─────────────────────────────────────── */}
-      <div className="bg-white border-b border-slate-200 sticky top-[64px] z-30">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-6 pb-4">
+      <div className="bg-white border-b border-slate-200 sticky top-[64px] z-30 pt-6 sm:pt-8 pb-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Title row */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-5">
-            <div>
-              <p className="text-[10px] font-bold text-[#f97316] uppercase tracking-widest flex items-center gap-1.5 mb-1">
-                <UserCheck size={12} strokeWidth={2.5} /> Professional Network
-              </p>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 leading-none">
-                Connections <span className="text-slate-300 font-light">Hub</span>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 text-[#f97316] font-black text-[10px] uppercase tracking-widest">
+                <Users size={14} strokeWidth={3} /> Professional Network
+              </div>
+              <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-slate-900 leading-none">
+                Connections <span className="text-slate-200 font-normal">Hub</span>
               </h1>
             </div>
 
             {/* Tab switcher */}
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl gap-1 self-start md:self-auto w-full md:w-auto">
+            <div className="flex items-center bg-slate-100 p-1 rounded-2xl gap-1 self-start md:self-auto w-full md:w-auto">
               <button
                 onClick={() => { setActiveTab("my-network"); setSearchQuery(""); }}
                 className={cn(
-                  "flex-1 md:flex-none px-6 py-2 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all",
+                  "flex-1 md:flex-none px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] transition-all",
                   activeTab === "my-network" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"
                 )}
               >
-                My Network
+                Network
               </button>
               <button
                 onClick={() => { setActiveTab("requests"); setSearchQuery(""); }}
                 className={cn(
-                  "flex-1 md:flex-none px-6 py-2 rounded-lg text-[11px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                  "flex-1 md:flex-none px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] transition-all flex items-center justify-center gap-2",
                   activeTab === "requests" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-600"
                 )}
               >
-                Requests
+                Pulse
                 {pendingRequests.length > 0 && (
-                  <span className="h-5 min-w-[18px] px-1 bg-[#f97316] text-white rounded-full flex items-center justify-center text-[9px] font-black">
+                  <span className="h-5 min-w-[20px] px-1.5 bg-[#f97316] text-white rounded-full flex items-center justify-center text-[9px] font-black animate-pulse">
                     {pendingRequests.length}
                   </span>
                 )}
@@ -88,12 +88,12 @@ export default function ConnectionsPage() {
           </div>
 
           {/* Search */}
-          <div className="relative max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
+          <div className="relative group max-w-2xl mt-8">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#f97316] transition-colors" size={20} />
             <input
               type="text"
-              placeholder={activeTab === "requests" ? "Search requests…" : "Search your network…"}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-transparent focus:bg-white focus:border-[#f97316]/30 focus:ring-4 focus:ring-[#f97316]/5 rounded-xl text-sm font-medium text-slate-700 placeholder:text-slate-400 outline-none transition-all"
+              placeholder="Search your network..."
+              className="w-full pl-14 pr-6 py-4.5 bg-slate-50 border border-slate-100 focus:bg-white focus:border-[#f97316]/20 focus:ring-4 focus:ring-[#f97316]/5 rounded-[24px] text-[15px] font-medium text-slate-900 placeholder:text-slate-400 outline-none transition-all"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -102,101 +102,105 @@ export default function ConnectionsPage() {
       </div>
 
       {/* ── CONTENT ───────────────────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
 
         {/* ── REQUESTS TAB ─── */}
         {activeTab === "requests" ? (
-          <div className="space-y-4 animate-in fade-in duration-300">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-1">
-              Pending · {filteredData.length}
+          <div className="space-y-6 animate-in fade-in duration-500">
+            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">
+              Pending Authorization · {filteredData.length}
             </p>
 
             {filteredData.length > 0 ? (
-              <div className="grid md:grid-cols-2 gap-3">
+              <div className="grid md:grid-cols-2 gap-4">
                 {filteredData.map(req => (
-                  <div key={req.id} className="bg-white border border-slate-200 p-5 rounded-2xl flex items-center gap-4 hover:border-[#f97316]/20 transition-all shadow-sm">
+                  <div key={req.id} className="group bg-white border border-slate-200 p-6 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center gap-6 hover:border-[#f97316]/30 transition-all duration-300 shadow-sm hover:shadow-md">
                     {/* Avatar */}
                     <Link href={`/dashboard/profile/${req.id}`} className="relative shrink-0">
-                      <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center text-lg font-bold text-slate-400 hover:text-[#f97316] hover:bg-orange-50 transition-all">
+                      <div className="h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center text-xl font-black text-slate-300 group-hover:text-white group-hover:bg-[#f97316] transition-all duration-300 border border-slate-100 shadow-inner">
                         {req.name.charAt(0)}
                       </div>
-                      <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-400 border-2 border-white rounded-full" />
+                      <div className="absolute -bottom-1 -right-1 h-5 w-5 bg-orange-500 border-4 border-white rounded-full animate-pulse" />
                     </Link>
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <Link href={`/dashboard/profile/${req.id}`} className="text-sm font-bold text-slate-900 hover:text-[#f97316] transition-colors leading-tight block truncate">
+                      <Link href={`/dashboard/profile/${req.id}`} className="text-lg font-black text-slate-900 hover:text-[#f97316] transition-colors leading-tight block truncate tracking-tight">
                         {req.name}
                       </Link>
-                      <p className="text-[11px] font-semibold text-[#f97316] truncate">{req.job}</p>
-                      <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">{req.dept} · Batch {req.batch}</p>
+                      <p className="text-[11px] font-black text-[#f97316] uppercase tracking-widest mt-1 truncate">{req.job}</p>
+                      <div className="flex items-center gap-2 mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                         <span>{req.dept}</span>
+                         <span className="opacity-30">•</span>
+                         <span>Batch {req.batch}</span>
+                      </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="flex gap-2 shrink-0">
+                    <div className="flex gap-2 w-full sm:w-auto shrink-0 mt-4 sm:mt-0">
                       <button
                         onClick={() => toggleConnection(req.id)}
-                        className="h-8 w-8 rounded-lg bg-slate-100 text-slate-400 hover:bg-slate-200 flex items-center justify-center transition-all"
-                        title="Ignore"
+                        className="flex-1 sm:flex-none h-12 w-12 rounded-xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-all border border-slate-100"
+                        title="Decline"
                       >
-                        <X size={14} />
+                        <X size={20} />
                       </button>
                       <button
                         onClick={() => toggleConnection(req.id)}
-                        className="h-8 px-3 rounded-lg bg-[#0f172a] text-white text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center gap-1.5 shadow-md"
+                        className="flex-1 sm:flex-none h-12 px-8 rounded-xl bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#f97316] transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-200 active:scale-95"
                       >
-                        <Check size={13} /> Accept
+                        <Check size={16} /> Accept
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="py-20 text-center bg-white border border-dashed border-slate-200 rounded-2xl">
-                <div className="h-14 w-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200 mx-auto mb-4">
-                  <Check size={28} />
+              <div className="py-24 text-center bg-white border border-dashed border-slate-200 rounded-[40px] shadow-sm">
+                <div className="h-20 w-20 bg-slate-50 rounded-[28px] flex items-center justify-center text-slate-200 mx-auto mb-6">
+                  <UserCheck size={32} />
                 </div>
-                <p className="text-sm font-bold text-slate-900">All caught up</p>
-                <p className="text-xs text-slate-400 font-medium mt-1">No pending requests at this time.</p>
+                <h3 className="text-base font-black text-slate-900 uppercase tracking-tight">Queue Empty</h3>
+                <p className="text-sm text-slate-400 font-medium mt-1">No pending signals detected.</p>
               </div>
             )}
           </div>
 
         ) : (
           /* ── MY NETWORK TAB ─── */
-          <div className="space-y-4 animate-in fade-in duration-300">
-            <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest px-1">
-              Your Network · {filteredData.length} Alumni
+          <div className="space-y-6 animate-in fade-in duration-500">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">
+               YOUR NETWORK - {connectedNetwork.length} ALUMNI
             </p>
 
-            {filteredData.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredData.map(person => (
-                  <div key={person.id} className="group bg-white border border-slate-200 p-5 rounded-2xl shadow-sm hover:shadow-md hover:border-[#f97316]/20 transition-all duration-200">
+            {connectedNetwork.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                {connectedNetwork.map(person => (
+                  <div key={person.id} className="group bg-white border border-slate-200 p-6 rounded-[32px] shadow-sm hover:shadow-xl hover:border-[#f97316]/30 transition-all duration-500">
                     {/* Card top */}
-                    <div className="flex items-start gap-3 mb-4">
+                    <div className="flex items-start gap-4 mb-6">
                       <Link href={`/dashboard/profile/${person.id}`} className="relative shrink-0">
-                        <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center text-lg font-bold text-slate-400 group-hover:text-[#f97316] group-hover:bg-orange-50 transition-all">
+                        <div className="h-14 w-14 rounded-2xl bg-slate-50 flex items-center justify-center text-xl font-black text-slate-300 group-hover:text-white group-hover:bg-[#f97316] transition-all duration-500 border border-slate-100">
                           {person.name.charAt(0)}
                         </div>
-                        <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-400 border-2 border-white rounded-full" />
+                        <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-500 border-4 border-white rounded-full" />
                       </Link>
-                      <div className="min-w-0">
-                        <Link href={`/dashboard/profile/${person.id}`} className="text-sm font-bold text-slate-900 hover:text-[#f97316] transition-colors leading-tight block truncate">
+                      <div className="min-w-0 pt-1">
+                        <Link href={`/dashboard/profile/${person.id}`} className="text-[15px] font-black text-slate-900 hover:text-[#f97316] transition-colors leading-tight block truncate tracking-tight">
                           {person.name}
                         </Link>
-                        <p className="text-[11px] font-semibold text-[#f97316] truncate">{person.job}</p>
-                        <p className="text-[10px] font-medium text-slate-400 truncate">{person.company}</p>
+                        <p className="text-[10px] font-black text-[#f97316] uppercase tracking-widest mt-1 truncate">{person.job}</p>
+                        <p className="text-[10px] font-bold text-slate-400 truncate mt-0.5 tracking-tight">{person.company}</p>
                       </div>
                     </div>
 
                     {/* Dept + batch badge */}
-                    <div className="flex items-center gap-1.5 mb-4">
-                      <span className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded-full text-[10px] font-bold text-slate-500 uppercase tracking-wide">
+                    <div className="flex items-center gap-1.5 mb-8">
+                      <span className="px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[9px] font-black text-slate-600 uppercase tracking-widest">
                         {person.dept}
                       </span>
-                      <span className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded-full text-[10px] font-bold text-slate-500 uppercase tracking-wide">
-                        Batch {person.batch}
+                      <span className="px-2.5 py-1 bg-slate-50 border border-slate-100 rounded-lg text-[9px] font-black text-slate-600 uppercase tracking-widest">
+                        '{person.batch?.slice(-2) || "XX"}
                       </span>
                     </div>
 
@@ -204,32 +208,32 @@ export default function ConnectionsPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={() => router.push(`/dashboard/messages?chat=${person.id}`)}
-                        className="flex-1 h-9 bg-slate-100 text-slate-700 text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-slate-200 transition-all flex items-center justify-center gap-1.5"
+                        className="flex-1 h-11 bg-white text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-xl border border-slate-200 hover:border-[#f97316]/20 hover:text-[#f97316] transition-all flex items-center justify-center gap-2 active:scale-95"
                       >
-                        <MessageSquare size={12} /> Message
+                        <MessageSquare size={14} /> Msg
                       </button>
                       <Link
                         href={`/dashboard/profile/${person.id}`}
-                        className="flex-1 h-9 bg-[#0f172a] text-white text-[10px] font-bold uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-all flex items-center justify-center shadow-md"
+                        className="flex-1 h-11 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#f97316] transition-all flex items-center justify-center shadow-lg active:scale-95"
                       >
-                        Profile
+                        Portal
                       </Link>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="py-20 text-center bg-white border border-dashed border-slate-200 rounded-2xl">
-                <div className="h-14 w-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200 mx-auto mb-4">
-                  <Users size={28} />
-                </div>
-                <p className="text-sm font-bold text-slate-900">No connections found</p>
-                <Link
-                  href="/dashboard/directory"
-                  className="mt-5 inline-flex px-6 py-2.5 bg-[#0f172a] text-white rounded-xl text-[10px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg"
-                >
-                  Explore Directory
-                </Link>
+              <div className="py-32 text-center bg-white border-2 border-dashed border-slate-100 rounded-[32px] flex flex-col items-center justify-center">
+                 <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200 mb-6">
+                    <Users size={28} />
+                 </div>
+                 <h3 className="text-lg font-black text-slate-900 mb-6">No connections found</h3>
+                 <Link
+                   href="/dashboard/directory"
+                   className="h-12 px-10 bg-slate-950 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#f97316] transition-all flex items-center justify-center shadow-xl shadow-slate-200 active:scale-95"
+                 >
+                   EXPLORE DIRECTORY
+                 </Link>
               </div>
             )}
           </div>

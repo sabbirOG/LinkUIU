@@ -38,6 +38,7 @@ export default function MessagesPage() {
   const [inputText, setInputText] = useState("");
   const [messageStream, setMessageStream] = useState<any[]>([]);
   const [isOtherTyping, setIsOtherTyping] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Initialize from URL or first conversation
@@ -50,13 +51,13 @@ export default function MessagesPage() {
         if (convoId) {
           const convo = conversations.find(c => c.id === convoId) || { id: convoId, user_1_id: currentUser.id, user_2_id: userIdFromUrl };
           setActiveConvo(convo);
+          setIsSidebarOpen(false); // On mobile, close sidebar if chat open
           await loadMessages(convoId);
           await markAsRead(convoId);
         }
       } else if (conversations.length > 0 && !activeConvo) {
-        setActiveConvo(conversations[0]);
-        await loadMessages(conversations[0].id);
-        await markAsRead(conversations[0].id);
+        // Desktop default, but don't force sidebar closed on mobile yet
+        // setActiveConvo(conversations[0]);
       }
     }
     initChat();
@@ -90,7 +91,6 @@ export default function MessagesPage() {
             if (prev.some(m => m.id === payload.new.id)) return prev;
             return [...prev, payload.new];
           });
-          // Auto-mark as read if we are looking at it
           markAsRead(activeConvo.id);
         } else if (payload.eventType === 'UPDATE') {
           setMessageStream(prev => prev.map(m => m.id === payload.new.id ? payload.new : m));
@@ -134,155 +134,188 @@ export default function MessagesPage() {
     const otherUserId = activeConvo.user_1_id === currentUser.id ? activeConvo.user_2_id : activeConvo.user_1_id;
     const text = inputText;
     setInputText("");
-    if (currentUser) {
-      await sendMessage(otherUserId, text);
-    }
+    await sendMessage(otherUserId, text);
   };
 
   const getOtherUser = (convo: any) => {
     const otherId = convo.user_1_id === currentUser?.id ? convo.user_2_id : convo.user_1_id;
-    return alumni.find(a => a.id === otherId) || { name: "UIU Connect User", dept: "Unknown" };
+    return alumni.find(a => a.id === otherId) || { name: "Institutional Node", dept: "UIU" };
   };
 
-  if (!isLoaded) return <div className="p-10 text-center">Synchronizing Secure Stream...</div>;
+  if (!isLoaded) return (
+    <div className="h-[calc(100vh-100px)] flex flex-col items-center justify-center gap-6">
+      <Loader2 className="animate-spin text-[#f97316]" size={40} />
+      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Synchronizing Secure Protocol</p>
+    </div>
+  );
 
   return (
-    <div className="h-[calc(100vh-160px)] max-w-7xl mx-auto px-6 lg:px-8 py-8 animate-in fade-in duration-500">
-      <div className="bg-white border border-slate-200 rounded-3xl shadow-xl h-full flex overflow-hidden">
+    <div className="h-[calc(100vh-80px)] max-w-screen-2xl mx-auto md:p-6 lg:p-8 animate-in fade-in duration-700">
+      <div className="bg-white border border-slate-200/60 md:rounded-[40px] shadow-2xl h-full flex overflow-hidden">
         
         {/* LEFT: Conversation List */}
-        <aside className="w-80 md:w-96 border-r border-slate-100 flex flex-col shrink-0">
-          <div className="p-6 border-b border-slate-50 space-y-4">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-slate-900 flex items-center gap-2">
-              <MessageSquare size={16} className="text-[#f97316]" /> Networking Center
-            </h2>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
+        <aside className={cn(
+          "w-full md:w-80 lg:w-[400px] border-r border-slate-100 flex flex-col shrink-0 transition-all",
+          !isSidebarOpen && "hidden md:flex"
+        )}>
+          <div className="p-8 border-b border-slate-50 space-y-6">
+            <div>
+              <p className="text-[10px] font-black text-[#f97316] uppercase tracking-[0.2em] mb-1">Signal Hub</p>
+              <h2 className="text-2xl font-black tracking-tighter text-slate-900">Conversations</h2>
+            </div>
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#f97316] transition-colors" size={16} />
               <input 
                 type="text" 
-                placeholder="Find a conversation..." 
-                className="w-full bg-slate-50 border-none rounded-xl pl-9 pr-4 py-2.5 text-xs font-semibold focus:ring-2 focus:ring-orange-500/10 transition-all outline-none"
+                placeholder="Search encrypted signals..." 
+                className="w-full bg-slate-50 border-none rounded-2xl pl-12 pr-4 py-4 text-xs font-black uppercase tracking-widest placeholder:text-slate-300 focus:ring-4 focus:ring-orange-500/5 transition-all outline-none"
               />
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-1">
+          <div className="flex-1 overflow-y-auto p-4 space-y-2 no-scrollbar">
             {conversations.length > 0 ? conversations.map((convo) => {
               const other = getOtherUser(convo);
               const isActive = activeConvo?.id === convo.id;
               return (
                 <button 
                   key={convo.id}
-                  onClick={() => { setActiveConvo(convo); loadMessages(convo.id); }}
+                  onClick={() => { setActiveConvo(convo); loadMessages(convo.id); setIsSidebarOpen(false); }}
                   className={cn(
-                    "w-full p-4 rounded-2xl flex gap-4 transition-all text-left",
-                    isActive ? "bg-slate-900 text-white shadow-lg shadow-slate-200" : "hover:bg-slate-50 text-slate-500"
+                    "w-full p-5 rounded-[28px] flex gap-5 transition-all text-left group",
+                    isActive ? "bg-slate-900 text-white shadow-2xl shadow-slate-300" : "hover:bg-slate-50 text-slate-500"
                   )}
                 >
-                  <div className="h-12 w-12 rounded-xl bg-slate-100 flex-shrink-0 flex items-center justify-center text-slate-400 font-bold border border-slate-200">
+                  <div className="h-14 w-14 rounded-2xl bg-slate-100 flex-shrink-0 flex items-center justify-center text-slate-300 font-black text-xl border border-slate-50 group-hover:bg-[#f97316] group-hover:text-white group-hover:border-transparent transition-all">
                     {other.name.charAt(0)}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-center mb-0.5">
-                       <h4 className={cn("text-sm font-bold truncate", isActive ? "text-white" : "text-slate-900")}>{other.name}</h4>
-                       <span className="text-[10px] opacity-50"><Clock size={10} className="inline mr-1" /> {formatRelativeTime(convo.updated_at)}</span>
+                  <div className="flex-1 min-w-0 pt-1">
+                    <div className="flex justify-between items-center mb-1">
+                       <h4 className={cn("text-sm font-black truncate tracking-tight", isActive ? "text-white" : "text-slate-900")}>{other.name}</h4>
+                       <span className="text-[9px] font-black uppercase opacity-40">{formatRelativeTime(convo.updated_at)}</span>
                     </div>
-                    <p className="text-xs truncate opacity-70 font-medium">{convo.last_message || "Start a conversation"}</p>
+                    <p className="text-[11px] truncate opacity-60 font-bold uppercase tracking-tighter">{convo.last_message || "Initialize protocol"}</p>
                   </div>
                 </button>
               );
             }) : (
-              <div className="p-8 text-center space-y-2">
-                 <p className="text-xs font-bold text-slate-300 uppercase underline decoration-[#f97316]/30">No Active Chats</p>
-                 <p className="text-[10px] text-slate-400 font-medium">Head to the Directory to find mentors and peers.</p>
+              <div className="p-12 text-center space-y-4">
+                 <div className="h-16 w-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-200 mx-auto border border-dashed border-slate-200">
+                   <MessageSquare size={24} />
+                 </div>
+                 <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Graph Empty</p>
               </div>
             )}
           </div>
         </aside>
 
         {/* RIGHT: Chat Window */}
-        <main className="flex-1 flex flex-col bg-slate-50/20 relative">
+        <main className={cn(
+          "flex-1 flex flex-col bg-slate-50/20 relative",
+          isSidebarOpen && "hidden md:flex"
+        )}>
           {activeConvo ? (
             <>
               {/* Header */}
-              <header className="px-8 py-5 border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-10 flex justify-between items-center">
-                 <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-xl bg-[#f97316] text-white flex items-center justify-center font-bold shadow-sm">
+              <header className="px-6 md:px-10 py-6 border-b border-slate-100 bg-white/80 backdrop-blur-xl sticky top-0 z-20 flex justify-between items-center">
+                 <div className="flex items-center gap-5">
+                    <button 
+                      onClick={() => setIsSidebarOpen(true)}
+                      className="md:hidden h-10 w-10 flex items-center justify-center text-slate-400"
+                    >
+                      <ArrowLeft size={20} />
+                    </button>
+                    <div className="h-12 w-12 rounded-2xl bg-[#f97316] text-white flex items-center justify-center font-black text-xl shadow-lg shadow-orange-100">
                        {getOtherUser(activeConvo).name.charAt(0)}
                     </div>
                     <div>
-                       <h3 className="text-base font-bold text-slate-900">{getOtherUser(activeConvo).name}</h3>
+                       <h3 className="text-lg font-black text-slate-900 tracking-tight leading-none">{getOtherUser(activeConvo).name}</h3>
                        {isOtherTyping ? (
-                         <p className="text-[10px] font-bold text-green-500 uppercase tracking-widest animate-pulse">Typing...</p>
+                         <p className="text-[10px] font-black text-[#f97316] uppercase tracking-[0.2em] mt-1.5 flex items-center gap-2">
+                           <span className="flex gap-1"><span className="h-1 w-1 bg-[#f97316] rounded-full animate-bounce" /><span className="h-1 w-1 bg-[#f97316] rounded-full animate-bounce [animation-delay:0.2s]" /><span className="h-1 w-1 bg-[#f97316] rounded-full animate-bounce [animation-delay:0.4s]" /></span>
+                           Writing...
+                         </p>
                        ) : (
-                         <p className="text-[10px] font-bold text-[#f97316] uppercase tracking-widest flex items-center gap-1.5 pt-0.5">
-                            <ShieldCheck size={12} /> {getOtherUser(activeConvo).dept} Alumni
+                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2 mt-1.5">
+                            <span className="h-1.5 w-1.5 bg-green-500 rounded-full" /> Authorized Channel
                          </p>
                        )}
                     </div>
                  </div>
-                 <div className="flex items-center gap-4">
-                    <button className="h-9 w-9 flex items-center justify-center text-slate-300 hover:text-slate-900 transition-colors"><MoreVertical size={20} /></button>
+                 <div className="flex items-center gap-2">
+                    <button className="h-12 w-12 rounded-2xl flex items-center justify-center text-slate-300 hover:text-slate-900 hover:bg-slate-50 transition-all"><MoreVertical size={20} /></button>
                  </div>
               </header>
 
               {/* Messages Area */}
-              <div ref={scrollRef} className="flex-1 overflow-y-auto p-8 space-y-4">
+              <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 md:p-12 space-y-8 no-scrollbar">
                  {messageStream.map((msg) => {
                     const isMine = msg.sender_id === currentUser?.id;
                     return (
-                      <div key={msg.id} className={cn("flex flex-col", isMine ? "items-end" : "items-start")}>
+                      <div key={msg.id} className={cn("flex flex-col animate-in slide-in-from-bottom-2 duration-500", isMine ? "items-end" : "items-start")}>
                          <div className={cn(
-                           "max-w-[70%] px-5 py-3 rounded-2xl text-sm font-medium leading-relaxed shadow-sm relative",
-                           isMine ? "bg-slate-900 text-white rounded-tr-none" : "bg-white text-slate-700 border border-slate-100 rounded-tl-none"
+                           "max-w-[85%] md:max-w-[70%] px-6 py-4 rounded-[28px] text-[15px] font-bold leading-relaxed shadow-sm relative",
+                           isMine 
+                            ? "bg-slate-900 text-white rounded-tr-none shadow-xl shadow-slate-200" 
+                            : "bg-white text-slate-900 border border-slate-100 rounded-tl-none"
                          )}>
                             {msg.content}
                             {isMine && msg.is_read && (
-                              <div className="absolute -bottom-4 right-0 text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Seen</div>
+                              <div className="absolute -bottom-5 right-0 flex items-center gap-1 text-[8px] font-black text-[#f97316] uppercase tracking-widest">
+                                <ShieldCheck size={10} /> Seen
+                              </div>
                             )}
                          </div>
-                         <span className="text-[9px] font-bold text-slate-300 mt-1 uppercase tracking-tighter">{formatRelativeTime(msg.created_at)}</span>
+                         <span className="text-[9px] font-black text-slate-300 mt-2 uppercase tracking-[0.1em]">{formatRelativeTime(msg.created_at)}</span>
                       </div>
                     );
                  })}
                  {messageStream.length === 0 && (
-                   <div className="h-full flex flex-col items-center justify-center space-y-4 text-slate-300">
-                      <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center border border-slate-100 shadow-sm animate-pulse">
-                        <MessageSquare size={24} />
+                   <div className="h-full flex flex-col items-center justify-center space-y-6">
+                      <div className="h-20 w-20 bg-white rounded-[32px] flex items-center justify-center border border-slate-100 shadow-xl text-[#f97316] animate-pulse">
+                        <MessageSquare size={32} />
                       </div>
-                      <p className="text-xs font-bold uppercase tracking-widest text-[#f97316]">Secure Connection Established</p>
+                      <div className="text-center">
+                        <p className="text-[11px] font-black uppercase tracking-[0.3em] text-[#f97316]">Encrypted Protocol</p>
+                        <p className="text-[10px] font-bold text-slate-400 mt-2">Initialize your professional signal.</p>
+                      </div>
                    </div>
                  )}
               </div>
 
               {/* Input Area */}
-              <footer className="p-8 bg-white border-t border-slate-100">
-                 <form onSubmit={handleSend} className="relative">
+              <footer className="p-6 md:p-10 bg-white border-t border-slate-50">
+                 <form onSubmit={handleSend} className="relative group">
                     <input 
                       type="text" 
                       value={inputText}
                       onChange={e => setInputText(e.target.value)}
-                      placeholder="Type your message here..." 
-                      className="w-full h-14 bg-slate-50 border-none rounded-2xl pl-6 pr-20 text-sm font-semibold focus:ring-4 focus:ring-orange-500/5 transition-all outline-none"
+                      placeholder="Type a professional signal..." 
+                      className="w-full h-16 md:h-20 bg-slate-50 border-none rounded-[28px] pl-8 pr-24 text-base font-bold placeholder:text-slate-300 focus:bg-white focus:ring-[12px] focus:ring-orange-500/5 transition-all outline-none"
                     />
                     <button 
                       type="submit"
                       disabled={!inputText.trim()}
-                      className="absolute right-2 top-2 h-10 px-6 bg-[#f97316] text-white rounded-xl font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 hover:bg-orange-600 transition-all active:scale-95 disabled:opacity-30 disabled:grayscale"
+                      className="absolute right-3 top-3 md:right-4 md:top-4 h-10 md:h-12 px-8 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] flex items-center gap-3 hover:bg-[#f97316] transition-all active:scale-90 disabled:opacity-20 shadow-xl"
                     >
-                       <Send size={14} /> Send
+                       <Send size={16} /> <span className="hidden sm:inline">Dispatch</span>
                     </button>
                  </form>
               </footer>
             </>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center space-y-6">
-               <div className="h-24 w-24 bg-white rounded-3xl border border-slate-100 flex items-center justify-center text-slate-200 shadow-xl shadow-slate-100 rotate-3">
-                  <MessageSquare size={40} />
+            <div className="h-full flex flex-col items-center justify-center p-12 text-center space-y-10">
+               <div className="relative">
+                 <div className="h-32 w-32 bg-white rounded-[40px] border border-slate-100 flex items-center justify-center text-slate-100 shadow-2xl rotate-6 animate-pulse">
+                    <MessageSquare size={60} />
+                 </div>
+                 <div className="absolute -bottom-4 -right-4 h-16 w-16 bg-[#f97316] rounded-3xl flex items-center justify-center text-white shadow-xl -rotate-12">
+                    <ShieldCheck size={32} />
+                 </div>
                </div>
-               <div className="text-center space-y-2">
-                  <h3 className="text-xl font-bold text-slate-900">Professional Messaging</h3>
-                  <p className="text-xs font-medium text-slate-400 max-w-xs">Select an alumni from the sidebar to begin your professional conversation.</p>
+               <div className="space-y-4">
+                  <h3 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Signal <span className="text-[#f97316]">Intercept</span></h3>
+                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] max-w-sm mx-auto leading-relaxed">Select a professional node from the signal hub to initialize communication protocol.</p>
                </div>
             </div>
           )}

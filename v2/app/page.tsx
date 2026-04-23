@@ -4,10 +4,22 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ChevronLeft, ChevronRight, Phone, Mail, MapPin, Globe, User, Briefcase, GraduationCap, Target, Clock, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Phone, Mail, MapPin, Globe, User, Briefcase, GraduationCap, Target, Clock, ArrowRight, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useRouter } from "next/navigation";
+import { useGlobalStore } from "@/lib/store";
+
 export default function LandingPage() {
+  const { userSession, isLoaded } = useGlobalStore();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isLoaded && userSession) {
+      router.replace("/dashboard");
+    }
+  }, [isLoaded, userSession, router]);
+
   const [featuredAlumni] = useState<any[]>([
     { "name": "Md. Tarek Hasan", "profession": "Software Engineer", "company": "Samsung R&D", "image": "alumni-tarek.jpg", "batch": "131", "id": "tarek-hasan" },
     { "name": "Md Mahbub Hossain", "profession": "Lead Engineer", "company": "Apple Inc. (USA)", "image": "alumni-mahbub.jpg", "batch": "083", "id": "mahbub-hossain" },
@@ -69,66 +81,59 @@ export default function LandingPage() {
       <Navbar />
 
       {/* HERO SECTION */}
-      <section className="relative h-[85vh] flex items-center justify-center text-white overflow-hidden bg-slate-900">
+      <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden bg-slate-950">
         <div className="absolute inset-0 z-0">
           <img 
             src="/assets/images/banner.jpg" 
-            alt="UIU Campus" 
-            className="w-full h-full object-cover opacity-30" 
+            alt="UIU" 
+            className="w-full h-full object-cover opacity-30 grayscale-[0.5]" 
           />
-          <div className="absolute inset-0 bg-slate-950/60"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/40 to-slate-950"></div>
         </div>
         
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-10">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#f97316]"></span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/70 leading-none">The Global UIU Institutional Network</span>
+        <div className="container mx-auto px-4 sm:px-6 relative z-10 text-center">
+          <div className="inline-flex items-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/80 leading-none">The Global UIU Institutional Network</span>
           </div>
           
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight">
-             The Professional <span className="text-[#f97316]">Network</span> <br /> of UIU Graduates
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-8 animate-in fade-in zoom-in duration-1000">
+            The Professional <span className="text-[#f97316]">Network</span> <br /> of UIU Graduates
           </h1>
           
-          <p className="max-w-xl mx-auto mt-8 text-base font-medium text-slate-400">
+          <p className="max-w-2xl mx-auto text-base sm:text-lg font-medium text-slate-300 leading-relaxed px-4 opacity-80 mb-12">
             Connecting leaders and global achievers. A secure professional hub built for the United International University community.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12">
-            <Link href="/dashboard/directory" className="bg-[#f97316] hover:bg-orange-600 text-white px-10 py-3.5 rounded-xl font-bold text-sm transition-all shadow-md">Expand Your Network</Link>
-            <Link href="/login" className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-10 py-3.5 rounded-xl font-bold text-sm transition-all">Sign In to Dashboard</Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
+            <Link href="/dashboard/directory" className="w-full sm:w-auto bg-[#f97316] hover:bg-orange-600 text-white px-10 py-4 rounded-xl font-bold text-sm transition-all shadow-xl active:scale-95">Expand Your Network</Link>
+            <Link href="/login" className="w-full sm:w-auto bg-white/5 hover:bg-white/10 text-white border border-white/20 px-10 py-4 rounded-xl font-bold text-sm transition-all active:scale-95">Sign In to Dashboard</Link>
           </div>
         </div>
       </section>
 
       {/* FEATURED ALUMNI */}
-      <section className="py-24 bg-white border-b border-slate-100" 
+      <section className="py-32 bg-white relative overflow-hidden" 
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
         <div className="container mx-auto max-w-7xl px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12">
-            <div className="space-y-2">
-               <div className="text-[#f97316] font-bold uppercase tracking-widest text-[9px]">Global Footprint</div>
-               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Institutional Leaders</h2>
-            </div>
-            <div className="flex gap-3">
-               <button onClick={() => scroll('left')} className="h-10 w-10 bg-white border border-slate-200 text-slate-400 rounded-lg flex items-center justify-center hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all">
-                 <ChevronLeft size={18} />
-               </button>
-               <button onClick={() => scroll('right')} className="h-10 w-10 bg-white border border-slate-200 text-slate-400 rounded-lg flex items-center justify-center hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all">
-                 <ChevronRight size={18} />
-               </button>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 md:gap-12 mb-20">
+            <div className="space-y-4 text-left">
+               <div className="text-[#f97316] font-black uppercase tracking-[0.3em] text-[11px]">
+                  Global Footprint
+               </div>
+               <h2 className="text-5xl sm:text-7xl font-black text-slate-900 tracking-tighter leading-none">Institutional Leaders</h2>
             </div>
           </div>
 
           <div 
             ref={scrollRef} 
-            className="flex gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4"
+            className="flex gap-8 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-8"
           >
             {extendedAlumni.map((alumnus, i) => (
-              <div key={i} className="min-w-full sm:min-w-[50%] lg:min-w-[33.33%] snap-center px-1">
-                <Link href={`/dashboard/profile/${alumnus.id}`} className="bg-slate-50/50 border border-slate-100 rounded-xl p-8 flex flex-col items-center text-center space-y-6 hover:bg-white hover:border-slate-200 hover:shadow-lg transition-all duration-300 group">
-                  <div className="h-20 w-20 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-2xl font-bold text-slate-300 group-hover:border-[#f97316]/30 transition-all overflow-hidden shadow-sm">
+              <div key={i} className="min-w-full sm:min-w-[50%] lg:min-w-[40%] snap-center px-2">
+                <Link href={`/dashboard/profile/${alumnus.id}`} className="bg-slate-50 border border-slate-50 rounded-[40px] p-10 flex flex-col items-center text-center space-y-8 hover:bg-white hover:border-slate-100 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] transition-all duration-500 group">
+                  <div className="h-28 w-28 rounded-[32px] bg-white border border-slate-100 flex items-center justify-center text-3xl font-black text-slate-200 group-hover:border-[#f97316]/30 group-hover:shadow-xl transition-all overflow-hidden shadow-sm">
                     {alumnus.image ? (
                       <img 
                         src={`/assets/images/featured/${alumnus.image}`} 
@@ -140,61 +145,72 @@ export default function LandingPage() {
                     <span>{alumnus.name.charAt(0)}</span>
                   </div>
                   
-                  <div className="space-y-1">
-                    <h4 className="text-lg font-bold text-slate-900">{alumnus.name}</h4>
-                    <p className="text-[10px] font-bold text-[#f97316] uppercase tracking-wider">{alumnus.profession}</p>
-                    <p className="text-[11px] font-semibold text-slate-400 mt-1">{alumnus.company}</p>
+                  <div className="space-y-2">
+                    <h4 className="text-2xl font-black text-slate-900 tracking-tight">{alumnus.name}</h4>
+                    <p className="text-[11px] font-black text-[#f97316] uppercase tracking-[0.2em]">{alumnus.profession}</p>
+                    <p className="text-sm font-bold text-slate-400 mt-2 tracking-tight italic opacity-70">{alumnus.company}</p>
                   </div>
 
-                  <div className="w-full pt-6 border-t border-slate-100 mt-4">
-                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
-                        Batch {alumnus.batch} · Verified Member
+                  <div className="w-full pt-8 border-t border-slate-100 mt-6">
+                     <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">
+                        Node {alumnus.batch} · Active Signal
                      </span>
                   </div>
                 </Link>
               </div>
             ))}
           </div>
+
+          {/* Navigation Arrows - Centered and Smaller */}
+          <div className="flex justify-center gap-3 mt-4">
+             <button onClick={() => scroll('left')} className="h-10 w-10 bg-white border border-slate-100 text-slate-400 rounded-xl flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all shadow-sm active:scale-90">
+               <ChevronLeft size={18} />
+             </button>
+             <button onClick={() => scroll('right')} className="h-10 w-10 bg-white border border-slate-100 text-slate-400 rounded-xl flex items-center justify-center hover:bg-slate-900 hover:text-white transition-all shadow-sm active:scale-90">
+               <ChevronRight size={18} />
+             </button>
+          </div>
         </div>
       </section>
 
       {/* WORLD EVENTS */}
-      <section className="py-24 bg-slate-50/50">
+      <section className="py-32 bg-[#f8f9fb]">
         <div className="container mx-auto max-w-7xl px-6">
-          <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
-            <div className="space-y-2">
-               <div className="text-[#f97316] font-bold uppercase tracking-widest text-[9px]">Upcoming Gatherings</div>
-               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">Institutional Events</h2>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 md:gap-12 mb-20">
+            <div className="space-y-4 text-left">
+               <div className="text-[#f97316] font-black uppercase tracking-[0.4em] text-[10px]">Temporal Vectors</div>
+               <h2 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tighter uppercase leading-none">Event <br /> <span className="text-slate-300">Timeline</span></h2>
             </div>
-            <Link href="/dashboard/events" className="group flex items-center gap-2 text-[10px] font-bold text-slate-400 hover:text-slate-900 transition-colors uppercase tracking-widest">
-              Explore All <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            <Link href="/dashboard/events" className="group flex items-center gap-3 text-[11px] font-black text-slate-400 hover:text-slate-900 transition-colors uppercase tracking-[0.3em] ml-0 md:ml-auto">
+              View All <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform" />
             </Link>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-10">
             {[
-              { title: "ANNUAL ALUMNI IFTAR MAHFIL 2026", date: "MAR 14", location: "UIU Campus, Dhaka", image: "/assets/images/banner.jpg" },
-              { title: "UIU NORTH AMERICA REUNION", date: "APR 05", location: "Toronto, Canada", image: "/assets/images/uiu-godhuli.jpg" }
+              { title: "ANNUAL ALUMNI IFTAR MAHFIL 2026", date: "MAR 14", location: "Dhaka HQ", image: "/assets/images/banner.jpg" },
+              { title: "NORTH AMERICA REUNION GALA", date: "APR 05", location: "Toronto Node", image: "/assets/images/uiu-godhuli.jpg" }
             ].map((event, idx) => (
-              <div key={idx} className="group flex flex-col md:flex-row bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-md transition-all">
-                <div className="md:w-1/3 relative h-48 md:h-auto overflow-hidden bg-slate-100">
-                   <img src={event.image} alt="" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+              <div key={idx} className="group flex flex-col md:flex-row bg-white border border-slate-200/60 rounded-[40px] overflow-hidden hover:shadow-2xl hover:border-transparent transition-all duration-500">
+                <div className="md:w-2/5 relative h-64 md:h-auto overflow-hidden bg-slate-900">
+                   <img src={event.image} alt="" className="w-full h-full object-cover opacity-60 md:grayscale md:group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000" />
+                   <div className="absolute inset-0 bg-gradient-to-r from-slate-950 to-transparent md:hidden"></div>
                 </div>
-                <div className="md:w-2/3 p-8 flex flex-col justify-between">
-                   <div className="space-y-4">
-                      <div className="flex items-center gap-4">
-                         <div className="bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-lg text-center">
-                            <p className="text-lg font-bold text-slate-900 leading-none">{event.date.split(' ')[1]}</p>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{event.date.split(' ')[0]}</p>
+                <div className="md:w-3/5 p-10 flex flex-col justify-between">
+                   <div className="space-y-6">
+                      <div className="flex items-center gap-6">
+                         <div className="bg-slate-900 border border-white/10 px-4 py-3 rounded-2xl text-center shadow-xl">
+                            <p className="text-2xl font-black text-[#f97316] leading-none tracking-tighter">{event.date.split(' ')[1]}</p>
+                            <p className="text-[9px] font-black text-white uppercase tracking-[0.2em] mt-1">{event.date.split(' ')[0]}</p>
                          </div>
-                         <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                            <MapPin size={12} /> {event.location}
+                         <div className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+                            <MapPin size={14} className="text-[#f97316]" /> {event.location}
                          </div>
                       </div>
-                      <h3 className="text-xl font-bold text-slate-900 group-hover:text-[#f97316] transition-colors leading-tight">{event.title}</h3>
+                      <h3 className="text-2xl font-black text-slate-900 group-hover:text-[#f97316] transition-colors leading-tight tracking-tight uppercase">{event.title}</h3>
                    </div>
-                   <Link href="#" className="mt-6 inline-flex items-center gap-2 text-[10px] font-bold text-slate-900 hover:text-[#f97316] transition-colors uppercase tracking-widest">
-                      Register Interest <ArrowRight size={14} />
+                   <Link href="/dashboard/events" className="mt-10 inline-flex items-center gap-3 text-[11px] font-black text-slate-900 hover:text-[#f97316] transition-colors uppercase tracking-[0.3em]">
+                      Secure Entry <ArrowRight size={16} />
                    </Link>
                 </div>
               </div>
@@ -204,27 +220,18 @@ export default function LandingPage() {
       </section>
 
       {/* FOOTER CALL TO ACTION */}
-      <section className="py-24 bg-slate-900">
-        <div className="max-w-4xl mx-auto px-6 text-center space-y-8">
-          <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-tight">Bridge the gap in your <br /> <span className="text-[#f97316]">Professional</span> journey</h2>
-          <p className="text-base font-medium text-slate-400 max-w-xl mx-auto">Join thousands of UIU graduates using the portal to accelerate their careers and build institutional connections.</p>
-          <div className="pt-4">
-             <Link href="/register" className="bg-[#f97316] hover:bg-orange-600 text-white px-10 py-4 rounded-xl font-bold text-sm transition-all shadow-lg shadow-orange-500/10 inline-block">Join the Network Today</Link>
+      <section className="py-40 bg-slate-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(#f97316_0.5px,transparent_0.5px)] [background-size:40px_40px] opacity-10"></div>
+        <div className="max-w-5xl mx-auto px-6 text-center space-y-12 relative z-10">
+          <h2 className="text-4xl sm:text-7xl font-black text-white tracking-tighter leading-[0.9] uppercase">Bridge the <br /> <span className="text-[#f97316]">Professional</span> void</h2>
+          <p className="text-lg sm:text-xl font-bold text-slate-400 max-w-2xl mx-auto tracking-tight">Join the elite network of UIU graduates utilizing the graph to accelerate their trajectories and forge permanent institutional bonds.</p>
+          <div className="pt-8">
+             <Link href="/register" className="bg-[#f97316] hover:bg-orange-600 text-white px-16 py-6 rounded-[24px] font-black uppercase tracking-[0.3em] text-[12px] transition-all shadow-[0_32px_64px_-12px_rgba(249,115,22,0.3)] inline-block active:scale-95">Initiate Membership</Link>
           </div>
         </div>
       </section>
 
       <Footer />
-
-      <style jsx global>{`
-        @keyframes slow-zoom {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.1); }
-        }
-        .animate-slow-zoom {
-          animation: slow-zoom 20s infinite alternate ease-in-out;
-        }
-      `}</style>
     </div>
   );
 }

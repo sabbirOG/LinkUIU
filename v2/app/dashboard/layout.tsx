@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import { useGlobalStore } from "@/lib/store";
 import { ShieldAlert, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -49,13 +50,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Restored Original Top Header Navigation */}
+    <div className="min-h-screen bg-[#f8f9fb] overflow-x-hidden">
+      {/* Top Navigation - Slimmer on mobile */}
       <Navbar />
 
-      <main className="w-full pt-[64px]">
-        {children}
+      {/* Main Content - Adjusted for bottom nav on mobile */}
+      <main className="w-full pt-[64px] pb-20 lg:pb-0">
+        <div className="max-w-7xl mx-auto">
+          {children}
+        </div>
       </main>
+
+      {/* Mobile-Only Bottom Navigation */}
+      <MobileBottomNav />
     </div>
   );
 }

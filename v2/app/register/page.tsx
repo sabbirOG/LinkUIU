@@ -70,57 +70,55 @@ export default function RegisterPage() {
       <Navbar />
       
       <div className="flex-1 flex items-center justify-center p-6 pt-24 pb-12">
-        <div className="max-w-4xl w-full bg-white rounded-[2rem] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col md:flex-row border border-slate-100">
+        <div className="max-w-3xl w-full bg-white rounded-[2.5rem] shadow-[0_12px_40px_-12px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-slate-100">
           
           {/* Left Sidebar - Dark Branding */}
-          <div className="md:w-[38%] bg-[#0f172a] text-white p-10 flex flex-col justify-between relative overflow-hidden">
+          <div className="md:w-[35%] bg-[#0f172a] text-white p-8 flex flex-col justify-between relative overflow-hidden">
             <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(#ffffff 0.5px, transparent 0.5px)', backgroundSize: '16px 16px' }}></div>
             
-            <div className="relative z-10 space-y-12">
+            <div className="relative z-10 space-y-10">
                <div className="flex items-center gap-3">
-                  <img src="/assets/images/uiu_logo.png" alt="UIU" className="h-8 brightness-0 invert opacity-60" />
-                  <div className="w-px h-5 bg-white/10"></div>
-                  <span className="text-[11px] font-bold tracking-widest text-slate-400 uppercase">Institutional</span>
+                  <img src="/assets/images/uiu_logo.png" alt="UIU" className="h-6 brightness-0 invert opacity-60" />
+                  <div className="w-px h-4 bg-white/10"></div>
+                  <span className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">Institutional</span>
                </div>
                
                <div className="space-y-6">
-                  <h1 className="text-3xl font-black leading-tight tracking-tight">
+                  <h1 className="text-2xl font-black leading-tight tracking-tight">
                     Start your <br />
-                    professional <br />
-                    <span className="text-[#f97316]">Alumni Journey.</span>
+                    Professional <br />
+                    <span className="text-[#f97316]">Trajectory.</span>
                   </h1>
                   
-                  <div className="space-y-5 pt-4">
+                  <div className="space-y-4 pt-4">
                      {[
                        "Verified alumni network",
                        "Exclusive job opportunities",
                        "Direct mentorship access",
-                       "Professional resume builder"
+                       "Institutional identity"
                      ].map((item, i) => (
-                       <div key={i} className="flex items-center gap-4 group/item">
-                         <div className="h-6 w-6 rounded-full bg-[#f97316] flex items-center justify-center text-white shadow-lg shadow-orange-900/20 group-hover/item:scale-110 transition-transform">
-                            <CheckCircle2 size={14} className="stroke-[3]" />
-                         </div>
-                         <span className="text-sm font-medium text-slate-300 group-hover/item:text-white transition-colors">{item}</span>
+                       <div key={i} className="flex items-center gap-3 group/item">
+                          <CheckCircle2 size={14} className="text-[#f97316] stroke-[2.5]" />
+                          <span className="text-[12px] font-semibold text-slate-400 group-hover/item:text-white transition-colors">{item}</span>
                        </div>
                      ))}
                   </div>
                </div>
             </div>
             
-            <div className="relative z-10">
-               <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-slate-500">
-                  © UIU Alumni Association {new Date().getFullYear()}
-               </p>
+            <div className="relative z-10 pt-6 border-t border-white/5">
+                <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">
+                    © UIU PROTOCOL 2026
+                </p>
             </div>
           </div>
 
           {/* Right Area - Register Form */}
-          <div className="md:w-[60%] p-8 md:p-12 flex flex-col justify-center">
-             <div className="max-w-md mx-auto w-full space-y-8">
-                <div className="space-y-2">
-                   <h2 className="text-3xl font-black text-slate-900 tracking-tight">Create Account</h2>
-                   <p className="text-slate-500 font-medium tracking-wide">Select your role to get started</p>
+          <div className="md:w-[65%] p-8 md:p-10 flex flex-col justify-center">
+             <div className="max-w-sm mx-auto w-full space-y-6">
+                <div className="space-y-1">
+                   <h2 className="text-2xl font-black text-slate-900 tracking-tight">Create Account</h2>
+                   <p className="text-slate-500 text-xs font-medium tracking-wide">Configure your institutional node</p>
                 </div>
 
                 {error && (
@@ -131,47 +129,47 @@ export default function RegisterPage() {
                 )}
 
                 {/* User Type Switcher */}
-                <div className="flex p-1.5 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
+                <div className="flex p-1 bg-slate-50 rounded-xl border border-slate-100">
                     <button 
                       onClick={() => setUserType("alumni")}
                       className={cn(
-                        "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                        userType === "alumni" ? "bg-white shadow-lg text-[#f97316]" : "text-slate-400 hover:text-slate-600"
+                        "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                        userType === "alumni" ? "bg-white shadow-sm text-[#f97316]" : "text-slate-400 hover:text-slate-600"
                       )}
                     >
-                      <Building2 size={16} /> Alumni
+                      Alumni
                     </button>
                     <button 
                       onClick={() => setUserType("student")}
                       className={cn(
-                        "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                        userType === "student" ? "bg-white shadow-lg text-[#f97316]" : "text-slate-400 hover:text-slate-600"
+                        "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all",
+                        userType === "student" ? "bg-white shadow-sm text-[#f97316]" : "text-slate-400 hover:text-slate-600"
                       )}
                     >
-                      <GraduationCap size={16} /> Student
+                      Student
                     </button>
                 </div>
 
-                <form onSubmit={handleRegister} className="space-y-5">
-                   <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Full Name</label>
-                         <input required type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Alice Ahmed" className="w-full px-5 py-4 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-sm" />
+                <form onSubmit={handleRegister} className="space-y-4">
+                   <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 pl-1">Full Name</label>
+                         <input required type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Alice Ahmed" className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-xs" />
                       </div>
-                      <div className="space-y-1.5">
-                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Student ID</label>
-                         <input required type="text" value={studentId} onChange={(e) => setStudentId(e.target.value)} placeholder="011 211 000" className="w-full px-5 py-4 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-sm" />
+                      <div className="space-y-1">
+                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 pl-1">Student ID</label>
+                         <input required type="text" value={studentId} onChange={(e) => setStudentId(e.target.value)} placeholder="011 211 000" className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-xs" />
                       </div>
                    </div>
                    
-                   <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-1.5">
-                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Department</label>
+                   <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 pl-1">Department</label>
                          <select 
                            required 
                            value={dept} 
                            onChange={(e) => setDept(e.target.value)} 
-                           className="w-full px-5 py-4 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-bold text-slate-900 text-[11px] appearance-none cursor-pointer"
+                           className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-bold text-slate-900 text-[10px] appearance-none cursor-pointer"
                          >
                             <option value="CSE">Computer Science</option>
                             <option value="EEE">Electrical Engineering</option>
@@ -181,37 +179,37 @@ export default function RegisterPage() {
                             <option value="Economics">Economics</option>
                          </select>
                       </div>
-                      <div className="space-y-1.5">
-                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Graduation Batch</label>
+                      <div className="space-y-1">
+                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 pl-1">Batch</label>
                          <input 
                            required 
                            type="text" 
                            value={batch} 
                            onChange={(e) => setBatch(e.target.value)} 
                            placeholder="Ex: 221" 
-                           className="w-full px-5 py-4 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-sm" 
+                           className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-xs" 
                          />
                       </div>
                    </div>
 
-                   <div className="space-y-1.5">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Email</label>
-                      <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@alumni.uiu.ac.bd" className="w-full px-5 py-4 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-sm" />
+                   <div className="space-y-1">
+                      <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 pl-1">Email</label>
+                      <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@alumni.uiu.ac.bd" className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-xs" />
                    </div>
                    
-                   <div className="space-y-1.5">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Password</label>
-                      <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-5 py-4 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-sm" />
+                   <div className="space-y-1">
+                      <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 pl-1">Password</label>
+                      <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-xs" />
                    </div>
 
                    <button 
                      disabled={isLoading} 
-                     className="w-full bg-[#f97316] text-white font-black uppercase tracking-[0.2em] py-5 rounded-xl shadow-[0_10px_30px_-10px_rgba(249,115,22,0.4)] hover:bg-orange-600 transition-all mt-4 flex items-center justify-center gap-3 group disabled:opacity-70 disabled:cursor-not-allowed"
+                     className="w-full bg-[#f97316] text-white font-black uppercase tracking-[0.2em] py-4 rounded-xl shadow-lg shadow-orange-500/10 hover:bg-slate-900 transition-all mt-4 flex items-center justify-center gap-3 group disabled:opacity-70 disabled:cursor-not-allowed text-[11px]"
                    >
                       {isLoading ? (
                         <Loader2 size={18} className="animate-spin" />
                       ) : (
-                        "JOIN THE COMMUNITY"
+                        "INITIALIZE IDENTITY"
                       )}
                    </button>
                 </form>

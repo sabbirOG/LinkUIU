@@ -36,7 +36,7 @@ interface GlobalContextType {
   notifications: any[];
   currentUser: Profile | null;
   userSession: any;
-  pulseFeed: any[];
+  activityFeed: any[];
   conversations: any[];
   activeMessages: any[];
   isLoaded: boolean;
@@ -57,6 +57,7 @@ interface GlobalContextType {
   loadMessages: (convoId: string) => Promise<void>;
   createConversation: (otherUserId: string) => Promise<string | null>;
   markAsRead: (convoId: string) => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -80,8 +81,8 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
 
   const [data, setData] = useState(buildInitialData);
 
-  // ─── THE LINKPULSE™ ALGORITHM ─────────────────────────────────────────────
-  const pulseFeed = useMemo(() => {
+  // ─── THE ACTIVITY RANKING ALGORITHM ─────────────────────────────────────────────
+  const activityFeed = useMemo(() => {
     const stream = [
       ...data.posts.map(p => ({ ...p, type: 'post', feedId: `post-${p.id}` })),
       ...data.jobs.map(j => ({ ...j, type: 'job', feedId: `job-${j.id}` })),
@@ -100,8 +101,8 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
       const userDept = data.currentUser?.dept;
       if (userDept && author?.dept === userDept) score *= 1.5;
       
-      return { ...item, author, pulseScore: score };
-    }).sort((a, b) => b.pulseScore - a.pulseScore);
+      return { ...item, author, rankingScore: score };
+    }).sort((a, b) => b.rankingScore - a.rankingScore);
   }, [data.posts, data.jobs, data.events, data.alumni, data.currentUser]);
 
   // ─── INITIALIZATION & LIVE SUPABASE SYNC ──────────────────────────────────
@@ -390,13 +391,24 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
     }));
   };
 
+  const signOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      localStorage.removeItem(STORE_KEY);
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Logout Failure:", err);
+      window.location.href = "/";
+    }
+  };
+
   return (
     <GlobalContext.Provider value={{ 
       ...data, 
-      userSession, pulseFeed, isLoaded, isCloudMode,
+      userSession, activityFeed, isLoaded, isCloudMode,
       updateProfile, addJob, addPost, applyToJob, toggleConnection, joinEvent, 
       markNotificationRead, markAllNotificationsRead, addNotification,
-      likePost, commentOnPost, sendMessage, loadMessages, createConversation, markAsRead
+      likePost, commentOnPost, sendMessage, loadMessages, createConversation, markAsRead, signOut
     }}>
       {children}
     </GlobalContext.Provider>
