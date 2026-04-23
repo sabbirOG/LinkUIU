@@ -21,14 +21,14 @@ export default function TermsPage() {
           <Shield size={32} strokeWidth={3} />
           <div>
             <h1 className="text-3xl font-black text-slate-900 tracking-tight">Platform Terms</h1>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">LinkUIU Institutional Protocol</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">LinkedUIU Institutional Protocol</p>
           </div>
         </div>
 
         <div className="prose prose-slate max-w-none space-y-8">
           <section className="space-y-4 text-sm font-medium text-slate-600 leading-relaxed">
             <h2 className="text-lg font-bold text-slate-900">1. Institutional Access</h2>
-            <p>LinkUIU is an exclusive network for verified alumni and students of United International University. Access is granted based on valid institutional credentials.</p>
+            <p>LinkedUIU is an exclusive network for verified alumni and students of United International University. Access is granted based on valid institutional credentials.</p>
           </section>
 
           <section className="space-y-4 text-sm font-medium text-slate-600 leading-relaxed">

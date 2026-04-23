@@ -88,7 +88,7 @@ export default function Navbar() {
             <div className={cn("w-px h-6 transition-colors duration-300", isScrolled ? "bg-slate-200" : "bg-white/20")}></div>
             <img 
               src="/assets/images/linkuiu_logo.png" 
-              alt="LinkUIU" 
+              alt="LinkedUIU" 
               className={cn(
                 "h-5 transition-all duration-300",
                 !isScrolled && "brightness-0 invert"
@@ -254,7 +254,7 @@ export default function Navbar() {
                  <span className="flex items-center gap-1.5 mb-0"><kbd className="bg-white border px-1 rounded">↑↓</kbd> Navigate</span>
                  <span className="flex items-center gap-1.5 mb-0"><kbd className="bg-white border px-1 rounded">↵</kbd> Select</span>
                </div>
-               <span className="font-semibold text-slate-300 uppercase tracking-tighter">LinkUIU v2.0 Professional</span>
+               <span className="font-semibold text-slate-300 uppercase tracking-tighter">LinkedUIU v2.0 Professional</span>
             </div>
           </div>
         </div>

@@ -7,7 +7,7 @@ import { supabase } from "./supabase";
 // The system has been audited and all hardcoded 'INITIAL_XXX' placeholder collections
 // have been permanently eliminated to establish a strict, real-world data flow.
 
-const STORE_KEY = "linkuiu_global_store_v2";
+const STORE_KEY = "linkeduiu_global_store_v2";
 
 interface Profile {
   id: string;
@@ -182,7 +182,7 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
       }, payload => {
         setData(prev => ({ ...prev, notifications: [payload.new, ...prev.notifications] }));
         if ("Notification" in window && Notification.permission === "granted") {
-          new Notification("LinkUIU Update", { body: payload.new.title });
+          new Notification("LinkedUIU Update", { body: payload.new.title });
         }
       })
       .subscribe();

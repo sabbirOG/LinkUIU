@@ -15,7 +15,7 @@ export default function Footer() {
               <div className="flex items-center gap-4">
                 <img src="/assets/images/uiu_logo.png" alt="UIU" className="h-7 brightness-0 invert opacity-40" />
                 <div className="w-px h-5 bg-white/10"></div>
-                <img src="/assets/images/linkuiu_logo.png" alt="LinkUIU" className="h-6 opacity-80 cursor-pointer" onClick={() => window.location.href = '/'} />
+                <img src="/assets/images/linkuiu_logo.png" alt="LinkedUIU" className="h-6 opacity-80 cursor-pointer" onClick={() => window.location.href = '/'} />
               </div>
               <p className="text-slate-500 font-medium text-[13px] leading-relaxed max-w-xs">
                 The official professional portal for UIU graduates. Bridging the gap between academic excellence and global career success.
@@ -48,7 +48,7 @@ export default function Footer() {
                 title: "Support", 
                 links: [
                   { name: "Help Desk", path: "mailto:alumni@uiu.ac.bd", external: true },
-                  { name: "Report Issue", path: "mailto:support@uiu.ac.bd?subject=LinkUIU Issue Report", external: true },
+                  { name: "Report Issue", path: "mailto:support@uiu.ac.bd?subject=LinkedUIU Issue Report", external: true },
                   { name: "Developer Team", path: "https://www.uiu.ac.bd/about-uiu/", external: true },
                   { name: "Admin Portal", path: "/login" }
                 ] 

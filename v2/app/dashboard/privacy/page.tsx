@@ -28,7 +28,7 @@ export default function PrivacyPage() {
         <div className="prose prose-slate max-w-none space-y-8">
           <section className="space-y-4 text-sm font-medium text-slate-600 leading-relaxed">
             <h2 className="text-lg font-bold text-slate-900">1. Data Sovereignty</h2>
-            <p>Your institutional data remains encrypted and is only used to power the LinkUIU networking engine. We do not share data with external third-party advertisers.</p>
+            <p>Your institutional data remains encrypted and is only used to power the LinkedUIU networking engine. We do not share data with external third-party advertisers.</p>
           </section>
 
           <section className="space-y-4 text-sm font-medium text-slate-600 leading-relaxed">

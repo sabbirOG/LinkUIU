@@ -14,21 +14,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LinkUIU | The Elite UIU Alumni & Student Network",
+  title: "LinkedUIU | The Elite UIU Alumni & Student Network",
   description: "Connect with the global United International University (UIU) network. Professional networking, job opportunities, and institutional collaboration for verified alumni and students.",
-  keywords: ["UIU Alumni", "LinkUIU", "United International University", "Professional Network", "Alumni Portal"],
+  keywords: ["UIU Alumni", "LinkedUIU", "United International University", "Professional Network", "Alumni Portal"],
   authors: [{ name: "UIU Alumni Protocol" }],
   openGraph: {
-    title: "LinkUIU | Professional Institutional Network",
+    title: "LinkedUIU | Professional Institutional Network",
     description: "The official networking ecosystem for UIU alumni and students.",
     url: "https://linkuiu.com",
-    siteName: "LinkUIU",
+    siteName: "LinkedUIU",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "LinkUIU | UIU Alumni Network",
+    title: "LinkedUIU | UIU Alumni Network",
     description: "Elite professional portal for United International University.",
   },
   robots: {
@@ -61,7 +61,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "name": "LinkUIU",
+              "name": "LinkedUIU",
               "url": "https://linkuiu.com",
               "potentialAction": {
                 "@type": "SearchAction",
