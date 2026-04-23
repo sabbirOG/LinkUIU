@@ -285,7 +285,7 @@ export default function ProfilePage() {
                   <div className="flex items-center gap-2">
                     {profile.isSelf ? (
                       <>
-                        <button onClick={() => setEditModal({ field: "bio", value: profile.bio })} className="px-5 py-2.5 border border-slate-200 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-50 transition-all active:scale-[0.98]">
+                        <button onClick={() => setEditModal({ field: "bio", value: profile.bio || "" })} className="px-5 py-2.5 border border-slate-200 text-slate-700 text-xs font-bold rounded-lg hover:bg-slate-50 transition-all active:scale-[0.98]">
                           Edit Profile
                         </button>
                         <button className="px-5 py-2.5 bg-[#0f172a] text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition-all active:scale-[0.98]">
@@ -392,7 +392,7 @@ export default function ProfilePage() {
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400">About</h2>
-                      {profile.isSelf && <button onClick={() => setEditModal({ field: "bio", value: profile.bio })} className="text-slate-300 hover:text-[#f97316]"><Pencil size={15} /></button>}
+                      {profile.isSelf && <button onClick={() => setEditModal({ field: "bio", value: profile.bio || "" })} className="text-slate-300 hover:text-[#f97316]"><Pencil size={15} /></button>}
                     </div>
                     <p className="text-sm font-medium text-slate-600 leading-relaxed italic border-l-2 border-slate-100 pl-4">{profile.bio}</p>
                   </div>
@@ -562,6 +562,28 @@ export default function ProfilePage() {
                   )}
                </div>
             </div>
+
+            {!profile.isSelf && (
+               <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4 shadow-sm">
+                 <h3 className="text-xs font-bold uppercase tracking-widest text-slate-400">Networking</h3>
+                 <div className="space-y-3">
+                   <Link 
+                     href={`/dashboard/messages?user=${profile.id}`}
+                     className="w-full py-3 bg-[#f97316] text-white rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-orange-600 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20"
+                   >
+                     <MessageSquare size={14} /> 
+                     {profile.userType === 'alumni' ? "Request Referral" : "Start Collaboration"}
+                   </Link>
+                   <button 
+                     onClick={() => toggleConnection(rawId)}
+                     className="w-full py-3 bg-white text-slate-700 border border-slate-200 rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-slate-50 transition-all active:scale-95 flex items-center justify-center gap-2"
+                   >
+                     {isConnectedToProfile ? "Linked in Network" : "Add to Network"}
+                   </button>
+                 </div>
+                 <p className="text-[10px] text-slate-400 font-medium text-center">Connected via United International University</p>
+               </div>
+            )}
 
             {profile.isSelf && (
               <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4 shadow-sm">
