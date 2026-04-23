@@ -30,12 +30,14 @@ export default function MessagesPage() {
     loadMessages, 
     sendMessage, 
     createConversation,
+    markAsRead,
     isLoaded 
   } = useGlobalStore();
 
   const [activeConvo, setActiveConvo] = useState<any>(null);
   const [inputText, setInputText] = useState("");
   const [messageStream, setMessageStream] = useState<any[]>([]);
+  const [isOtherTyping, setIsOtherTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Initialize from URL or first conversation
@@ -49,10 +51,12 @@ export default function MessagesPage() {
           const convo = conversations.find(c => c.id === convoId) || { id: convoId, user_1_id: currentUser.id, user_2_id: userIdFromUrl };
           setActiveConvo(convo);
           await loadMessages(convoId);
+          await markAsRead(convoId);
         }
       } else if (conversations.length > 0 && !activeConvo) {
         setActiveConvo(conversations[0]);
         await loadMessages(conversations[0].id);
+        await markAsRead(conversations[0].id);
       }
     }
     initChat();
@@ -63,22 +67,40 @@ export default function MessagesPage() {
     setMessageStream(activeMessages);
   }, [activeMessages]);
 
-  // REAL-TIME: Listen for new messages in the current conversation
+  // REAL-TIME: Listen for new messages, typing status, and read receipts
   useEffect(() => {
-    if (!activeConvo) return;
+    if (!activeConvo || !currentUser) return;
 
     const channel = supabase
-      .channel(`chat:${activeConvo.id}`)
+      .channel(`chat:${activeConvo.id}`, {
+        config: {
+          presence: {
+            key: currentUser.id,
+          },
+        },
+      })
       .on('postgres_changes', { 
-        event: 'INSERT', 
+        event: '*', 
         schema: 'public', 
         table: 'messages', 
         filter: `conversation_id=eq.${activeConvo.id}` 
       }, (payload) => {
-        setMessageStream(prev => {
-          if (prev.some(m => m.id === payload.new.id)) return prev;
-          return [...prev, payload.new];
-        });
+        if (payload.eventType === 'INSERT') {
+          setMessageStream(prev => {
+            if (prev.some(m => m.id === payload.new.id)) return prev;
+            return [...prev, payload.new];
+          });
+          // Auto-mark as read if we are looking at it
+          markAsRead(activeConvo.id);
+        } else if (payload.eventType === 'UPDATE') {
+          setMessageStream(prev => prev.map(m => m.id === payload.new.id ? payload.new : m));
+        }
+      })
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        const otherId = activeConvo.user_1_id === currentUser.id ? activeConvo.user_2_id : activeConvo.user_1_id;
+        const otherPresence = state[otherId] as any[];
+        setIsOtherTyping(!!otherPresence?.some(p => p.typing));
       })
       .subscribe();
 
@@ -86,6 +108,18 @@ export default function MessagesPage() {
       supabase.removeChannel(channel);
     };
   }, [activeConvo?.id]);
+
+  // Broadcast typing status
+  useEffect(() => {
+    if (!activeConvo || !currentUser) return;
+    const channel = supabase.channel(`chat:${activeConvo.id}`);
+    
+    if (inputText.length > 0) {
+      channel.track({ typing: true, user: currentUser?.name });
+    } else {
+      channel.track({ typing: false, user: currentUser?.name });
+    }
+  }, [inputText]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -178,9 +212,13 @@ export default function MessagesPage() {
                     </div>
                     <div>
                        <h3 className="text-base font-bold text-slate-900">{getOtherUser(activeConvo).name}</h3>
-                       <p className="text-[10px] font-bold text-[#f97316] uppercase tracking-widest flex items-center gap-1.5 pt-0.5">
-                          <ShieldCheck size={12} /> {getOtherUser(activeConvo).dept} Alumni
-                       </p>
+                       {isOtherTyping ? (
+                         <p className="text-[10px] font-bold text-green-500 uppercase tracking-widest animate-pulse">Typing...</p>
+                       ) : (
+                         <p className="text-[10px] font-bold text-[#f97316] uppercase tracking-widest flex items-center gap-1.5 pt-0.5">
+                            <ShieldCheck size={12} /> {getOtherUser(activeConvo).dept} Alumni
+                         </p>
+                       )}
                     </div>
                  </div>
                  <div className="flex items-center gap-4">
@@ -195,10 +233,13 @@ export default function MessagesPage() {
                     return (
                       <div key={msg.id} className={cn("flex flex-col", isMine ? "items-end" : "items-start")}>
                          <div className={cn(
-                           "max-w-[70%] px-5 py-3 rounded-2xl text-sm font-medium leading-relaxed shadow-sm",
+                           "max-w-[70%] px-5 py-3 rounded-2xl text-sm font-medium leading-relaxed shadow-sm relative",
                            isMine ? "bg-slate-900 text-white rounded-tr-none" : "bg-white text-slate-700 border border-slate-100 rounded-tl-none"
                          )}>
                             {msg.content}
+                            {isMine && msg.is_read && (
+                              <div className="absolute -bottom-4 right-0 text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Seen</div>
+                            )}
                          </div>
                          <span className="text-[9px] font-bold text-slate-300 mt-1 uppercase tracking-tighter">{formatRelativeTime(msg.created_at)}</span>
                       </div>

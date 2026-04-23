@@ -56,6 +56,7 @@ interface GlobalContextType {
   sendMessage: (receiverId: string, text: string) => Promise<void>;
   loadMessages: (convoId: string) => Promise<void>;
   createConversation: (otherUserId: string) => Promise<string | null>;
+  markAsRead: (convoId: string) => Promise<void>;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -371,9 +372,22 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
 
     if (!error) {
       setData(prev => ({ ...prev, activeMessages: [...prev.activeMessages, msg] }));
-      // Update last message in convo
       await supabase.from('conversations').update({ last_message: text, updated_at: new Date().toISOString() }).eq('id', convoId);
     }
+  };
+
+  const markAsRead = async (convoId: string) => {
+    if (!userSession || !isCloudMode) return;
+    await supabase
+      .from('messages')
+      .update({ is_read: true })
+      .eq('conversation_id', convoId)
+      .neq('sender_id', userSession.user.id);
+      
+    setData(prev => ({
+      ...prev,
+      activeMessages: prev.activeMessages.map(m => m.conversation_id === convoId ? { ...m, is_read: true } : m)
+    }));
   };
 
   return (
@@ -382,7 +396,7 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
       userSession, pulseFeed, isLoaded, isCloudMode,
       updateProfile, addJob, addPost, applyToJob, toggleConnection, joinEvent, 
       markNotificationRead, markAllNotificationsRead, addNotification,
-      likePost, commentOnPost, sendMessage, loadMessages, createConversation
+      likePost, commentOnPost, sendMessage, loadMessages, createConversation, markAsRead
     }}>
       {children}
     </GlobalContext.Provider>
