@@ -11,6 +11,8 @@ import {
 import { useParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useGlobalStore } from "@/lib/store";
+import { storageService } from "@/lib/storage";
+import { Loader2 } from "lucide-react";
 
 // ─── EDIT MODAL ───────────────────────────────────────────────────────────────
 function EditModal({ field, value, onSave, onClose }: {
@@ -106,6 +108,24 @@ export default function ProfilePage() {
   const { alumni, currentUser, updateProfile, toggleConnection, isLoaded } = useGlobalStore();
   const rawId = params.id as string;
 
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !currentUser) return;
+
+    try {
+      setIsUploading(true);
+      const publicUrl = await storageService.uploadProfilePhoto(currentUser.id, file);
+      await updateProfile({ profile_photo: publicUrl });
+    } catch (err: any) {
+      alert("Failed to upload photo: " + err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const profile = useMemo(() => {
     if (!currentUser) return alumni[0] || {};
     if (rawId === "self" || rawId === currentUser.id) {
@@ -198,16 +218,43 @@ export default function ProfilePage() {
               
               {/* Avatar */}
               <div className="relative shrink-0">
-                <div className="h-32 w-32 rounded-xl bg-slate-50 border-4 border-white shadow-sm flex items-center justify-center text-5xl font-bold text-[#f97316]">
-                  {profile.name.charAt(0)}
+                <div className="h-32 w-32 rounded-xl bg-slate-50 border-4 border-white shadow-sm flex items-center justify-center text-5xl font-bold text-[#f97316] overflow-hidden">
+                  {profile.profile_photo ? (
+                    <img 
+                      src={profile.profile_photo} 
+                      alt={profile.name} 
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    profile.name.charAt(0)
+                  )}
+                  
+                  {isUploading && (
+                    <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white">
+                      <Loader2 size={20} className="animate-spin" />
+                    </div>
+                  )}
                 </div>
                 <div className="absolute -bottom-1 -right-1 h-9 w-9 bg-[#f97316] text-white rounded-lg flex items-center justify-center border-4 border-white shadow-sm">
                   <ShieldCheck size={18} />
                 </div>
                 {profile.isSelf && (
-                  <button className="absolute bottom-0 left-0 h-8 w-8 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#f97316] shadow-sm transition-all focus:ring-2 focus:ring-[#f97316]/20">
-                    <Camera size={14} />
-                  </button>
+                  <>
+                    <input 
+                      type="file" 
+                      ref={fileInputRef} 
+                      onChange={handlePhotoUpload} 
+                      className="hidden" 
+                      accept="image/*"
+                    />
+                    <button 
+                      disabled={isUploading}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute bottom-0 left-0 h-8 w-8 bg-white border border-slate-200 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#f97316] shadow-sm transition-all focus:ring-2 focus:ring-[#f97316]/20 disabled:opacity-50"
+                    >
+                      <Camera size={14} />
+                    </button>
+                  </>
                 )}
               </div>
 
