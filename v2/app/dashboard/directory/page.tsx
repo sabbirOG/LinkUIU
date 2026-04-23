@@ -19,16 +19,28 @@ export default function DirectoryPage() {
   const { alumni: storeAlumni, toggleConnection, isLoaded } = useGlobalStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDepts, setSelectedDepts] = useState<string[]>([]);
+  const [selectedBatches, setSelectedBatches] = useState<string[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const filteredAlumni = useMemo(() => {
     return storeAlumni.filter(person => {
       if (person.isSelf) return false;
-      const matchesSearch = person.name.toLowerCase().includes(searchQuery.toLowerCase()) || person.company.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesDept = selectedDepts.length === 0 || selectedDepts.includes(person.dept);
-      return matchesSearch && matchesDept;
+      const matchesSearch = person.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            person.company?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            person.job?.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesDept = selectedDepts.length === 0 || (person.dept && selectedDepts.includes(person.dept));
+      const matchesBatch = selectedBatches.length === 0 || (person.batch && selectedBatches.includes(person.batch));
+      
+      return matchesSearch && matchesDept && matchesBatch;
     });
-  }, [searchQuery, selectedDepts, storeAlumni]);
+  }, [searchQuery, selectedDepts, selectedBatches, storeAlumni]);
+
+  const batches = ["2018", "2019", "2020", "2021", "2022", "2023", "2024"];
+
+  const toggleBatch = (batch: string) => {
+    setSelectedBatches(prev => prev.includes(batch) ? prev.filter(b => b !== batch) : [...prev, batch]);
+  };
 
   const categories = [
     { title: "School of Business & Economics", depts: ["BBA", "BBA in AIS", "BS in Economics"] },
@@ -135,8 +147,26 @@ export default function DirectoryPage() {
                          </div>
                        ))}
                        
+                       <div className="space-y-4">
+                          <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Graduation Batch</h4>
+                          <div className="flex flex-wrap gap-2">
+                             {batches.map((batch) => (
+                               <button 
+                                 key={batch} 
+                                 onClick={() => toggleBatch(batch)}
+                                 className={cn(
+                                   "px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
+                                   selectedBatches.includes(batch) ? "bg-[#f97316] border-[#f97316] text-white" : "bg-slate-50 border-slate-100 text-slate-500 hover:border-slate-200"
+                                 )}
+                               >
+                                  '{batch.slice(-2)}
+                               </button>
+                             ))}
+                          </div>
+                       </div>
+
                        <button 
-                         onClick={() => setSelectedDepts([])} 
+                         onClick={() => { setSelectedDepts([]); setSelectedBatches([]); }} 
                          className="w-full flex items-center justify-center gap-2 py-2 text-[11px] font-bold text-slate-400 hover:text-[#f97316] transition-colors border-t border-slate-50 pt-4"
                        >
                           <RotateCcw size={12} />
@@ -187,10 +217,10 @@ export default function DirectoryPage() {
 
                          <div className="p-2 bg-slate-50/50 border-t border-slate-100 flex gap-2">
                             <Link 
-                               href={`/dashboard/profile/${person.id}`}
-                               className="flex-1 h-9 bg-white text-slate-700 font-bold text-[10px] uppercase tracking-wider rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-100 transition-all flex items-center justify-center active:scale-95 shadow-sm"
+                               href={`/dashboard/messages?user=${person.id}`}
+                               className="flex-1 h-9 bg-white text-[#f97316] font-bold text-[10px] uppercase tracking-wider rounded-lg border border-slate-200 hover:border-orange-100 hover:bg-orange-50 transition-all flex items-center justify-center active:scale-95 shadow-sm"
                             >
-                               Profile
+                               Message
                             </Link>
                             {person.isConnected ? (
                               <div className="flex-1 h-9 bg-green-50 text-green-600 font-bold text-[10px] uppercase tracking-wider rounded-lg flex items-center justify-center border border-green-100">

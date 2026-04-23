@@ -9,16 +9,36 @@ import { supabase } from "./supabase";
 
 const STORE_KEY = "linkuiu_global_store_v2";
 
+interface Profile {
+  id: string;
+  name: string;
+  student_id: string;
+  user_type: 'alumni' | 'student';
+  dept?: string;
+  batch?: string;
+  job?: string;
+  company?: string;
+  bio?: string;
+  skills?: string[];
+  experience?: any[];
+  education?: any[];
+  profile_photo?: string;
+  connections_count?: number;
+  [key: string]: any;
+}
+
 interface GlobalContextType {
-  alumni: any[];
+  alumni: Profile[];
   jobs: any[];
   events: any[];
   posts: any[];
   applications: any[];
   notifications: any[];
-  currentUser: any;
+  currentUser: Profile | null;
   userSession: any;
   pulseFeed: any[];
+  conversations: any[];
+  activeMessages: any[];
   isLoaded: boolean;
   isCloudMode: boolean;
   // Actions
@@ -33,7 +53,9 @@ interface GlobalContextType {
   addNotification: (title: string, type: string) => Promise<void>;
   likePost: (postId: string) => Promise<void>;
   commentOnPost: (postId: string, comment: string) => Promise<void>;
-  sendMessage: (convoId: string, text: string) => Promise<void>;
+  sendMessage: (receiverId: string, text: string) => Promise<void>;
+  loadMessages: (convoId: string) => Promise<void>;
+  createConversation: (otherUserId: string) => Promise<string | null>;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
@@ -44,13 +66,15 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
   const [userSession, setUserSession] = useState<any>(null);
 
   const buildInitialData = () => ({
-    alumni: [] as any[],
+    alumni: [] as Profile[],
     jobs: [] as any[],
     events: [] as any[],
     posts: [] as any[],
     applications: [] as any[],
     notifications: [] as any[],
-    currentUser: null,
+    currentUser: null as Profile | null,
+    conversations: [] as any[],
+    activeMessages: [] as any[],
   });
 
   const [data, setData] = useState(buildInitialData);
@@ -72,7 +96,8 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
       let score = (weights[item.type] || 1.0) / Math.pow(ageHours + 2, 1.8);
 
       // Personalization Bias (Same Dept)
-      if (author?.dept === data.currentUser?.dept) score *= 1.5;
+      const userDept = data.currentUser?.dept;
+      if (userDept && author?.dept === userDept) score *= 1.5;
       
       return { ...item, author, pulseScore: score };
     }).sort((a, b) => b.pulseScore - a.pulseScore);
@@ -85,11 +110,12 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
     async function fetchFullDatabase(session: any) {
       if (!session) return;
       try {
-        const [profilesRes, jobsRes, eventsRes, postsRes] = await Promise.all([
+        const [profilesRes, jobsRes, eventsRes, postsRes, conversationsRes] = await Promise.all([
           supabase.from('profiles').select('*'),
           supabase.from('jobs').select('*, posted_by(*)'),
           supabase.from('events').select('*'),
-          supabase.from('posts').select('*, author_id(*)')
+          supabase.from('posts').select('*, author_id(*)'),
+          supabase.from('conversations').select('*').or(`user_1_id.eq.${session.user.id},user_2_id.eq.${session.user.id}`).order('updated_at', { ascending: false })
         ]);
 
         const currentUser = profilesRes.data?.find(p => p.id === session.user.id) || null;
@@ -101,6 +127,7 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
           jobs: jobsRes.data || [],
           events: eventsRes.data || [],
           posts: postsRes.data || [],
+          conversations: (conversationsRes as any).data || [],
           currentUser
         }));
           
@@ -145,7 +172,7 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isCloudMode || !userSession) return;
 
-    const channel = supabase.channel(`public:notifications:${userSession.user.id}`)
+    const notifChannel = supabase.channel(`public:notifications:${userSession.user.id}`)
       .on('postgres_changes', { 
         event: 'INSERT', 
         schema: 'public', 
@@ -153,15 +180,40 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
         filter: `profile_id=eq.${userSession.user.id}` 
       }, payload => {
         setData(prev => ({ ...prev, notifications: [payload.new, ...prev.notifications] }));
-        // Also fire a native notification if supported
         if ("Notification" in window && Notification.permission === "granted") {
           new Notification("LinkUIU Update", { body: payload.new.title });
         }
       })
       .subscribe();
 
+    const convoChannel = supabase.channel(`public:conversations:${userSession.user.id}`)
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'conversations', 
+        filter: `user_1_id=eq.${userSession.user.id}` 
+      }, payload => {
+        setData(prev => {
+          const others = prev.conversations.filter(c => c.id !== (payload.new as any).id);
+          return { ...prev, conversations: [payload.new, ...others].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()) };
+        });
+      })
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'conversations', 
+        filter: `user_2_id=eq.${userSession.user.id}` 
+      }, payload => {
+        setData(prev => {
+          const others = prev.conversations.filter(c => c.id !== (payload.new as any).id);
+          return { ...prev, conversations: [payload.new, ...others].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()) };
+        });
+      })
+      .subscribe();
+
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(notifChannel);
+      supabase.removeChannel(convoChannel);
     };
   }, [isCloudMode, userSession]);
 
@@ -174,9 +226,11 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
   // ─── REAL-TIME SYSTEM (Now handled natively above) ─────────────────────
 
   // ─── ACTIONS ──────────────────────────────────────────────────────────────
-  const updateProfile = async (updates: any) => {
-    if (!userSession) return;
+  const updateProfile = async (updates: Partial<Profile>) => {
+    if (!userSession || !data.currentUser) return;
+    
     setData(prev => {
+      if (!prev.currentUser) return prev;
       const updatedUser = { ...prev.currentUser, ...updates };
       const updatedAlumni = prev.alumni.map(a => a.id === userSession.user.id ? updatedUser : a);
       return { ...prev, currentUser: updatedUser, alumni: updatedAlumni };
@@ -185,10 +239,29 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addJob = async (job: any) => {
-    const jobWithMeta = { ...job, createdAt: new Date().toISOString() };
-    setData(prev => ({ ...prev, jobs: [jobWithMeta, ...prev.jobs] }));
+    if (!userSession) return;
+    
+    const dbRecord = {
+      posted_by: userSession.user.id,
+      title: job.title,
+      company: job.company,
+      location: job.location,
+      job_type: job.type || 'Full-time',
+      category: job.category || 'Engineering',
+      salary: job.salary,
+      description: job.description
+    };
+
+    if (isCloudMode) {
+      const { data: newJob, error } = await supabase.from('jobs').insert([dbRecord]).select().single();
+      if (error) {
+        console.error("Job Post Error:", error.message);
+        return;
+      }
+      setData(prev => ({ ...prev, jobs: [newJob, ...prev.jobs] }));
+    }
+    
     addNotification(`New Position: ${job.title} at ${job.company}`, "job");
-    if (isCloudMode && userSession) await supabase.from('jobs').insert([jobWithMeta]);
   };
 
   const addPost = async (content: string) => {
@@ -198,12 +271,18 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
   };
 
   const applyToJob = async (application: any) => {
-    setData(prev => {
-      if (prev.applications.some(a => a.jobId === application.jobId && a.applicantId === application.applicantId)) return prev;
-      return { ...prev, applications: [application, ...prev.applications] };
-    });
-    addNotification(`Application submitted for ${application.jobId}`, "system");
-    if (isCloudMode && userSession) await supabase.from('job_applications').insert([application]);
+    if (!userSession) return;
+
+    if (isCloudMode) {
+      const { data: newApp, error } = await supabase.from('job_applications').insert([application]).select().single();
+      if (error) {
+         console.error("Application Error:", error.message);
+         return;
+      }
+      setData(prev => ({ ...prev, applications: [newApp, ...prev.applications] }));
+    }
+    
+    addNotification(`Application submitted!`, "system");
   };
 
   const toggleConnection = async (alumniId: string) => {
@@ -248,9 +327,53 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
     addNotification(`You commented: "${comment}"`, "system");
   };
 
-  const sendMessage = async (convoId: string, text: string) => {
-    // Send a message via global store context
-    // This is often handled in a local convestore, but allows global hooks
+  const loadMessages = async (convoId: string) => {
+    if (!isCloudMode) return;
+    const { data } = await supabase.from('messages').select('*').eq('conversation_id', convoId).order('created_at', { ascending: true });
+    setData(prev => ({ ...prev, activeMessages: data || [] }));
+  };
+
+  const createConversation = async (otherUserId: string): Promise<string | null> => {
+    if (!userSession || !isCloudMode) return null;
+    
+    // Check if exists
+    const { data: existing } = await supabase
+      .from('conversations')
+      .select('id')
+      .or(`and(user_1_id.eq.${userSession.user.id},user_2_id.eq.${otherUserId}),and(user_1_id.eq.${otherUserId},user_2_id.eq.${userSession.user.id})`)
+      .single();
+
+    if (existing) return existing.id;
+
+    // Create new
+    const { data: created, error } = await supabase
+      .from('conversations')
+      .insert([{ user_1_id: userSession.user.id, user_2_id: otherUserId }])
+      .select()
+      .single();
+
+    if (error) return null;
+    setData(prev => ({ ...prev, conversations: [created, ...prev.conversations] }));
+    return created.id;
+  };
+
+  const sendMessage = async (receiverId: string, text: string) => {
+    if (!userSession || !isCloudMode) return;
+    
+    const convoId = await createConversation(receiverId);
+    if (!convoId) return;
+
+    const { data: msg, error } = await supabase
+      .from('messages')
+      .insert([{ conversation_id: convoId, sender_id: userSession.user.id, content: text }])
+      .select()
+      .single();
+
+    if (!error) {
+      setData(prev => ({ ...prev, activeMessages: [...prev.activeMessages, msg] }));
+      // Update last message in convo
+      await supabase.from('conversations').update({ last_message: text, updated_at: new Date().toISOString() }).eq('id', convoId);
+    }
   };
 
   return (
@@ -259,7 +382,7 @@ export function GlobalProvider({ children }: { children: React.ReactNode }) {
       userSession, pulseFeed, isLoaded, isCloudMode,
       updateProfile, addJob, addPost, applyToJob, toggleConnection, joinEvent, 
       markNotificationRead, markAllNotificationsRead, addNotification,
-      likePost, commentOnPost, sendMessage
+      likePost, commentOnPost, sendMessage, loadMessages, createConversation
     }}>
       {children}
     </GlobalContext.Provider>

@@ -165,7 +165,7 @@ export default function ProfilePage() {
       const array = value.split(",").map((s: string) => s.trim()).filter((s: string) => s !== "");
       updateProfile({ achievements: array });
     } else if (field === "experience") {
-      const currentExp = currentUser.experience || [];
+      const currentExp = currentUser?.experience || [];
       // Find and Replace or Append
       const existsIdx = currentExp.findIndex((e: any) => e.company === value.company && e.title === value.title);
       const newExp = [...currentExp];
@@ -173,7 +173,7 @@ export default function ProfilePage() {
       else newExp.unshift(value);
       updateProfile({ experience: newExp });
     } else if (field === "education") {
-      const currentEdu = currentUser.education || [];
+      const currentEdu = currentUser?.education || [];
       const existsIdx = currentEdu.findIndex((e: any) => e.school === value.school && e.degree === value.degree);
       const newEdu = [...currentEdu];
       if (existsIdx >= 0) newEdu[existsIdx] = value;
@@ -295,14 +295,18 @@ export default function ProfilePage() {
                       </>
                     ) : (
                       <>
+                        <Link 
+                           href={`/dashboard/messages?user=${profile.id}`}
+                           className="px-4 py-2.5 bg-white text-[#f97316] text-xs font-bold rounded-lg border border-slate-200 hover:border-orange-100 hover:bg-orange-50 transition-all active:scale-[0.98] flex items-center gap-2 shadow-sm"
+                        >
+                           <MessageSquare size={14} /> Message
+                        </Link>
                         <button onClick={() => toggleConnection(rawId)} className={cn("px-5 py-2.5 text-xs font-bold rounded-lg transition-all active:scale-[0.98]", isConnectedToProfile ? "bg-slate-100 text-slate-500 border border-slate-200" : "bg-[#0f172a] text-white hover:bg-slate-800")}>
                           {isConnectedToProfile ? "Connected" : "Connect"}
                         </button>
-                        <button onClick={() => router.push("/dashboard/messages")} className="px-5 py-2.5 bg-[#f97316] text-white text-xs font-bold rounded-lg hover:bg-orange-600 transition-all active:scale-[0.98]">
-                          Message
-                        </button>
                       </>
                     )}
+
                     <div className="relative" ref={moreMenuRef}>
                       <button 
                         onClick={() => setIsMoreOpen(!isMoreOpen)}
