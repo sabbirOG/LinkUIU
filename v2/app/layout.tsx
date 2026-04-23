@@ -14,14 +14,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LinkedUIU | The Elite UIU Alumni & Student Network",
-  description: "Connect with the global United International University (UIU) network. Professional networking, job opportunities, and institutional collaboration for verified alumni and students.",
-  keywords: ["UIU Alumni", "LinkedUIU", "United International University", "Professional Network", "Alumni Portal"],
+  title: "LinkedUIU | Official UIU Alumni Connect & Professional Network",
+  description: "Connect with the United International University (UIU) alumni community. The official platform for UIU Alumni Association, professional networking, job directory, and institutional collaboration.",
+  keywords: [
+    "LinkedUIU", 
+    "UIU Alumni", 
+    "Alumni Connect", 
+    "UIU Alumni Association", 
+    "UIU Alumni Community", 
+    "United International University Alumni Directory",
+    "United International University Alumni Connect",
+    "United International University Alumni Community",
+    "Professional Network",
+    "UIU Career Hub"
+  ],
   authors: [{ name: "UIU Alumni Protocol" }],
   openGraph: {
-    title: "LinkedUIU | Professional Institutional Network",
-    description: "The official networking ecosystem for UIU alumni and students.",
-    url: "https://linkuiu.com",
+    title: "LinkedUIU | Elite UIU Alumni & Student Network",
+    description: "The official professional networking ecosystem for United International University (UIU) alumni and students.",
+    url: "https://linkeduiu.vercel.app/",
     siteName: "LinkedUIU",
     locale: "en_US",
     type: "website",
@@ -29,7 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "LinkedUIU | UIU Alumni Network",
-    description: "Elite professional portal for United International University.",
+    description: "Elite professional portal for United International University (UIU) alumni and students.",
   },
   robots: {
     index: true,
@@ -62,16 +73,17 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "name": "LinkedUIU",
-              "url": "https://linkuiu.com",
+              "url": "https://linkeduiu.vercel.app/",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://linkuiu.com/dashboard/directory?q={search_term_string}",
+                "target": "https://linkeduiu.vercel.app/dashboard/directory?q={search_term_string}",
                 "query-input": "required name=search_term_string"
               },
-              "description": "Professional networking platform for UIU students and alumni.",
+              "description": "The official professional networking platform and alumni directory for United International University (UIU).",
               "publisher": {
                 "@type": "Organization",
-                "name": "United International University Alumni"
+                "name": "United International University Alumni Association",
+                "logo": "https://linkeduiu.vercel.app/logo.png"
               }
             })
           }}
