@@ -1,56 +1,23 @@
 # LinkUIU Cleanup Log
 
-## Cleanup Date: 2024-09-30
+### Cleanup Date: 2026-04-23
 
-### Files Removed (100% Safe - Confirmed Unused)
+### Legacy Files Decommissioned
+As part of the final transition to the Next.js (`v2`) architecture and Supabase, the following legacy components were safely removed:
 
-**Unused Assets:**
-- ✅ `frontend/assets/images/join-the-community.jpg` - Not referenced anywhere
-- ✅ `frontend/assets/images/uiu_main_logo.png` - Not referenced anywhere  
-- ✅ `frontend/assets/scripts/image-helper.js` - Not referenced anywhere
-- ✅ `frontend/assets/images/alumni/README.md` - Documentation only
+**Backend & Legacy App Components:**
+- ✅ `backend/` - Legacy PHP backend codebase
+- ✅ `frontend/` - Legacy HTML/CSS/JS frontend
+- ✅ `storage/` - Legacy local PHP file storage (replaced by Supabase Storage)
 
-**Unused Documentation:**
-- ✅ `ALUMNI_IMAGES_GUIDE.md` - Not referenced anywhere
+**Deployment & Server Configs:**
+- ✅ `deploy/` - Apache & Nginx configs for PHP (Next.js is on Vercel)
+- ✅ `start-server.bat` - Legacy local PHP server script
+- ✅ `index.html` (root) - Legacy redirect to old frontend
 
-**Duplicate Files:**
-- ✅ `landing.html` (root) - Redirect file, main landing page is at `frontend/pages/landing.html`
-
-### Files Kept (Manual Review Required)
-
-**Potentially Unused (Keep for now):**
-- ⚠️ `frontend/assets/data/featured-alumni-optimized.json` - Used in landing page
-- ⚠️ `deploy/apache.conf` - May be needed for production
-- ⚠️ `deploy/nginx.conf` - May be needed for production  
-- ⚠️ `start-server.bat` - May be needed for development
+**Folders Kept:**
+- `v2/` - The new, modern Next.js 14 architecture.
+- `database/` - Preserved SQL schemas (useful for reference and Supabase migrations).
 
 ### Space Saved
-- **Files Removed:** 6 files
-- **Estimated Space:** ~2-5MB
-- **Maintenance:** Cleaner project structure
-
-### Testing Status
-- [ ] All pages load correctly
-- [ ] All images display properly
-- [ ] All functionality works
-- [ ] Navigation works correctly
-- [ ] Backend connections work
-
-### Backup Information
-- **Backup Branch:** `backup-before-cleanup`
-- **Backup Commit:** 5480ffa
-- **Backup Date:** 2024-09-30 01:54:44
-
-### Rollback Instructions
-If any issues occur, rollback using:
-```bash
-git checkout backup-before-cleanup
-git checkout main
-git reset --hard backup-before-cleanup
-```
-
-### Next Steps
-1. Test all functionality thoroughly
-2. Consider removing additional files after testing
-3. Implement performance optimizations
-4. Update documentation
+- **Maintenance:** Clean, streamlined repository containing only the active v2 app and database schemas.
