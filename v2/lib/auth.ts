@@ -4,7 +4,7 @@ export const authService = {
   /**
    * Register a new alumni/student
    */
-  async signUp(email: string, password: string, fullName: string, studentId: string, userType: 'alumni' | 'student', dept: string) {
+  async signUp(email: string, password: string, fullName: string, studentId: string, userType: 'alumni' | 'student', dept: string, batch: string) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -13,7 +13,8 @@ export const authService = {
           full_name: fullName,
           student_id: studentId,
           user_type: userType,
-          dept: dept
+          dept: dept,
+          batch: batch
         }
       }
     });

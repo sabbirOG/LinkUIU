@@ -32,9 +32,9 @@ export default function Navbar() {
     if (!searchQuery.trim()) return { alumni: [], jobs: [], events: [] };
     const q = searchQuery.toLowerCase();
     return {
-      alumni: alumni.filter(a => a.name.toLowerCase().includes(q) || a.dept.toLowerCase().includes(q)).slice(0, 3),
-      jobs: jobs.filter(j => j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q)).slice(0, 3),
-      events: events.filter(e => e.title.toLowerCase().includes(q)).slice(0, 3)
+      alumni: alumni.filter(a => a.name.toLowerCase().includes(q) || (a.dept?.toLowerCase() || "").includes(q)).slice(0, 3) as any[],
+      jobs: jobs.filter(j => j.title.toLowerCase().includes(q) || j.company.toLowerCase().includes(q)).slice(0, 3) as any[],
+      events: events.filter(e => e.title.toLowerCase().includes(q)).slice(0, 3) as any[]
     };
   }, [searchQuery, alumni, jobs, events]);
 
@@ -105,10 +105,10 @@ export default function Navbar() {
                   key={link.name} 
                   href={link.href} 
                   className={cn(
-                    "px-4 py-2 rounded-lg font-medium transition-all",
+                    "px-4 py-2 font-bold transition-all text-sm uppercase tracking-widest",
                     isActive 
-                      ? (isScrolled ? "text-[#f97316] bg-orange-50/50" : "text-white bg-white/10")
-                      : (isScrolled ? "text-slate-600 hover:text-slate-900 hover:bg-slate-50" : "text-white/70 hover:text-white hover:bg-white/5")
+                      ? (isScrolled ? "text-[#f97316]" : "text-white")
+                      : (isScrolled ? "text-slate-400 hover:text-slate-900" : "text-white/50 hover:text-white")
                   )}
                 >
                   {link.name}

@@ -14,6 +14,7 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [studentId, setStudentId] = useState("");
   const [dept, setDept] = useState("CSE");
+  const [batch, setBatch] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +28,7 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      await authService.signUp(email, password, fullName, studentId, userType, dept);
+      await authService.signUp(email, password, fullName, studentId, userType, dept, batch);
       setSuccess(true);
       setIsLoading(false);
     } catch (err: any) {
@@ -163,21 +164,34 @@ export default function RegisterPage() {
                       </div>
                    </div>
                    
-                   <div className="space-y-1.5">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Department</label>
-                      <select 
-                        required 
-                        value={dept} 
-                        onChange={(e) => setDept(e.target.value)} 
-                        className="w-full px-5 py-4 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-bold text-slate-900 text-xs appearance-none cursor-pointer"
-                      >
-                         <option value="CSE">Computer Science & Engineering</option>
-                         <option value="EEE">Electrical & Electronic Engineering</option>
-                         <option value="BBA">Business Administration</option>
-                         <option value="Civil">Civil Engineering</option>
-                         <option value="Pharmacy">Pharmacy</option>
-                         <option value="Economics">Economics</option>
-                      </select>
+                   <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1.5">
+                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Department</label>
+                         <select 
+                           required 
+                           value={dept} 
+                           onChange={(e) => setDept(e.target.value)} 
+                           className="w-full px-5 py-4 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-bold text-slate-900 text-[11px] appearance-none cursor-pointer"
+                         >
+                            <option value="CSE">Computer Science</option>
+                            <option value="EEE">Electrical Engineering</option>
+                            <option value="BBA">Business Admin</option>
+                            <option value="Civil">Civil Engineering</option>
+                            <option value="Pharmacy">Pharmacy</option>
+                            <option value="Economics">Economics</option>
+                         </select>
+                      </div>
+                      <div className="space-y-1.5">
+                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 pl-1">Graduation Batch</label>
+                         <input 
+                           required 
+                           type="text" 
+                           value={batch} 
+                           onChange={(e) => setBatch(e.target.value)} 
+                           placeholder="Ex: 221" 
+                           className="w-full px-5 py-4 rounded-xl border border-slate-100 bg-slate-50 outline-none focus:ring-2 focus:ring-[#f97316]/10 transition-all font-medium text-slate-900 text-sm" 
+                         />
+                      </div>
                    </div>
 
                    <div className="space-y-1.5">
